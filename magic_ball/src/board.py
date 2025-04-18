@@ -13,9 +13,10 @@ class Board:
         self._board = self._init_board()
 
     def display(self):
-        print("\nBoard:")
-        for row in self._board:
-            print(' '.join(row))
+        print()
+        for row_i in range(4, -1, -1):
+            print(' '.join([str(row_i + 1)] + self._board[row_i]))
+        print("  A B C D E")
         print()
 
     def push(
@@ -29,6 +30,12 @@ class Board:
         col_i, row_i = self._tile_index(
             tile=target_tile,
         )
+        target_board_tile = self._board[row_i][col_i]
+        if target_board_tile != '.':
+            raise InvalidMove(
+                description=f"target tile not vacant: {target_board_tile}",
+            )
+
         source_row_i = (
             row_i - 1
             if player == PlayerSign.white
