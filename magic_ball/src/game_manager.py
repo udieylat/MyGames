@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from magic_ball.src.board import Board, InvalidMove
 from magic_ball.src.models import PlayerSign, PlayerType, BallPosition
+from magic_ball.src.move import Move
 from magic_ball.src.player import Player
 
 
@@ -112,5 +113,13 @@ class GameManager:
         # TODO: implement random strategy
 
     def _no_available_moves(self) -> bool:
-        # TODO: available moves for each player
-        pass
+        return (
+            self._white_player.get_available_moves(
+                board=self._board,
+                ball_position=self._ball_position,
+            ) == []
+            and self._black_player.get_available_moves(
+                board=self._board,
+                ball_position=self._ball_position,
+            ) == []
+        )
