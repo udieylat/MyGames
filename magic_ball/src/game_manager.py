@@ -1,9 +1,20 @@
+from __future__ import annotations
+
 from magic_ball.src.board import Board, InvalidMove
-from magic_ball.src.models import PlayerSign
+from magic_ball.src.models import PlayerSign, PlayerType
 from magic_ball.src.player import Player
 
 
 class GameManager:
+
+    @classmethod
+    def new(
+        cls,
+    ) -> GameManager:
+        return GameManager(
+            white_player=Player(player_type=PlayerType.human),
+            black_player=Player(player_type=PlayerType.human),
+        )
 
     def __init__(
         self,
@@ -46,4 +57,5 @@ class GameManager:
             else PlayerSign.black
         )
         # TODO: check win condition
+        self._board.display()
         # TODO: what more?
