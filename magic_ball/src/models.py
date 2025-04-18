@@ -15,3 +15,8 @@ class BallPosition(StrEnum):
     white = "white"
     middle = "middle"
     black = "black"
+
+
+class MoveType(StrEnum):
+    push = "push"
+    magic_card = "magic_card"

@@ -63,6 +63,18 @@ class GameManager:
         # TODO
         pass
 
+    def pass_turn(self):
+        if not self._game_on:
+            print("Game is already over.")
+            return
+
+        available_moves = []  # TODO
+        if available_moves:
+            print("Cannot pass turn, there are available moves.")
+        else:
+            print("Pass turn, no available moves for player.")
+            self._complete_turn()
+
     def _display(self):
         self._board.display()
         print(f"Ball position: {self._ball_position}")
@@ -77,6 +89,7 @@ class GameManager:
         )
         self._check_end_condition()
         # TODO: what more?
+        # TODO: play AI nif necessary
         self._display()
 
     def _check_end_condition(self):
@@ -92,5 +105,12 @@ class GameManager:
         ):
             print("White wins!")
             self._game_on = False
+        elif self._no_available_moves():
+            print("Game is drawn!")
+            self._game_on = False
 
-        # TODO: check draw
+        # TODO: implement random strategy
+
+    def _no_available_moves(self) -> bool:
+        # TODO: available moves for each player
+        pass
