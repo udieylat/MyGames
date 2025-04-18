@@ -26,7 +26,38 @@ class Board:
         self._validate_tile(
             tile=target_tile,
         )
+        col_i, row_i = self._tile_index(
+            tile=target_tile,
+        )
+        source_row_i = (
+            row_i - 1
+            if player == PlayerSign.white
+            else row_i + 1
+        )
+        if not 0 <= source_row_i <= 4:
+            raise InvalidMove(
+                description=f"invalid source row index: {source_row_i}",
+            )
 
+        source_board_tile = self._board[source_row_i][col_i]
+        if (
+            (player == PlayerSign.white and source_board_tile != 'W')
+            or (player == PlayerSign.black and source_board_tile != 'B')
+        ):
+            raise InvalidMove(
+                description=(
+                    f"source board tile is not a valid pawn: "
+                    f"({source_row_i}, {col_i}) = {source_board_tile}"
+                ),
+            )
+
+        # Complete push move.
+        self._board[source_row_i][col_i] = '.'
+        self._board[row_i][col_i] = (
+            'W'
+            if player == PlayerSign.white
+            else 'B'
+        )
 
     @classmethod
     def _init_board(cls) -> list[list[str]]:
@@ -48,3 +79,13 @@ class Board:
             raise InvalidMove(
                 description=f"tile '{tile}' format is invalid",
             )
+
+    @classmethod
+    def _tile_index(
+        cls,
+        tile: str,
+    ) -> tuple[int, int]:
+        return (
+            "ABCDE".index(tile[0]),
+            "12345".index(tile[1]),
+        )

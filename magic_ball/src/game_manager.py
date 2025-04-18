@@ -1,19 +1,20 @@
 from magic_ball.src.board import Board, InvalidMove
-from magic_ball.src.models import PlayerType
+from magic_ball.src.models import PlayerSign
+from magic_ball.src.player import Player
 
 
 class GameManager:
 
     def __init__(
         self,
-        white_player: PlayerType = PlayerType.human,  # TODO: change to Player with strategy, etc
-        black_player: PlayerType = PlayerType.human,
+        white_player: Player,
+        black_player: Player,
     ):
         self._white_player = white_player
         self._black_player = black_player
         self._board = Board()
 
-        self._player_turn: PlayerType = self._white_player
+        self._player_turn: PlayerSign = PlayerSign.white
 
         self._board.display()
 
@@ -24,7 +25,7 @@ class GameManager:
         try:
             self._board.push(
                 target_tile=target_tile,
-                player=self._player_turn,  # TODO
+                player=self._player_turn,
             )
             self._complete_turn()
         except InvalidMove as e:
@@ -40,9 +41,9 @@ class GameManager:
 
     def _complete_turn(self):
         self._player_turn = (
-            self._white_player
-            if self._player_turn == self._black_player
-            else self._black_player
+            PlayerSign.white
+            if self._player_turn == PlayerSign.black
+            else PlayerSign.black
         )
         # TODO: check win condition
         # TODO: what more?
