@@ -28,6 +28,7 @@ class GameManager:
         self._player_turn: PlayerSign = PlayerSign.white
         self._ball_position: BallPosition = BallPosition.middle
 
+        self._game_on = True
         self._display()
 
     def __repr__(self) -> str:
@@ -38,6 +39,9 @@ class GameManager:
         self,
         target_tile: str,
     ):
+        if not self._game_on:
+            print("Game is already over.")
+            return
         try:
             self._board.push(
                 target_tile=target_tile,
@@ -50,8 +54,12 @@ class GameManager:
 
     def play_magic_card(
         self,
-        move: str,
+        # TODO arg
     ):
+        if not self._game_on:
+            print("Game is already over.")
+            return
+
         # TODO
         pass
 
@@ -67,6 +75,22 @@ class GameManager:
             if self._player_turn == PlayerSign.black
             else PlayerSign.black
         )
-        # TODO: check end condition
-        self._display()
+        self._check_end_condition()
         # TODO: what more?
+        self._display()
+
+    def _check_end_condition(self):
+        if any(
+            self._board[0][col_i] == 'B'
+            for col_i in range(5)
+        ):
+            print("Black wins!")
+            self._game_on = False
+        elif any(
+            self._board[4][col_i] == 'W'
+            for col_i in range(5)
+        ):
+            print("White wins!")
+            self._game_on = False
+
+        # TODO: check draw

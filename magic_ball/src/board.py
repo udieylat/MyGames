@@ -12,6 +12,9 @@ class Board:
     def __init__(self):
         self._board = self._init_board()
 
+    def __getitem__(self, item: int) -> list[str]:
+        return self._board[item]
+
     def display(self):
         print()
         for row_i in range(4, -1, -1):
