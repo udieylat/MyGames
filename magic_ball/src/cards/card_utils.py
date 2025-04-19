@@ -1,10 +1,27 @@
 from board import Board
+from board_utils import BoardUtils
 from helper import Helper
 from models import PlayerSign, BallPosition
 from move import Move
 
 
 class CardUtils:
+    @classmethod
+    def get_pawn_indices(
+        cls,
+        player_sign: PlayerSign,
+        board: Board,
+    ) -> list[tuple[int, int]]:
+        return [
+            (col_i, row_i)
+            for col_i in range(5)
+            for row_i in range(5)
+            if BoardUtils.is_tile_player_pawn(
+                player_sign=player_sign,
+                tile=board[row_i][col_i],
+            )
+        ]
+
     @classmethod
     def indices_to_move(
         cls,
