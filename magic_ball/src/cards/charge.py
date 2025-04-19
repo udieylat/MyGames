@@ -2,7 +2,7 @@ from board import Board
 from board_utils import BoardUtils
 from cards.card import Card
 from helper import Helper
-from models import PlayerSign
+from models import PlayerSign, TileType
 from move import Move
 
 
@@ -28,10 +28,14 @@ class Charge(Card):
             if player_sign == PlayerSign.white
             else -1
         )
-        move_indices: list[tuple[int, int, int]] = [
-            ()
-            for col_i, row_i in pawn_indices
-        ]
+        move_indices: list[tuple[int, int, int]] = []
+        for col_i, source_row_i in pawn_indices:
+            target_row_i = source_row_i
+            while True:
+                target_row_i += direction
+                if target_row_i == 0 or target_row_i == 4 or board[target_row_i][col_i] != TileType.vacant:
+                    break
+                move_indices.append((col_i, source_row_i, target_row_i))
 
         return [
             cls._indices_to_move(
