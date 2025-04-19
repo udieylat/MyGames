@@ -235,6 +235,13 @@ class GameManager:
             else self._black_player
         )
 
+    def _get_opponent(self) -> Player:
+        return (
+            self._white_player
+            if self._player_turn == PlayerSign.black
+            else self._black_player
+        )
+
     def _get_available_card_moves(
         self,
         card_index: int,
@@ -259,8 +266,12 @@ class GameManager:
         try:
             move = player.find_move(
                 board=self._board,
-                num_unused_player_cards=0,
-                num_unused_opponent_cards=0,
+                num_unused_player_cards=self._get_num_unused_cards(
+                    cards=self._get_player().cards,
+                ),
+                num_unused_opponent_cards=self._get_num_unused_cards(
+                    cards=self._get_opponent().cards,
+                ),
             )
             self._play_move(
                 move=move,
@@ -269,3 +280,16 @@ class GameManager:
             self._print("Skip player turn since there are no available moves.")
 
         self._complete_turn()
+
+    @classmethod
+    def _get_num_unused_cards(
+        cls,
+        cards: list[Card],
+    ) -> int:
+        return len(
+            [
+                card
+                for card in cards
+                if not card.already_used
+            ]
+        )
