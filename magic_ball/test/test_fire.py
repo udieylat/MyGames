@@ -11,7 +11,7 @@ from models import PlayerSign, BallPosition
 class TestFire(unittest.TestCase):
     def setUp(self):
         self.fire = Fire()
-        self.board = Board()
+        self.board = Board.new()
 
     @parameterized.expand(PlayerSign.__members__.keys())
     def test_available_card_moves(self, player_sign: PlayerSign):

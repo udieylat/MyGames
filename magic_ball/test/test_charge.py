@@ -10,7 +10,7 @@ from models import PlayerSign, BallPosition
 class TestCharge(unittest.TestCase):
     def setUp(self):
         self.charge = Charge()
-        self.board = Board()
+        self.board = Board.new()
 
     @parameterized.expand(PlayerSign.__members__.keys())
     def test_num_available_card_moves(self, player_sign: PlayerSign):

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import copy
 from dataclasses import dataclass
 
@@ -12,9 +14,21 @@ class InvalidMove(Exception):
 
 
 class Board:
-    def __init__(self):
-        self._board: BoardType = self._init_board()
-        self._ball_position: BallPosition = BallPosition.middle
+
+    @classmethod
+    def new(cls) -> Board:
+        return Board(
+            board=cls._init_board(),
+            ball_position=BallPosition.middle,
+        )
+
+    def __init__(
+        self,
+        board: BoardType,
+        ball_position: BallPosition,
+    ):
+        self._board = board
+        self._ball_position = ball_position
 
     def __getitem__(self, item: int) -> list[str]:
         return self._board[item]

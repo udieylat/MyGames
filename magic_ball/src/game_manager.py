@@ -51,7 +51,7 @@ class GameManager:
         assert black_player.player_sign == PlayerSign.black
         self._white_player = white_player
         self._black_player = black_player
-        self._board = Board()
+        self._board = Board.new()
 
         self._draw_cards(
             cards_pull=cards_pull,
