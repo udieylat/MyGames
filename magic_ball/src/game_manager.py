@@ -128,7 +128,7 @@ class GameManager:
             if self._player_turn == PlayerSign.white
             else self._black_player
         )
-        if player.player_type == PlayerType.human:
+        if player.is_human:
             return
 
         move = player.find_move(

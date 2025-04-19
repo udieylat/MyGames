@@ -1,17 +1,26 @@
-from dataclasses import dataclass
+from abc import abstractmethod
 
 from board import Board
 from move import PossibleMoveType
-from models import PlayerSign, PlayerType
+from models import PlayerSign
 
 
-@dataclass
 class Player:
-    player_sign: PlayerSign
-    player_type: PlayerType
-    # magic_cards: list[MagicCard]
 
-    def play(self):
+    def __init__(
+        self,
+        player_sign: PlayerSign,
+        # magic_cards: list[MagicCard]
+    ):
+        self._player_sign = player_sign
+
+    @property
+    def is_human(self) -> bool:
+        return False
+
+    @abstractmethod
+    def find_move(
+        self,
+        board: Board,
+    ) -> PossibleMoveType:
         pass
-
-    # TODO: strategy
