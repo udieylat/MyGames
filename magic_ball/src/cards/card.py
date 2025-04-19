@@ -28,6 +28,7 @@ class Card:
             ball_position=board.ball_position,
         ):
             return []
+        # TODO: verify it's not a winning move
         return self._get_available_moves(
             player_sign=player_sign,
             board=board,
