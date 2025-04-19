@@ -100,12 +100,7 @@ class Helper:
             if player_sign == PlayerSign.white
             else row_i + 1
         )
-        if not 0 <= source_row_i <= 4:
-            raise InvalidMove(
-                description=f"invalid source row index: {source_row_i}",
-            )
-
-        new_board = cls._move_pawn(
+        new_board = cls.move_pawn(
             player_sign=player_sign,
             source_col_i=col_i,
             source_row_i=source_row_i,
@@ -121,7 +116,7 @@ class Helper:
         )
 
     @classmethod
-    def _move_pawn(
+    def move_pawn(
         cls,
         player_sign: PlayerSign,
         source_col_i: int,
@@ -130,6 +125,11 @@ class Helper:
         target_row_i: int,
         board: Board,
     ) -> BoardType:
+        assert 0 <= source_col_i <= 4
+        assert 0 <= source_row_i <= 4
+        assert 0 <= target_col_i <= 4
+        assert 0 <= target_row_i <= 4
+
         new_board = board.copy_board()
         target_board_tile = new_board[target_row_i][target_col_i]
         if target_board_tile != TileType.vacant:
