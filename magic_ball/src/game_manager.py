@@ -77,7 +77,10 @@ class GameManager:
             print("Game is already over.")
             return
 
-        available_moves = []  # TODO
+        available_moves = Helper.get_available_moves(
+            player_sign=self._player_turn,
+            board=self._board,
+        )
         if available_moves:
             print("Cannot pass turn, there are available moves.")
         else:
