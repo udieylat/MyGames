@@ -14,11 +14,4 @@ class Player:
     def play(self):
         pass
 
-    def get_available_moves(
-        self,
-        board: Board,
-    ) -> list[PossibleMoveType]:
-        # TODO
-        pass
-
     # TODO: strategy

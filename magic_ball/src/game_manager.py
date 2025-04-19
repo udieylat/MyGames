@@ -12,15 +12,17 @@ class GameManager:
     @classmethod
     def new(
         cls,
+        white_type: PlayerType = PlayerType.human,
+        black_type: PlayerType = PlayerType.human,
     ) -> GameManager:
         return GameManager(
             white_player=Player(
                 player_sign=PlayerSign.white,
-                player_type=PlayerType.human,
+                player_type=white_type,
             ),
             black_player=Player(
                 player_sign=PlayerSign.black,
-                player_type=PlayerType.human,
+                player_type=black_type,
             ),
         )
 
@@ -36,6 +38,7 @@ class GameManager:
         self._player_turn: PlayerSign = PlayerSign.white
 
         self._game_on = True
+        self._play_ai_player_turn_if_necessary()
         self._display()
 
     def __repr__(self) -> str:
@@ -98,8 +101,7 @@ class GameManager:
             else PlayerSign.black
         )
         self._check_end_condition()
-        # TODO: what more?
-        # TODO: play AI nif necessary
+        self._play_ai_player_turn_if_necessary()
         self._display()
 
     def _check_end_condition(self):
@@ -117,4 +119,21 @@ class GameManager:
                 print("Game is drawn!")
                 self._game_on = False
 
-        # TODO: implement random strategy
+    def _play_ai_player_turn_if_necessary(self):
+        if not self._game_on:
+            return
+
+        player = (
+            self._white_player
+            if self._player_turn == PlayerSign.white
+            else self._black_player
+        )
+        if player.player_type == PlayerType.human:
+            return
+
+        # TODO
+
+        self._board.play_move(
+            move=move,
+        )
+        self._complete_turn()
