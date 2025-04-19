@@ -11,7 +11,7 @@ class PushMove:
 
     @property
     def description(self) -> str:
-        return f"Push to target tile: {self.target_tile}"
+        return f"push to target tile: {self.target_tile}"
 
 @dataclass
 class MagicCardMove:

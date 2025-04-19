@@ -74,8 +74,9 @@ class GameManager:
             self._complete_turn()
         except InvalidMove as e:
             print(f"** Invalid move: {e.description}")
-            self._display()
             raise
+
+        self._display()
 
     def play_magic_card(
         self,
@@ -105,7 +106,8 @@ class GameManager:
 
     def _display(self):
         self._board.display()
-        print(f"Player turn: {self._player_turn}")
+        if self._game_on:
+            print(f"Player turn: {self._player_turn}")
 
     def _complete_turn(self):
         self._player_turn = (
@@ -115,7 +117,6 @@ class GameManager:
         )
         self._check_end_condition()
         self._play_ai_player_turn_if_necessary()
-        self._display()
 
     def _check_end_condition(self):
         game_status = Helper.get_game_status(
@@ -147,7 +148,7 @@ class GameManager:
         move = player.find_move(
             board=self._board,
         )
-        print(move.description)
+        print(f"Player move: {move.description}")
         self._board.play_move(
             move=move,
         )
