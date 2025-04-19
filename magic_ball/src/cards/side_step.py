@@ -30,7 +30,7 @@ class SideStep(Card):
                     move_indices.append((source_col_i, target_col_i, row_i))
 
         return [
-            CardUtils.indices_to_move(
+            CardUtils.pawn_move(
                 player_sign=player_sign,
                 source_col_i=source_col_i,
                 source_row_i=row_i,

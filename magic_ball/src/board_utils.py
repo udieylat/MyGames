@@ -15,6 +15,17 @@ class BoardUtils:
         )
 
     @classmethod
+    def is_tile_opponent_pawn(
+        cls,
+        player_sign: PlayerSign,
+        tile: str,
+    ) -> bool:
+        return (
+            (player_sign == PlayerSign.white and tile == TileType.black)
+            or (player_sign == PlayerSign.black and tile == TileType.white)
+        )
+
+    @classmethod
     def tile_index(
         cls,
         tile: str,

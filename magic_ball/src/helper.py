@@ -60,7 +60,7 @@ class Helper:
                         available_push_moves.append(
                             cls.generate_push_move(
                                 player_sign=PlayerSign.white,
-                                target_tile=BoardUtils.indices_to_tile(row_i=row_i + 1, col_i=col_i),
+                                target_tile=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i + 1),
                                 board=board,
                             )
                         )
@@ -68,7 +68,7 @@ class Helper:
                         available_push_moves.append(
                             cls.generate_push_move(
                                 player_sign=PlayerSign.black,
-                                target_tile=BoardUtils.indices_to_tile(row_i=row_i - 1, col_i=col_i),
+                                target_tile=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i - 1),
                                 board=board,
                             )
                         )

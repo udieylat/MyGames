@@ -23,7 +23,7 @@ class CardUtils:
         ]
 
     @classmethod
-    def indices_to_move(
+    def pawn_move(
         cls,
         player_sign: PlayerSign,
         source_col_i: int,
@@ -45,7 +45,7 @@ class CardUtils:
         return Move(
             player_sign=player_sign,
             result_board=result_board,
-            result_ball_position=cls._push_ball(
+            result_ball_position=cls.push_ball(
                 player_sign=player_sign,
                 ball_position=board.ball_position,
             ),
@@ -54,7 +54,7 @@ class CardUtils:
         )
 
     @classmethod
-    def _push_ball(
+    def push_ball(
         cls,
         player_sign: PlayerSign,
         ball_position: BallPosition,
