@@ -235,7 +235,7 @@ class GameManager:
         assert 0 <= card_index <= 2, f"invalid card index: {card_index}"
         player = self._get_player()
         return player.cards[card_index].get_available_card_moves(
-            player_sign=self._player_turn,
+            player_sign=player.player_sign,
             board=self._board,
             card_index=card_index,
         )

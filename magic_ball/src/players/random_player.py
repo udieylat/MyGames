@@ -8,10 +8,6 @@ from players.player import Player
 
 class RandomPlayer(Player):
 
-    @property
-    def is_human(self) -> bool:
-        return False
-
     def find_move(
         self,
         board: Board,
