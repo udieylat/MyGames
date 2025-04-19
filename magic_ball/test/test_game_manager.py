@@ -8,7 +8,9 @@ from players.player_config import PlayerConfig, PlayerType
 
 class TestGameManager(unittest.TestCase):
     def test_base_push_game(self):
-        gm = GameManager.new()
+        gm = GameManager.new(
+            cards_pull=[],
+        )
         gm.push("D2")
         gm.push("D4")
         gm.push("D3")
@@ -33,6 +35,7 @@ class TestGameManager(unittest.TestCase):
             black_player_config=PlayerConfig(
                 type=PlayerType.random,
             ),
+            cards_pull=[],
         )
         gm.push("A2")
         gm.push("B2")
@@ -44,6 +47,7 @@ class TestGameManager(unittest.TestCase):
             white_player_config=PlayerConfig(
                 type=PlayerType.random,
             ),
+            cards_pull=[],
         )
         gm.push("A4")
         gm.push("B4")
@@ -57,6 +61,7 @@ class TestGameManager(unittest.TestCase):
             black_player_config=PlayerConfig(
                 type=PlayerType.random,
             ),
+            cards_pull=[],
         )
         self.assertNotEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
 
