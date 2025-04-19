@@ -30,7 +30,7 @@ class Player:
     def is_human(self) -> bool:
         return False
 
-    def get_card_available_moves(
+    def get_available_card_moves(
         self,
         card_index: int,
         board: Board,

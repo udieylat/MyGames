@@ -232,7 +232,7 @@ class GameManager:
         self,
         card_index: int,
     ) -> list[Move]:
-        return self._get_player().get_card_available_moves(
+        return self._get_player().get_available_card_moves(
             card_index=card_index,
             board=self._board,
         )
