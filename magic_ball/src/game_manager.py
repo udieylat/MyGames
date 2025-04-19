@@ -75,6 +75,7 @@ class GameManager:
         except InvalidMove as e:
             print(f"** Invalid move: {e.description}")
             self._display()
+            raise
 
     def play_magic_card(
         self,

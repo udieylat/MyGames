@@ -56,7 +56,7 @@ class Helper:
                     elif player_sign == PlayerSign.black and row_i > 0 and board[row_i - 1][col_i] == TileType.vacant:
                         available_moves.append(
                             PushMove(
-                                player_sign=PlayerSign.white,
+                                player_sign=PlayerSign.black,
                                 target_tile=BoardUtils.indices_to_tile(row_i=row_i - 1, col_i=col_i),
                             )
                         )
