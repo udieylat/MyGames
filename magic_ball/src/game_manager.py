@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from board import InvalidMove, Board
-from cards_randomizer import CardsRandomizer
+from cards.cards_randomizer import CardsRandomizer
 from helper import Helper
 from move import Move
 from players.player import Player
