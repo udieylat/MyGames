@@ -89,6 +89,24 @@ class Helper:
             if player_sign == PlayerSign.white
             else row_i + 1
         )
+        if not 0 <= source_row_i <= 4:
+            raise InvalidMove(
+                description=f"invalid source row index: {source_row_i}",
+            )
+
+        source_board_tile = new_board[source_row_i][col_i]
+        if not BoardUtils.is_tile_player_pawn(
+            player_sign=player_sign,
+            tile=source_board_tile,
+        ):
+            raise InvalidMove(
+                description=(
+                    f"source board tile is not a valid pawn: "
+                    f"{BoardUtils.indices_to_tile(col_i=col_i, row_i=source_row_i)} = {source_board_tile}"
+                ),
+            )
+
+        # Complete push move
         new_board[source_row_i][col_i] = TileType.vacant
         new_board[row_i][col_i] = (
             TileType.white
