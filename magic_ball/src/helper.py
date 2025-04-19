@@ -2,7 +2,7 @@ from board import Board, InvalidMove
 from board_utils import BoardUtils
 from cards.card import Card
 from move import Move
-from models import PlayerSign, TileType, GameStatus
+from models import PlayerSign, TileType, GameStatus, BoardType
 
 
 class Helper:
@@ -92,16 +92,9 @@ class Helper:
         target_tile: str,
         board: Board,
     ) -> Move:
-        new_board = board.copy_board()
-
         col_i, row_i = BoardUtils.tile_index(
             tile=target_tile,
         )
-        target_board_tile = new_board[row_i][col_i]
-        if target_board_tile != TileType.vacant:
-            raise InvalidMove(
-                description=f"target tile {target_tile} not vacant: {target_board_tile}",
-            )
         source_row_i = (
             row_i - 1
             if player_sign == PlayerSign.white
@@ -112,7 +105,42 @@ class Helper:
                 description=f"invalid source row index: {source_row_i}",
             )
 
-        source_board_tile = new_board[source_row_i][col_i]
+        new_board = cls._move_pawn(
+            player_sign=player_sign,
+            source_col_i=col_i,
+            source_row_i=source_row_i,
+            target_col_i=col_i,
+            target_row_i=row_i,
+            board=board,
+        )
+        return Move(
+            player_sign=player_sign,
+            result_board=new_board,
+            result_ball_position=board.ball_position,
+            description=f"push to target tile: {target_tile}",
+        )
+
+    @classmethod
+    def _move_pawn(
+        cls,
+        player_sign: PlayerSign,
+        source_col_i: int,
+        source_row_i: int,
+        target_col_i: int,
+        target_row_i: int,
+        board: Board,
+    ) -> BoardType:
+        new_board = board.copy_board()
+        target_board_tile = new_board[target_row_i][target_col_i]
+        if target_board_tile != TileType.vacant:
+            raise InvalidMove(
+                description=(
+                    f"target tile {BoardUtils.indices_to_tile(col_i=target_col_i, row_i=target_row_i)} "
+                    f"not vacant: {target_board_tile}"
+                ),
+            )
+
+        source_board_tile = new_board[source_row_i][source_col_i]
         if not BoardUtils.is_tile_player_pawn(
             player_sign=player_sign,
             tile=source_board_tile,
@@ -120,24 +148,18 @@ class Helper:
             raise InvalidMove(
                 description=(
                     f"source board tile is not a valid pawn: "
-                    f"{BoardUtils.indices_to_tile(col_i=col_i, row_i=source_row_i)} = {source_board_tile}"
+                    f"{BoardUtils.indices_to_tile(col_i=source_col_i, row_i=source_row_i)} = {source_board_tile}"
                 ),
             )
 
-        # Complete push move
-        new_board[source_row_i][col_i] = TileType.vacant
-        new_board[row_i][col_i] = (
+        # Complete move
+        new_board[source_row_i][source_col_i] = TileType.vacant
+        new_board[target_row_i][target_col_i] = (
             TileType.white
             if player_sign == PlayerSign.white
             else TileType.black
         )
-
-        return Move(
-            player_sign=player_sign,
-            result_board=new_board,
-            result_ball_position=board.ball_position,
-            description=f"push to target tile: {target_tile}",
-        )
+        return new_board
 
     @classmethod
     def _is_player_win(

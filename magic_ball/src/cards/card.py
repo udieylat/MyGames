@@ -9,10 +9,10 @@ class Card:
     def __init__(self):
         self._already_used = False
 
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        pass
+    # @property
+    # @abstractmethod
+    # def name(self) -> str:
+    #     pass
 
     @property
     def is_defensive(self) -> bool:
