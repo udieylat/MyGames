@@ -92,7 +92,7 @@ class GameManager:
         for i, move in enumerate(available_moves):
             print(f" {i}. {move.description}")
 
-    def play_magic_card(
+    def play_card(
         self,
         card_index: int,
         move_index: int,
@@ -170,6 +170,7 @@ class GameManager:
     def _check_end_condition(self):
         game_status = Helper.get_game_status(
             board=self._board,
+            white_cards=[],
         )
         match game_status:
             case GameStatus.white_win:
@@ -193,6 +194,7 @@ class GameManager:
         )
         return player.get_card_available_moves(
             card_index=card_index,
+            board=self._board,
         )
 
     def _play_ai_player_turn_if_necessary(self):

@@ -10,8 +10,8 @@ class Helper:
     def get_game_status(
         cls,
         board: Board,
-        white_magic_cards: list = [],
-        black_magic_cards: list = [],  # TODO: impl once ready with magic cards
+        white_cards: list = [],
+        black_cards: list = [],  # TODO: impl once ready with cards
     ) -> GameStatus:
         if cls._is_player_win(
             player_sign=PlayerSign.white,
@@ -25,8 +25,8 @@ class Helper:
             return GameStatus.black_win
         if cls._is_draw(
             board=board,
-            white_magic_cards=white_magic_cards,
-            black_magic_cards=black_magic_cards,
+            white_cards=white_cards,
+            black_cards=black_cards,
         ):  # TODO: impl also the defensive cards win condition
             return GameStatus.draw
         return GameStatus.ongoing
@@ -37,7 +37,7 @@ class Helper:
         player_sign: PlayerSign,
         board: Board,
         # ball_position,
-        # magic_cards: list,
+        # cards: list[Card],
     ) -> list[Move]:
         available_moves = []
         for row_i in range(5):
@@ -63,7 +63,7 @@ class Helper:
                             )
                         )
 
-        # TODO: magic cards, ball position, etc
+        # TODO: cards, ball position, etc
 
         return available_moves
 
@@ -141,8 +141,8 @@ class Helper:
     def _is_draw(
         cls,
         board: Board,
-        white_magic_cards: list,
-        black_magic_cards: list,
+        white_cards: list,
+        black_cards: list,
     ) -> bool:
         white_available_push_moves = Helper.get_available_moves(
             player_sign=PlayerSign.white,
