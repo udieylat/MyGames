@@ -23,7 +23,7 @@ class CardsRandomizer:
             else cards_pull[:]
         )
         random.shuffle(all_cards)
-        return all_cards[:2], all_cards[2: 5]
+        return all_cards[:3], all_cards[3: 6]
 
     @classmethod
     def _full_compendium(cls) -> list[Card]:
