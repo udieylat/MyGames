@@ -40,7 +40,6 @@ class Card:
         player_sign: PlayerSign,
         ball_position: BallPosition,
     ) -> bool:
-        # TODO: for "pull" card, override this function
         match player_sign, ball_position:
             case (PlayerSign.white, BallPosition.black) | (PlayerSign.black, BallPosition.white):
                 return False

@@ -3,7 +3,7 @@ from board_utils import BoardUtils
 from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
-from models import PlayerSign, TileType
+from models import PlayerSign
 from move import Move
 
 
