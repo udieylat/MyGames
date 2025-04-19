@@ -24,11 +24,21 @@ class Helper:
             board=board,
         ):
             return GameStatus.black_win
-        if cls._is_draw(
+        if cls._no_available_moves(
             board=board,
             white_cards=white_cards,
             black_cards=black_cards,
         ):
+            if all(
+                card.is_defensive
+                for card in white_cards
+            ):
+                return GameStatus.white_win
+            elif all(
+                card.is_defensive
+                for card in black_cards
+            ):
+                return GameStatus.black_win
             return GameStatus.draw
         return GameStatus.ongoing
 
@@ -145,13 +155,12 @@ class Helper:
         )
 
     @classmethod
-    def _is_draw(
+    def _no_available_moves(
         cls,
         board: Board,
         white_cards: list,
         black_cards: list,
     ) -> bool:
-        # TODO: impl also the defensive cards win condition
         white_available_push_moves = Helper.get_available_moves(
             player_sign=PlayerSign.white,
             board=board,

@@ -39,6 +39,8 @@ class Board:
         self,
         move: Move,
     ):
+        # TODO: consider adding the cards to the board, as they're part of the full state
+        # TODO: then they could be set as "used" in this function
         self._board = move.result_board
         self._ball_position = move.result_ball_position
 

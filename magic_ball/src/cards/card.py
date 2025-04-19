@@ -10,6 +10,11 @@ class Card:
         self._already_used = False
 
     @property
+    @abstractmethod
+    def name(self) -> str:
+        pass
+
+    @property
     def is_defensive(self) -> bool:
         return False
 

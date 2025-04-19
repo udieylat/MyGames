@@ -9,3 +9,4 @@ class Move:
     result_board: BoardType
     result_ball_position: BallPosition
     description: str
+    used_card_index: int | None = None
