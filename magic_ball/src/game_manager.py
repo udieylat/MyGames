@@ -79,6 +79,17 @@ class GameManager:
 
         self._display()
 
+    def show_card_available_moves(
+        self,
+        card_index: int,
+    ):
+        available_moves = self._get_card_available_moves(
+            card_index=card_index,
+        )
+        print("Available moves:")
+        for i, move in enumerate(available_moves):
+            print(f" {i}. {move.description}")
+
     def play_magic_card(
         self,
         card_index: int,
@@ -88,12 +99,7 @@ class GameManager:
             print("Game is already over.")
             return
 
-        player = (
-            self._white_player
-            if self._player_turn == PlayerSign.white
-            else self._black_player
-        )
-        available_moves = player.get_card_available_moves(
+        available_moves = self._get_card_available_moves(
             card_index=card_index,
         )
         if not 0 <= move_index < len(available_moves):
@@ -164,6 +170,20 @@ class GameManager:
             case GameStatus.draw:
                 print("Game is drawn!")
                 self._game_on = False
+
+    def _get_card_available_moves(
+        self,
+        card_index: int,
+    ) -> list[Move]:
+        # TODO: verify that index is not used (maybe in card)
+        player = (
+            self._white_player
+            if self._player_turn == PlayerSign.white
+            else self._black_player
+        )
+        return player.get_card_available_moves(
+            card_index=card_index,
+        )
 
     def _play_ai_player_turn_if_necessary(self):
         if not self._game_on:
