@@ -33,12 +33,12 @@ class Helper:
                 card.is_defensive
                 for card in white_cards
             ):
-                return GameStatus.white_win
+                return GameStatus.white_defensive_win
             elif all(
                 card.is_defensive
                 for card in black_cards
             ):
-                return GameStatus.black_win
+                return GameStatus.black_defensive_win
             return GameStatus.draw
         return GameStatus.ongoing
 

@@ -220,6 +220,14 @@ class GameManager:
             case GameStatus.draw:
                 self._print("Game is drawn!")
                 self._game_on = False
+            case GameStatus.white_defensive_win:
+                self._print("White wins! (defensive)")
+                self._game_on = False
+            case GameStatus.black_defensive_win:
+                self._print("Black wins! (defensive)")
+                self._game_on = False
+
+        # TODO: print both hands
 
     def _get_player(self) -> Player:
         return (
@@ -249,6 +257,7 @@ class GameManager:
             self._display()
             return
 
+        # TODO: what if AI player doesn't have moves left but it's not a draw?
         move = player.find_move(
             board=self._board,
         )
