@@ -6,6 +6,8 @@ from players.human_player import HumanPlayer
 from players.player import Player
 from models import PlayerSign, GameStatus
 from move import PushMove
+from players.player_config import PlayerConfig, PlayerType
+from players.player_factory import PlayerFactory
 
 
 class GameManager:
@@ -13,20 +15,26 @@ class GameManager:
     @classmethod
     def new(
         cls,
-        white_player: Player | None = None,
-        black_player: Player | None = None,
+        white_player_config: PlayerConfig | None = None,
+        black_player_config: PlayerConfig | None = None,
     ) -> GameManager:
-        if white_player is None:
-            white_player = HumanPlayer(
-                player_sign=PlayerSign.white,
+        if white_player_config is None:
+            white_player_config = PlayerConfig(
+                type=PlayerType.human,
             )
-        if black_player is None:
-            black_player = HumanPlayer(
-                player_sign=PlayerSign.black,
+        if black_player_config is None:
+            black_player_config = PlayerConfig(
+                type=PlayerType.human,
             )
         return GameManager(
-            white_player=white_player,
-            black_player=black_player,
+            white_player=PlayerFactory.generate_player(
+                player_config=white_player_config,
+                player_sign=PlayerSign.white,
+            ),
+            black_player=PlayerFactory.generate_player(
+                player_config=black_player_config,
+                player_sign=PlayerSign.black,
+            ),
         )
 
     def __init__(
