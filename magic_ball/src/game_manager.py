@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from board import InvalidMove, Board
 from helper import Helper
+from move import Move
 from players.player import Player
 from models import PlayerSign, GameStatus
 from players.player_config import PlayerConfig, PlayerType
@@ -64,7 +65,7 @@ class GameManager:
             print("Game is already over.")
             return
         try:
-            self._board.play_move(
+            self._play_move(
                 move=Helper.generate_push_move(
                     player_sign=self._player_turn,
                     target_tile=target_tile,
@@ -80,14 +81,36 @@ class GameManager:
 
     def play_magic_card(
         self,
-        # TODO arg
+        card_index: int,
+        move_index: int,
     ):
         if not self._game_on:
             print("Game is already over.")
             return
 
-        # TODO
-        pass
+        player = (
+            self._white_player
+            if self._player_turn == PlayerSign.white
+            else self._black_player
+        )
+        available_moves = player.get_card_available_moves(
+            card_index=card_index,
+        )
+        if not 0 <= move_index < len(available_moves):
+            raise InvalidMove(
+                description=(
+                    f"card index {card_index} has {len(available_moves)} valid moves, invalid index: {move_index}"
+                ),
+            )
+
+        try:
+            self._play_move(
+                move=available_moves[move_index],
+            )
+            self._complete_turn()
+        except InvalidMove as e:
+            print(f"** Invalid move: {e.description}")
+            raise
 
     def pass_turn(self):
         if not self._game_on:
@@ -103,6 +126,15 @@ class GameManager:
         else:
             print("Pass turn, no available moves for player.")
             self._complete_turn()
+
+    def _play_move(
+        self,
+        move: Move,
+    ):
+        print(f"{move.player_sign} play: {move.description}")
+        self._board.play_move(
+            move=move,
+        )
 
     def _display(self):
         self._board.display()
@@ -148,8 +180,7 @@ class GameManager:
         move = player.find_move(
             board=self._board,
         )
-        print(f"Player move: {move.description}")
-        self._board.play_move(
+        self._play_move(
             move=move,
         )
         self._complete_turn()

@@ -12,9 +12,9 @@ class Player:
         player_sign: PlayerSign,
     ):
         self._player_sign = player_sign
-    #     self._cards: set[CardType] = set()
+    #     self._cards: list[CardType] = []
     #
-    # def draw_cards(self, cards: set[CardType]):
+    # def draw_cards(self, cards: list[CardType]):
     #     self._cards = cards
 
     @property

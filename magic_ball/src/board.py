@@ -39,7 +39,6 @@ class Board:
         self,
         move: Move,
     ):
-        print(f"{move.player_sign} play: {move.description}")
         self._board = move.result_board
         self._ball_position = move.result_ball_position
 
