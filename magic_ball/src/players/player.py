@@ -39,6 +39,7 @@ class Player:
         return self._cards[card_index].get_available_moves(
             player_sign=self._player_sign,
             board=board,
+            card_index=card_index,
         )
 
     @abstractmethod

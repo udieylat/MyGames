@@ -27,12 +27,14 @@ class Card:
         self,
         player_sign: PlayerSign,
         board: Board,
+        card_index: int,
     ) -> list[Move]:
         if self._already_used:
             return []
         return self._get_available_moves(
             player_sign=player_sign,
             board=board,
+            card_index=card_index,
         )
 
     @abstractmethod
@@ -40,5 +42,6 @@ class Card:
         self,
         player_sign: PlayerSign,
         board: Board,
+        card_index: int,
     ) -> list[Move]:
         pass

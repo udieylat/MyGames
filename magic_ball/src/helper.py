@@ -75,10 +75,11 @@ class Helper:
 
         available_card_moves = [
             move
-            for card in cards
+            for card_index, card in enumerate(cards)
             for move in card.get_available_moves(
                 player_sign=player_sign,
                 board=board,
+                card_index=card_index,
             )
         ]
 
