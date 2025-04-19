@@ -106,7 +106,7 @@ class Helper:
             source_row_i=source_row_i,
             target_col_i=col_i,
             target_row_i=row_i,
-            board=board,
+            board=board.copy_board(),
         )
         return Move(
             player_sign=player_sign,
@@ -123,15 +123,17 @@ class Helper:
         source_row_i: int,
         target_col_i: int,
         target_row_i: int,
-        board: Board,
+        board: BoardType,
     ) -> BoardType:
+        """
+        Notice: change input board argument in-place.
+        """
         assert 0 <= source_col_i <= 4
         assert 0 <= source_row_i <= 4
         assert 0 <= target_col_i <= 4
         assert 0 <= target_row_i <= 4
 
-        new_board = board.copy_board()
-        target_board_tile = new_board[target_row_i][target_col_i]
+        target_board_tile = board[target_row_i][target_col_i]
         if target_board_tile != TileType.vacant:
             raise InvalidMove(
                 description=(
@@ -140,7 +142,7 @@ class Helper:
                 ),
             )
 
-        source_board_tile = new_board[source_row_i][source_col_i]
+        source_board_tile = board[source_row_i][source_col_i]
         if not BoardUtils.is_tile_player_pawn(
             player_sign=player_sign,
             tile=source_board_tile,
@@ -153,13 +155,13 @@ class Helper:
             )
 
         # Complete move
-        new_board[source_row_i][source_col_i] = TileType.vacant
-        new_board[target_row_i][target_col_i] = (
+        board[source_row_i][source_col_i] = TileType.vacant
+        board[target_row_i][target_col_i] = (
             TileType.white
             if player_sign == PlayerSign.white
             else TileType.black
         )
-        return new_board
+        return board
 
     @classmethod
     def _is_player_win(
