@@ -64,7 +64,7 @@ class GameManager:
         target_tile: str,
     ):
         if not self._game_on:
-            print("Game is already over.")
+            self._print("Game is already over.")
             return
         try:
             self._play_move(
@@ -76,7 +76,7 @@ class GameManager:
             )
             self._complete_turn()
         except InvalidMove as e:
-            print(f"** Invalid move: {e.description}")
+            self._print(f"** Invalid move: {e.description}")
             raise
 
         self._display()
@@ -88,9 +88,9 @@ class GameManager:
         available_moves = self._get_card_available_moves(
             card_index=card_index,
         )
-        print("Available moves:")
+        self._print("Available moves:")
         for i, move in enumerate(available_moves):
-            print(f" {i}. {move.description}")
+            self._print(f" {i}. {move.description}")
 
     def play_card(
         self,
@@ -98,7 +98,7 @@ class GameManager:
         move_index: int,
     ):
         if not self._game_on:
-            print("Game is already over.")
+            self._print("Game is already over.")
             return
 
         available_moves = self._get_card_available_moves(
@@ -117,12 +117,12 @@ class GameManager:
             )
             self._complete_turn()
         except InvalidMove as e:
-            print(f"** Invalid move: {e.description}")
+            self._print(f"** Invalid move: {e.description}")
             raise
 
     def pass_turn(self):
         if not self._game_on:
-            print("Game is already over.")
+            self._print("Game is already over.")
             return
 
         available_moves = Helper.get_available_moves(
@@ -135,10 +135,18 @@ class GameManager:
             ),
         )
         if available_moves:
-            print("Cannot pass turn, there are available moves.")
+            self._print("Cannot pass turn, there are available moves.")
         else:
-            print("Pass turn, no available moves for player.")
+            self._print("Pass turn, no available moves for player.")
             self._complete_turn()
+
+    @property
+    def _verbose(self) -> bool:
+        return self._white_player.is_human or self._black_player.is_human
+
+    def _print(self, message: str):
+        if self._verbose:
+            print(message)
 
     def _draw_cards(self):
         white_cards, black_cards = CardsRandomizer.draw_cards()
@@ -153,15 +161,17 @@ class GameManager:
         self,
         move: Move,
     ):
-        print(f"{move.player_sign} play: {move.description}")
+        self._print(f"{move.player_sign} play: {move.description}")
         self._board.play_move(
             move=move,
         )
 
     def _display(self):
+        if not self._verbose:
+            return
         self._board.display()
         if self._game_on:
-            print(f"Player turn: {self._player_turn}")
+            self._print(f"Player turn: {self._player_turn}")
 
     def _complete_turn(self):
         self._player_turn = (
@@ -180,13 +190,13 @@ class GameManager:
         )
         match game_status:
             case GameStatus.white_win:
-                print("White wins!")
+                self._print("White wins!")
                 self._game_on = False
             case GameStatus.black_win:
-                print("Black wins!")
+                self._print("Black wins!")
                 self._game_on = False
             case GameStatus.draw:
-                print("Game is drawn!")
+                self._print("Game is drawn!")
                 self._game_on = False
 
     def _get_card_available_moves(
