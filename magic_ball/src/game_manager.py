@@ -85,8 +85,6 @@ class GameManager:
             self._print(f"** Invalid move: {e.description}")
             raise
 
-        self._display()
-
     def show_card_available_moves(
         self,
         card_index: int,
