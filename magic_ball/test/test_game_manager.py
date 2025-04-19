@@ -30,7 +30,7 @@ class TestGameManager(unittest.TestCase):
         gm.push("C3")
         self.assertEqual(self._get_game_status(gm=gm), GameStatus.white_defensive_win)  # Defensive win since no cards
 
-    def test_base_push_game_vs_ai_in_black(self):
+    def test_base_push_game_vs_random_ai_in_black(self):
         gm = GameManager.new(
             black_player_config=PlayerConfig(
                 type=PlayerType.random,
@@ -42,7 +42,7 @@ class TestGameManager(unittest.TestCase):
         gm.push("C2")
         self.assertEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
 
-    def test_base_push_game_vs_ai_in_white(self):
+    def test_base_push_game_vs_random_ai_in_white(self):
         gm = GameManager.new(
             white_player_config=PlayerConfig(
                 type=PlayerType.random,
@@ -53,7 +53,7 @@ class TestGameManager(unittest.TestCase):
         gm.push("B4")
         self.assertEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
 
-    def test_ai_base_push_game(self):
+    def test_random_ai_base_push_game(self):
         gm = GameManager.new(
             white_player_config=PlayerConfig(
                 type=PlayerType.random,

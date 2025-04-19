@@ -20,4 +20,8 @@ class PlayerFactory:
                 return RandomPlayer(
                     player_sign=player_sign,
                 )
+            case PlayerType.base_heuristic:
+                return BaseHeuristicPlayer(
+                    player_sign=player_sign,
+                )
         assert f"Invalid player type: {player_config.type}"
