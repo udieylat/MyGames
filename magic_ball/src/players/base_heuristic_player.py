@@ -9,6 +9,9 @@ from scores.scorer import Scorer
 
 
 class BaseHeuristicPlayer(Player):
+    """
+    Basically a next-move scorer player.
+    """
     def __init__(
         self,
         player_sign: PlayerSign,
@@ -33,21 +36,6 @@ class BaseHeuristicPlayer(Player):
         )
         assert available_moves, "No move to play"
 
-        # Choose the first winning move if exists.
-        # winning_move = next(
-        #     (
-        #         move
-        #         for move in available_moves
-        #         if BoardUtils.is_player_win(
-        #             player_sign=self._player_sign,
-        #             board=move.result_board,
-        #         )
-        #     ),
-        #     None,
-        # )
-        # if winning_move is not None:
-        #     return winning_move
-
         scores_and_moves = [
             (
                 self._scorer.score_move(
@@ -60,5 +48,4 @@ class BaseHeuristicPlayer(Player):
             )
             for move in available_moves
         ]
-
         return min(scores_and_moves)[1]
