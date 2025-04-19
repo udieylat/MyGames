@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from board import InvalidMove, Board
 from helper import Helper
-from players.human_player import HumanPlayer
 from players.player import Player
 from models import PlayerSign, GameStatus
 from move import PushMove
