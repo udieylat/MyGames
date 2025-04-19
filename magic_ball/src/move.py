@@ -1,23 +1,21 @@
 from dataclasses import dataclass
 from typing import Union
 
-from magic_ball.src.models import MoveType, PlayerSign
+from magic_ball import MoveType, PlayerSign
 
 
 @dataclass
-class Move:
-    type: MoveType
+class PushMove:
     player_sign: PlayerSign
-
-
-class PushMove(Move):
-    type: MoveType = MoveType.push
     target_tile: str
+    type: MoveType = MoveType.push
 
 
-class MagicCardMove(Move):
-    type: MoveType = MoveType.magic_card
+@dataclass
+class MagicCardMove:
+    player_sign: PlayerSign
     # TODO
+    type: MoveType = MoveType.magic_card
 
 
 PossibleMoveType = Union[PushMove, MagicCardMove]

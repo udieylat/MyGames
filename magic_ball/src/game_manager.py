@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from magic_ball.src.board import Board, InvalidMove
-from magic_ball.src.models import PlayerSign, PlayerType, MoveType, GameStatus
-from magic_ball.src.move import PushMove
-from magic_ball.src.player import Player
+from magic_ball import Board, InvalidMove
+from magic_ball import PlayerSign, PlayerType, MoveType, GameStatus
+from magic_ball import PushMove
+from magic_ball import Player
 
 
 class GameManager:
@@ -51,9 +51,8 @@ class GameManager:
         try:
             self._board.play_move(
                 move=PushMove(
-                    type=MoveType.push,
                     player_sign=self._player_turn,
-                    # target_tile=target_tile,
+                    target_tile=target_tile,
                 ),
             )
             self._complete_turn()

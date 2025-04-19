@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from magic_ball.src.board import Board
-from magic_ball.src.models import PlayerType, PlayerSign
-from magic_ball.src.move import Move
+from magic_ball import Board
+from magic_ball import PlayerType, PlayerSign
+from magic_ball import Move
 
 
 @dataclass
