@@ -158,8 +158,8 @@ class Helper:
     def _no_available_moves(
         cls,
         board: Board,
-        white_cards: list,
-        black_cards: list,
+        white_cards: list[Card],
+        black_cards: list[Card],
     ) -> bool:
         white_available_push_moves = Helper.get_available_moves(
             player_sign=PlayerSign.white,
