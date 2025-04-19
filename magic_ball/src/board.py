@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import StrEnum
 
 from magic_ball.src.models import PlayerSign, BallPosition
 
@@ -6,6 +7,13 @@ from magic_ball.src.models import PlayerSign, BallPosition
 @dataclass
 class InvalidMove(Exception):
     description: str
+
+
+class TileType(StrEnum):
+    white = "W"
+    black = "B"
+    vacant = "."
+    wall = "#"
 
 
 class Board:
@@ -37,9 +45,9 @@ class Board:
             tile=target_tile,
         )
         target_board_tile = self._board[row_i][col_i]
-        if target_board_tile != '.':
+        if target_board_tile != TileType.vacant:
             raise InvalidMove(
-                description=f"target tile not vacant: {target_board_tile}",
+                description=f"target tile {target_tile} not vacant: {target_board_tile}",
             )
 
         source_row_i = (
@@ -53,19 +61,19 @@ class Board:
             )
 
         source_board_tile = self._board[source_row_i][col_i]
-        if (
-            (player == PlayerSign.white and source_board_tile != 'W')
-            or (player == PlayerSign.black and source_board_tile != 'B')
+        if not self._is_tile_player_pawn(
+            player_sign=player,
+            tile=source_board_tile,
         ):
             raise InvalidMove(
                 description=(
                     f"source board tile is not a valid pawn: "
-                    f"({source_row_i}, {col_i}) = {source_board_tile}"
+                    f"{self._indices_to_tile(col_i=col_i, row_i=source_row_i)} = {source_board_tile}"
                 ),
             )
 
         # Complete push move.
-        self._board[source_row_i][col_i] = '.'
+        self._board[source_row_i][col_i] = TileType.vacant
         self._board[row_i][col_i] = (
             'W'
             if player == PlayerSign.white
@@ -73,10 +81,10 @@ class Board:
         )
 
     @classmethod
-    def _init_board(cls) -> list[list[str]]:
-        board = [['.' for _ in range(5)] for _ in range(5)]
-        board[0] = ['W', 'W', 'W', 'W', 'W']  # White pawns
-        board[4] = ['B', 'B', 'B', 'B', 'B']  # Black pawns
+    def _init_board(cls) -> list[list[TileType]]:
+        board = [[TileType.vacant for _ in range(5)] for _ in range(5)]
+        board[0] = [TileType.white for _ in range(5)]  # White pawns
+        board[4] = [TileType.black for _ in range(5)]  # Black pawns
         return board
 
     @classmethod
@@ -101,4 +109,23 @@ class Board:
         return (
             "ABCDE".index(tile[0]),
             "12345".index(tile[1]),
+        )
+
+    @classmethod
+    def _indices_to_tile(
+        cls,
+        col_i: int,
+        row_i: int,
+    ) -> str:
+        return "ABCDE"[col_i] + "12345"[row_i]
+
+    @classmethod
+    def _is_tile_player_pawn(
+        cls,
+        player_sign: PlayerSign,
+        tile: TileType,
+    ) -> bool:
+        return (
+            (player_sign == PlayerSign.white and tile == TileType.white)
+            or (player_sign == PlayerSign.black and tile == TileType.black)
         )

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from magic_ball.src.board import Board, InvalidMove
-from magic_ball.src.models import PlayerSign, PlayerType, BallPosition
+from magic_ball.src.models import PlayerSign, PlayerType
 from magic_ball.src.player import Player
 
 
