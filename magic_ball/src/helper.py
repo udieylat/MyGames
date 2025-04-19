@@ -155,12 +155,32 @@ class Helper:
             )
 
         # Complete move
-        board[source_row_i][source_col_i] = TileType.vacant
+        board = cls.eliminate_pawn(
+            col_i=source_col_i,
+            row_i=source_row_i,
+            board=board,
+        )
         board[target_row_i][target_col_i] = (
             TileType.white
             if player_sign == PlayerSign.white
             else TileType.black
         )
+        return board
+
+    @classmethod
+    def eliminate_pawn(
+        cls,
+        col_i: int,
+        row_i: int,
+        board: BoardType,
+    ) -> BoardType:
+        """
+        Notice: change input board argument in-place.
+        """
+        assert 0 <= col_i <= 4
+        assert 0 <= row_i <= 4
+        assert board[row_i][col_i] != TileType.vacant
+        board[row_i][col_i] = TileType.vacant
         return board
 
     @classmethod
