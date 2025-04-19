@@ -2,8 +2,9 @@ from __future__ import annotations
 
 from board import InvalidMove, Board
 from helper import Helper
+from players.human_player import HumanPlayer
 from players.player import Player
-from models import PlayerSign, PlayerType, GameStatus
+from models import PlayerSign, GameStatus
 from move import PushMove
 
 
@@ -12,18 +13,20 @@ class GameManager:
     @classmethod
     def new(
         cls,
-        white_type: PlayerType = PlayerType.human,
-        black_type: PlayerType = PlayerType.human,
+        white_player: Player | None = None,
+        black_player: Player | None = None,
     ) -> GameManager:
-        return GameManager(
-            white_player=Player(
+        if white_player is None:
+            white_player = HumanPlayer(
                 player_sign=PlayerSign.white,
-                player_type=white_type,
-            ),
-            black_player=Player(
+            )
+        if black_player is None:
+            black_player = HumanPlayer(
                 player_sign=PlayerSign.black,
-                player_type=black_type,
-            ),
+            )
+        return GameManager(
+            white_player=white_player,
+            black_player=black_player,
         )
 
     def __init__(
@@ -31,6 +34,8 @@ class GameManager:
         white_player: Player,
         black_player: Player,
     ):
+        assert white_player.player_sign == PlayerSign.white
+        assert black_player.player_sign == PlayerSign.black
         self._white_player = white_player
         self._black_player = black_player
         self._board = Board()

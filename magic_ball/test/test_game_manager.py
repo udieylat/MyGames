@@ -2,7 +2,7 @@ import unittest
 
 from game_manager import GameManager
 from helper import Helper
-from models import GameStatus, PlayerType
+from models import GameStatus, PlayerSign
 
 
 class TestGameManager(unittest.TestCase):
@@ -29,7 +29,9 @@ class TestGameManager(unittest.TestCase):
 
     def test_base_push_game_vs_ai_in_black(self):
         gm = GameManager.new(
-            black_type=PlayerType.ai,
+            black_player=RandomPlayer(
+                player_sign=PlayerSign.black,
+            ),
         )
         gm.push("A2")
         gm.push("B2")
@@ -38,7 +40,9 @@ class TestGameManager(unittest.TestCase):
 
     def test_base_push_game_vs_ai_in_white(self):
         gm = GameManager.new(
-            black_type=PlayerType.ai,
+            white_player=RandomPlayer(
+                player_sign=PlayerSign.white,
+            ),
         )
         gm.push("A4")
         gm.push("B4")

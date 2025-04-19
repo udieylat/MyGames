@@ -15,6 +15,10 @@ class Player:
         self._player_sign = player_sign
 
     @property
+    def player_sign(self) -> PlayerSign:
+        return self._player_sign
+
+    @property
     def is_human(self) -> bool:
         return False
 
