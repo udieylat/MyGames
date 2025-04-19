@@ -28,16 +28,21 @@ class Charge(Card):
             if player_sign == PlayerSign.white
             else -1
         )
-        move_indices = []
+        move_indices: list[tuple[int, int, int]] = [
+            ()
+            for col_i, row_i in pawn_indices
+        ]
 
         return [
             cls._indices_to_move(
                 player_sign=player_sign,
                 col_i=col_i,
-                row_i=row_i,
+                source_row_i=source_row_i,
+                target_row_i=target_row_i,
                 board=board,
+                card_index=card_index,
             )
-            for col_i, row_i in move_indices
+            for col_i, source_row_i, target_row_i in move_indices
         ]
 
     @classmethod
@@ -45,18 +50,26 @@ class Charge(Card):
         cls,
         player_sign: PlayerSign,
         col_i: int,
-        row_i: int,
+        source_row_i: int,
+        target_row_i: int,
         board: Board,
+        card_index: int,
     ) -> Move:
         result_board = Helper.move_pawn(
-
+            player_sign=player_sign,
+            source_col_i=col_i,
+            source_row_i=source_row_i,
+            target_col_i=col_i,
+            target_row_i=target_row_i,
+            board=board.copy_board(),
         )
         return Move(
             player_sign=player_sign,
-            result_board=new_board,
+            result_board=result_board,
             result_ball_position=cls._push_ball(
                 player_sign=player_sign,
                 ball_position=board.ball_position,
             ),
-            description=f"charge to target tile: {BoardUtils.indices_to_tile(row_i=row_i, col_i=col_i)}",
+            description=f"charge to target tile: {BoardUtils.indices_to_tile(row_i=target_row_i, col_i=col_i)}",
+            used_card_index=card_index,
         )
