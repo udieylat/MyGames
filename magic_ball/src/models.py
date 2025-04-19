@@ -1,6 +1,9 @@
 from enum import StrEnum, IntEnum
 
 
+BoardType = list[list[str]]
+
+
 class GameStatus(IntEnum):
     ongoing = 1
     white_win = 2

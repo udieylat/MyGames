@@ -1,7 +1,7 @@
 import copy
 from dataclasses import dataclass
 
-from models import BallPosition, TileType
+from models import BoardType, BallPosition, TileType
 from move import Move
 
 
@@ -13,13 +13,13 @@ class InvalidMove(Exception):
 
 class Board:
     def __init__(self):
-        self._board: list[list[str]] = self._init_board()
+        self._board: BoardType = self._init_board()
         self._ball_position: BallPosition = BallPosition.middle
 
     def __getitem__(self, item: int) -> list[str]:
         return self._board[item]
 
-    def copy_board(self) -> list[list[str]]:
+    def copy_board(self) -> BoardType:
         return copy.deepcopy(self._board)
 
     @property
@@ -44,7 +44,7 @@ class Board:
         self._ball_position = move.result_ball_position
 
     @classmethod
-    def _init_board(cls) -> list[list[str]]:
+    def _init_board(cls) -> BoardType:
         board = [[TileType.vacant for _ in range(5)] for _ in range(5)]
         board[0] = [TileType.white for _ in range(5)]  # White pawns
         board[4] = [TileType.black for _ in range(5)]  # Black pawns
