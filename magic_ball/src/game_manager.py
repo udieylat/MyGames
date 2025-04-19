@@ -162,6 +162,9 @@ class GameManager:
         move: Move,
     ):
         self._print(f"{move.player_sign} play: {move.description}")
+        if move.used_card_index is not None:
+            player = self._get_player()
+            player.cards[move.used_card_index].use_card()
         self._board.play_move(
             move=move,
         )
@@ -199,16 +202,18 @@ class GameManager:
                 self._print("Game is drawn!")
                 self._game_on = False
 
-    def _get_card_available_moves(
-        self,
-        card_index: int,
-    ) -> list[Move]:
-        player = (
+    def _get_player(self) -> Player:
+        return (
             self._white_player
             if self._player_turn == PlayerSign.white
             else self._black_player
         )
-        return player.get_card_available_moves(
+
+    def _get_card_available_moves(
+        self,
+        card_index: int,
+    ) -> list[Move]:
+        return self._get_player().get_card_available_moves(
             card_index=card_index,
             board=self._board,
         )
@@ -217,11 +222,7 @@ class GameManager:
         if not self._game_on:
             return
 
-        player = (
-            self._white_player
-            if self._player_turn == PlayerSign.white
-            else self._black_player
-        )
+        player = self._get_player()
         if player.is_human:
             return
 
