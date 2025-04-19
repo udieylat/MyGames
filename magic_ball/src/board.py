@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from helper import Helper
+from board_utils import BoardUtils
 from models import BallPosition, GameStatus, PlayerSign, MoveType, TileType
 from move import PossibleMoveType
 
@@ -72,7 +73,7 @@ class Board:
         self._validate_tile(
             tile=target_tile,
         )
-        col_i, row_i = Helper.tile_index(
+        col_i, row_i = BoardUtils.tile_index(
             tile=target_tile,
         )
         target_board_tile = self._board[row_i][col_i]
@@ -92,14 +93,14 @@ class Board:
             )
 
         source_board_tile = self._board[source_row_i][col_i]
-        if not Helper.is_tile_player_pawn(
+        if not BoardUtils.is_tile_player_pawn(
             player_sign=player,
             tile=source_board_tile,
         ):
             raise InvalidMove(
                 description=(
                     f"source board tile is not a valid pawn: "
-                    f"{Helper.indices_to_tile(col_i=col_i, row_i=source_row_i)} = {source_board_tile}"
+                    f"{BoardUtils.indices_to_tile(col_i=col_i, row_i=source_row_i)} = {source_board_tile}"
                 ),
             )
 
