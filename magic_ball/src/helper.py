@@ -175,13 +175,15 @@ class Helper:
         col_i: int,
         row_i: int,
         board: BoardType,
+        safe: bool = False,
     ) -> BoardType:
         """
         Notice: change input board argument in-place.
         """
         assert 0 <= col_i <= 4
         assert 0 <= row_i <= 4
-        assert board[row_i][col_i] != tile_type
+        if not safe:
+            assert board[row_i][col_i] != tile_type
         board[row_i][col_i] = tile_type
         return board
 
@@ -210,12 +212,14 @@ class Helper:
         col_i: int,
         row_i: int,
         board: BoardType,
+        safe: bool = False,
     ) -> BoardType:
         return cls.set_tile(
             tile_type=TileType.vacant,
             col_i=col_i,
             row_i=row_i,
             board=board,
+            safe=safe,
         )
 
     @classmethod
