@@ -7,11 +7,7 @@ from models import PlayerSign, TileType
 from move import Move
 
 
-class Wall(Card):
-
-    @property
-    def is_defensive(self) -> bool:
-        return True
+class Spawn(Card):
 
     @classmethod
     def _get_available_moves(
@@ -20,24 +16,22 @@ class Wall(Card):
         board: Board,
         card_index: int,
     ) -> list[Move]:
-        pawn_indices = CardUtils.get_pawn_indices(
-            player_sign=player_sign,
-            board=board,
+        allowed_rows = (
+            [0, 1, 2]
+            if player_sign == PlayerSign.white
+            else [2, 3, 4]
         )
-        neighbor_vacant_indices = [
+        vacant_indices = [
             (col_i, row_i)
-            for pawn_col_i, pawn_row_i in pawn_indices
-            for col_i, row_i in BoardUtils.get_neighbor_tiles_indices(
-                col_i=pawn_col_i,
-                row_i=pawn_row_i,
-            )
+            for col_i in range(5)
+            for row_i in allowed_rows
             if board[row_i][col_i] == TileType.vacant
         ]
         return [
             Move(
                 player_sign=player_sign,
-                result_board=Helper.set_tile(
-                    tile_type=TileType.wall,
+                result_board=Helper.set_pawn_tile(
+                    player_sign=player_sign,
                     col_i=col_i,
                     row_i=row_i,
                     board=board.copy_board(),
@@ -46,8 +40,8 @@ class Wall(Card):
                     player_sign=player_sign,
                     ball_position=board.ball_position,
                 ),
-                description=f"put a wall tile at: {BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i)}",
+                description=f"spawn a pawn tile at: {BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i)}",
                 used_card_index=card_index,
             )
-            for col_i, row_i in neighbor_vacant_indices
+            for col_i, row_i in vacant_indices
         ]

@@ -32,7 +32,6 @@ class Knife(Card):
                 tile=board[row_i][col_i],
             )
         ]
-
         return [
             Move(
                 player_sign=player_sign,

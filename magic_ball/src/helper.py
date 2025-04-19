@@ -160,16 +160,18 @@ class Helper:
             row_i=source_row_i,
             board=board,
         )
-        board[target_row_i][target_col_i] = (
-            TileType.white
-            if player_sign == PlayerSign.white
-            else TileType.black
+        board = cls.set_pawn_tile(
+            player_sign=player_sign,
+            col_i=target_col_i,
+            row_i=target_row_i,
+            board=board,
         )
         return board
 
     @classmethod
-    def eliminate_pawn(
+    def set_tile(
         cls,
+        tile_type: TileType,
         col_i: int,
         row_i: int,
         board: BoardType,
@@ -179,9 +181,42 @@ class Helper:
         """
         assert 0 <= col_i <= 4
         assert 0 <= row_i <= 4
-        assert board[row_i][col_i] != TileType.vacant
-        board[row_i][col_i] = TileType.vacant
+        assert board[row_i][col_i] != tile_type
+        board[row_i][col_i] = tile_type
         return board
+
+    @classmethod
+    def set_pawn_tile(
+        cls,
+        player_sign: PlayerSign,
+        col_i: int,
+        row_i: int,
+        board: BoardType,
+    ) -> BoardType:
+        return cls.set_tile(
+            tile_type=(
+                TileType.white
+                if player_sign == PlayerSign.white
+                else TileType.black
+            ),
+            col_i=col_i,
+            row_i=row_i,
+            board=board,
+        )
+
+    @classmethod
+    def eliminate_pawn(
+        cls,
+        col_i: int,
+        row_i: int,
+        board: BoardType,
+    ) -> BoardType:
+        return cls.set_tile(
+            tile_type=TileType.vacant,
+            col_i=col_i,
+            row_i=row_i,
+            board=board,
+        )
 
     @classmethod
     def _is_player_win(
