@@ -232,9 +232,12 @@ class GameManager:
         self,
         card_index: int,
     ) -> list[Move]:
-        return self._get_player().get_available_card_moves(
-            card_index=card_index,
+        assert 0 <= card_index <= 2, f"invalid card index: {card_index}"
+        player = self._get_player()
+        return player.cards[card_index].get_available_card_moves(
+            player_sign=self._player_turn,
             board=self._board,
+            card_index=card_index,
         )
 
     def _play_ai_player_turn_if_necessary(self):

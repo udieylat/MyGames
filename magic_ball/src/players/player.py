@@ -30,18 +30,6 @@ class Player:
     def is_human(self) -> bool:
         return False
 
-    def get_available_card_moves(
-        self,
-        card_index: int,
-        board: Board,
-    ) -> list[Move]:
-        assert 0 <= card_index <= 2, f"invalid card index: {card_index}"
-        return self._cards[card_index].get_available_card_moves(
-            player_sign=self._player_sign,
-            board=board,
-            card_index=card_index,
-        )
-
     @abstractmethod
     def find_move(
         self,
