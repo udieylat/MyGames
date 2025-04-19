@@ -49,6 +49,17 @@ class TestGameManager(unittest.TestCase):
         gm.push("B4")
         self.assertEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
 
+    def test_ai_base_push_game(self):
+        gm = GameManager.new(
+            white_player_config=PlayerConfig(
+                type=PlayerType.random,
+            ),
+            black_player_config=PlayerConfig(
+                type=PlayerType.random,
+            ),
+        )
+        self.assertNotEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
+
     @classmethod
     def _get_game_status(cls, gm: GameManager) -> GameStatus:
         return Helper.get_game_status(
