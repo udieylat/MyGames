@@ -48,4 +48,17 @@ class BaseHeuristicPlayer(Player):
         # if winning_move is not None:
         #     return winning_move
 
-        return available_moves[0]  # TODO!
+        scores_and_moves = [
+            (
+                self._scorer.score_move(
+                    result_board=move.result_board,
+                    result_ball_position=move.result_ball_position,
+                    num_unused_player_cards=0,
+                    num_unused_opponent_cards=0,
+                ),
+                move,
+            )
+            for move in available_moves
+        ]
+
+        return min(scores_and_moves)[1]

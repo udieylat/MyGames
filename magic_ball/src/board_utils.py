@@ -4,6 +4,17 @@ from models import PlayerSign, TileType, BoardType
 class BoardUtils:
 
     @classmethod
+    def inverse_player_sign(
+        cls,
+        player_sign: PlayerSign,
+    ) -> PlayerSign:
+        return (
+            PlayerSign.white
+            if player_sign == PlayerSign.black
+            else PlayerSign.black
+        )
+
+    @classmethod
     def is_player_win(
         cls,
         player_sign: PlayerSign,
@@ -16,6 +27,22 @@ class BoardUtils:
             )
         return any(
             board[0][col_i] == TileType.black
+            for col_i in range(5)
+        )
+
+    @classmethod
+    def is_player_one_to_win(
+        cls,
+        player_sign: PlayerSign,
+        board: BoardType,
+    ) -> bool:
+        if player_sign == PlayerSign.white:
+            return any(
+                board[3][col_i] == TileType.white and board[4][col_i] == TileType.vacant
+                for col_i in range(5)
+            )
+        return any(
+            board[1][col_i] == TileType.black and board[0][col_i] == TileType.vacant
             for col_i in range(5)
         )
 

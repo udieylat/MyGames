@@ -64,7 +64,7 @@ class TestGameManager(unittest.TestCase):
             cards_pull=[],
         )
 
-        # No cards means white defensive win.
+        # No cards scenario means white defensive win.
         self.assertEqual(self._get_game_status(gm=gm), GameStatus.white_defensive_win)
 
     @classmethod

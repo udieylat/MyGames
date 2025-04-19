@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from board import InvalidMove, Board
+from board_utils import BoardUtils
 from cards.card import Card
 from cards.cards_randomizer import CardsRandomizer
 from helper import Helper
@@ -196,10 +197,8 @@ class GameManager:
         self._print(f"Player turn: {self._player_turn}")
 
     def _complete_turn(self):
-        self._player_turn = (
-            PlayerSign.white
-            if self._player_turn == PlayerSign.black
-            else PlayerSign.black
+        self._player_turn = BoardUtils.inverse_player_sign(
+            player_sign=self._player_turn,
         )
         self._check_end_condition()
         self._play_ai_player_turn_if_necessary()

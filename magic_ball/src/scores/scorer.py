@@ -1,3 +1,4 @@
+from board_utils import BoardUtils
 from models import PlayerSign, BoardType, BallPosition
 from players.player_config import PlayerConfig
 
@@ -21,5 +22,18 @@ class Scorer:
         """
         Minimal score is best.
         """
+        # Always choose a winning move.
+        if BoardUtils.is_player_win(
+            player_sign=self._player_sign,
+            board=result_board,
+        ):
+            return -99999999999
+        if BoardUtils.is_player_one_to_win(
+            player_sign=BoardUtils.inverse_player_sign(
+                player_sign=self._player_sign,
+            ),
+            board=result_board,
+        ):
+            return 99999999999
         # TODO
-        pass
+        return 0
