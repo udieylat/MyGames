@@ -38,7 +38,7 @@ class Player:
     def find_move(
         self,
         board: Board,
-        num_unused_player_cards: int,
-        num_unused_opponent_cards: int,
+        unused_player_cards: list[Card],
+        unused_opponent_cards: list[Card],
     ) -> Move:
         pass

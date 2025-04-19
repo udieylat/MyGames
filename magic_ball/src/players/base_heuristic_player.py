@@ -1,5 +1,6 @@
 from board import Board
 from board_utils import BoardUtils
+from cards.card import Card
 from helper import Helper
 from models import PlayerSign
 from move import Move
@@ -28,8 +29,8 @@ class BaseHeuristicPlayer(Player):
     def find_move(
         self,
         board: Board,
-        num_unused_player_cards: int,
-        num_unused_opponent_cards: int,
+        unused_player_cards: list[Card],
+        unused_opponent_cards: list[Card],
     ) -> Move:
         available_moves = Helper.get_available_moves(
             board=board,
@@ -44,8 +45,8 @@ class BaseHeuristicPlayer(Player):
                 self._scorer.score_move(
                     result_board=move.result_board,
                     result_ball_position=move.result_ball_position,
-                    num_unused_player_cards=0,
-                    num_unused_opponent_cards=0,
+                    num_unused_player_cards=len(unused_player_cards),
+                    num_unused_opponent_cards=len(unused_opponent_cards),
                 ),
                 move,
             )

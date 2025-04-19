@@ -266,12 +266,8 @@ class GameManager:
         try:
             move = player.find_move(
                 board=self._board,
-                num_unused_player_cards=self._get_num_unused_cards(
-                    cards=self._get_player().cards,
-                ),
-                num_unused_opponent_cards=self._get_num_unused_cards(
-                    cards=self._get_opponent().cards,
-                ),
+                unused_player_cards=self._get_player().cards,
+                unused_opponent_cards=self._get_opponent().cards,
             )
             self._play_move(
                 move=move,

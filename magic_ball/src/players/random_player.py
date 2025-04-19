@@ -1,6 +1,7 @@
 import random
 
 from board import Board
+from cards.card import Card
 from helper import Helper
 from move import Move
 from players.player import Player, NoAvailableMoves
@@ -11,8 +12,8 @@ class RandomPlayer(Player):
     def find_move(
         self,
         board: Board,
-        num_unused_player_cards: int,
-        num_unused_opponent_cards: int,
+        unused_player_cards: list[Card],
+        unused_opponent_cards: list[Card],
     ) -> Move:
         available_moves = Helper.get_available_moves(
             board=board,
