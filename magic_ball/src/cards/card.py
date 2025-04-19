@@ -69,9 +69,10 @@ class Card:
                 return BallPosition.middle
         raise RuntimeError(f"Cannot push ball. Player: {player_sign}, ball position: {ball_position}")
 
+    @classmethod
     @abstractmethod
     def _get_available_moves(
-        self,
+        cls,
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
