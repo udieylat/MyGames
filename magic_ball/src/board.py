@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 from enum import StrEnum
 
-from magic_ball import PlayerSign, BallPosition, MoveType, GameStatus
-from magic_ball import PossibleMoveType
+from magic_ball.src.models import BallPosition, GameStatus, PlayerSign, MoveType
+from magic_ball.src.move import PossibleMoveType
 
 
 @dataclass

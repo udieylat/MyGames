@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from magic_ball import Board, InvalidMove
-from magic_ball import PlayerSign, PlayerType, MoveType, GameStatus
-from magic_ball import PushMove
-from magic_ball import Player
+from magic_ball.src.board import InvalidMove, Board
+from magic_ball.src.models import PlayerSign, PlayerType, GameStatus
+from magic_ball.src.move import PushMove
+from magic_ball.src.player import Player
 
 
 class GameManager:

@@ -1,7 +1,7 @@
 import unittest
 
-from magic_ball.src.game_manager import GameManager
-from magic_ball.src.models import GameStatus
+from game_manager import GameManager
+from models import GameStatus
 
 
 class TestGameManager(unittest.TestCase):
