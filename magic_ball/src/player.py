@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
-from magic_ball import Board
-from magic_ball import PlayerType, PlayerSign
-from magic_ball import Move
+from board import Board
+from move import PossibleMoveType
+from models import PlayerSign, PlayerType
 
 
 @dataclass
@@ -17,7 +17,7 @@ class Player:
     def get_available_moves(
         self,
         board: Board,
-    ) -> list[Move]:
+    ) -> list[PossibleMoveType]:
         # TODO
         pass
 

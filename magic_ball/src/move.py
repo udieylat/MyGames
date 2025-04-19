@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Union
 
-from magic_ball import MoveType, PlayerSign
+from models import PlayerSign, MoveType
 
 
 @dataclass
