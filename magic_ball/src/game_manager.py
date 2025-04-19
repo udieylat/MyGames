@@ -89,7 +89,7 @@ class GameManager:
         self,
         card_index: int,
     ):
-        available_moves = self._get_card_available_moves(
+        available_moves = self._get_available_card_moves(
             card_index=card_index,
         )
         if not available_moves:
@@ -108,7 +108,7 @@ class GameManager:
             self._print("Game is already over.")
             return
 
-        available_moves = self._get_card_available_moves(
+        available_moves = self._get_available_card_moves(
             card_index=card_index,
         )
         if not 0 <= move_index < len(available_moves):
@@ -228,7 +228,7 @@ class GameManager:
             else self._black_player
         )
 
-    def _get_card_available_moves(
+    def _get_available_card_moves(
         self,
         card_index: int,
     ) -> list[Move]:

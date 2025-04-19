@@ -14,7 +14,7 @@ class TestFire(unittest.TestCase):
         self.board = Board()
 
     @parameterized.expand(PlayerSign.__members__.keys())
-    def test_available_moves(self, player_sign: PlayerSign):
+    def test_available_card_moves(self, player_sign: PlayerSign):
         available_moves = self.fire.get_available_card_moves(
             player_sign=player_sign,
             board=self.board,
