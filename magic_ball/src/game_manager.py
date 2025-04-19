@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from board import InvalidMove, Board
+from cards.card import Card
 from cards.cards_randomizer import CardsRandomizer
 from helper import Helper
 from move import Move
@@ -17,6 +18,7 @@ class GameManager:
         cls,
         white_player_config: PlayerConfig | None = None,
         black_player_config: PlayerConfig | None = None,
+        cards_pull: list[Card] | None = None,
     ) -> GameManager:
         if white_player_config is None:
             white_player_config = PlayerConfig(
@@ -35,12 +37,14 @@ class GameManager:
                 player_config=black_player_config,
                 player_sign=PlayerSign.black,
             ),
+            cards_pull=cards_pull,
         )
 
     def __init__(
         self,
         white_player: Player,
         black_player: Player,
+        cards_pull: list[Card] | None = None,
     ):
         assert white_player.player_sign == PlayerSign.white
         assert black_player.player_sign == PlayerSign.black
@@ -48,7 +52,9 @@ class GameManager:
         self._black_player = black_player
         self._board = Board()
 
-        self._draw_cards()
+        self._draw_cards(
+            cards_pull=cards_pull,
+        )
         self._player_turn: PlayerSign = PlayerSign.white
 
         self._game_on = True
@@ -148,8 +154,13 @@ class GameManager:
         if self._verbose:
             print(message)
 
-    def _draw_cards(self):
-        white_cards, black_cards = CardsRandomizer.draw_cards()
+    def _draw_cards(
+        self,
+        cards_pull: list[Card] | None = None,
+    ):
+        white_cards, black_cards = CardsRandomizer.draw_cards(
+            cards_pull=cards_pull,
+        )
         self._white_player.draw_cards(
             cards=white_cards,
         )
@@ -173,8 +184,14 @@ class GameManager:
         if not self._verbose:
             return
         self._board.display()
-        if self._game_on:
-            self._print(f"Player turn: {self._player_turn}")
+        if not self._game_on:
+            return
+        player = self._get_player()
+        for i, card in enumerate(player.cards):
+            index_str = "X" if card.already_used else f"{i}."
+            suffix = " [D]" if card.is_defensive else ""
+            self._print(f" {index_str} {card.__class__.__name__}{suffix}")
+        self._print(f"Player turn: {self._player_turn}")
 
     def _complete_turn(self):
         self._player_turn = (

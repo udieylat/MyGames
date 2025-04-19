@@ -11,6 +11,10 @@ class Card:
         self._already_used = False
 
     @property
+    def already_used(self) -> bool:
+        return self._already_used
+
+    @property
     def is_defensive(self) -> bool:
         return False
 
