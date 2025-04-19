@@ -32,3 +32,20 @@ class BoardUtils:
     ) -> str:
         return "ABCDE"[col_i] + "12345"[row_i]
 
+    @classmethod
+    def get_neighbor_tiles_indices(
+        cls,
+        col_i: int,
+        row_i: int,
+    ) -> list[tuple[int, int]]:
+        all_neighbor_tiles_indices = [
+            (col_i, row_i + 1),
+            (col_i, row_i - 1),
+            (col_i + 1, row_i),
+            (col_i - 1, row_i),
+        ]
+        return [
+            (col_i, row_i)
+            for col_i, row_i in all_neighbor_tiles_indices
+            if 0 <= col_i <= 4 and 0 <= row_i <= 4
+        ]
