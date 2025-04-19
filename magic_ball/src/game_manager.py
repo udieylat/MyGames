@@ -128,7 +128,11 @@ class GameManager:
         available_moves = Helper.get_available_moves(
             player_sign=self._player_turn,
             board=self._board,
-            cards=[],  # TODO
+            cards=(
+                self._white_player.cards
+                if self._player_turn == PlayerSign.white
+                else self._black_player.cards
+            ),
         )
         if available_moves:
             print("Cannot pass turn, there are available moves.")
