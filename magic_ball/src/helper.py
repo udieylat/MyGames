@@ -1,5 +1,6 @@
 from board import Board, InvalidMove
 from board_utils import BoardUtils
+from cards.card import Card
 from move import Move
 from models import PlayerSign, TileType, GameStatus
 
@@ -36,10 +37,9 @@ class Helper:
         cls,
         player_sign: PlayerSign,
         board: Board,
-        # ball_position,
-        # cards: list[Card],
+        cards: list[Card],
     ) -> list[Move]:
-        available_moves = []
+        available_push_moves = []
         for row_i in range(5):
             for col_i in range(5):
                 if BoardUtils.is_tile_player_pawn(
@@ -47,7 +47,7 @@ class Helper:
                     tile=board[row_i][col_i],
                 ):
                     if player_sign == PlayerSign.white and row_i < 4 and board[row_i + 1][col_i] == TileType.vacant:
-                        available_moves.append(
+                        available_push_moves.append(
                             cls.generate_push_move(
                                 player_sign=PlayerSign.white,
                                 target_tile=BoardUtils.indices_to_tile(row_i=row_i + 1, col_i=col_i),
@@ -55,7 +55,7 @@ class Helper:
                             )
                         )
                     elif player_sign == PlayerSign.black and row_i > 0 and board[row_i - 1][col_i] == TileType.vacant:
-                        available_moves.append(
+                        available_push_moves.append(
                             cls.generate_push_move(
                                 player_sign=PlayerSign.black,
                                 target_tile=BoardUtils.indices_to_tile(row_i=row_i - 1, col_i=col_i),
@@ -63,9 +63,16 @@ class Helper:
                             )
                         )
 
-        # TODO: cards, ball position, etc
+        available_card_moves = [
+            move
+            for card in cards
+            for move in card.get_available_moves(
+                player_sign=player_sign,
+                board=board,
+            )
+        ]
 
-        return available_moves
+        return available_push_moves + available_card_moves
 
     @classmethod
     def generate_push_move(
