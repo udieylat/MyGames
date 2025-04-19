@@ -6,7 +6,7 @@ from cards.card import Card
 from cards.cards_randomizer import CardsRandomizer
 from helper import Helper
 from move import Move
-from players.player import Player
+from players.player import Player, NoAvailableMoves
 from models import PlayerSign, GameStatus
 from players.player_config import PlayerConfig, PlayerType
 from players.player_factory import PlayerFactory
@@ -256,11 +256,16 @@ class GameManager:
             self._display()
             return
 
-        # TODO: what if AI player doesn't have moves left but it's not a draw?
-        move = player.find_move(
-            board=self._board,
-        )
-        self._play_move(
-            move=move,
-        )
+        try:
+            move = player.find_move(
+                board=self._board,
+                num_unused_player_cards=0,
+                num_unused_opponent_cards=0,
+            )
+            self._play_move(
+                move=move,
+            )
+        except NoAvailableMoves:
+            self._print("Skip player turn since there are no available moves.")
+
         self._complete_turn()

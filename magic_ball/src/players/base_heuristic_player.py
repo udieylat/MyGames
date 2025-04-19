@@ -3,7 +3,7 @@ from board_utils import BoardUtils
 from helper import Helper
 from models import PlayerSign
 from move import Move
-from players.player import Player
+from players.player import Player, NoAvailableMoves
 from players.player_config import PlayerConfig
 from scores.scorer import Scorer
 
@@ -28,13 +28,16 @@ class BaseHeuristicPlayer(Player):
     def find_move(
         self,
         board: Board,
+        num_unused_player_cards: int,
+        num_unused_opponent_cards: int,
     ) -> Move:
         available_moves = Helper.get_available_moves(
             board=board,
             player_sign=self._player_sign,
             cards=self._cards,
         )
-        assert available_moves, "No move to play"
+        if not available_moves:
+            raise NoAvailableMoves()
 
         scores_and_moves = [
             (
