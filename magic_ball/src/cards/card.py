@@ -1,7 +1,7 @@
 from abc import abstractmethod
 
 from board import Board
-from models import PlayerSign
+from models import PlayerSign, BallPosition
 from move import Move
 
 
@@ -22,7 +22,6 @@ class Card:
         assert not self._already_used
         self._already_used = True
 
-    @abstractmethod
     def get_available_moves(
         self,
         player_sign: PlayerSign,
@@ -36,6 +35,23 @@ class Card:
             board=board,
             card_index=card_index,
         )
+
+    @classmethod
+    def _push_ball(
+        cls,
+        player_sign: PlayerSign,
+        ball_position: BallPosition,
+    ) -> BallPosition:
+        match player_sign, ball_position:
+            case PlayerSign.white, BallPosition.middle:
+                return BallPosition.black
+            case PlayerSign.white, BallPosition.white:
+                return BallPosition.middle
+            case PlayerSign.black, BallPosition.middle:
+                return BallPosition.white
+            case PlayerSign.black, BallPosition.black:
+                return BallPosition.middle
+        raise RuntimeError(f"Cannot push ball. Player: {player_sign}, ball position: {ball_position}")
 
     @abstractmethod
     def _get_available_moves(
