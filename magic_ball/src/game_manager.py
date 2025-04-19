@@ -139,6 +139,7 @@ class GameManager:
         move = player.find_move(
             board=self._board,
         )
+        print(move.description)
         self._board.play_move(
             move=move,
         )
