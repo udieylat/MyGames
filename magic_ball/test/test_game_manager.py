@@ -63,7 +63,9 @@ class TestGameManager(unittest.TestCase):
             ),
             cards_pull=[],
         )
-        self.assertNotEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
+
+        # No cards means white defensive win.
+        self.assertEqual(self._get_game_status(gm=gm), GameStatus.white_defensive_win)
 
     @classmethod
     def _get_game_status(cls, gm: GameManager) -> GameStatus:
