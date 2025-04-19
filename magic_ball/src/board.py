@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import StrEnum
 
-from magic_ball.src.models import PlayerSign, BallPosition, MoveType
+from magic_ball.src.models import PlayerSign, BallPosition, MoveType, GameStatus
 from magic_ball.src.move import Move, PossibleMoveType
 
 
@@ -24,6 +24,19 @@ class Board:
 
     def __getitem__(self, item: int) -> list[str]:
         return self._board[item]
+
+    def get_game_status(self) -> GameStatus:
+        if self._is_player_win(
+            player_sign=PlayerSign.white,
+        ):
+            return GameStatus.white_win
+        if self._is_player_win(
+            player_sign=PlayerSign.black,
+        ):
+            return GameStatus.black_win
+        if self._is_draw():  # TODO: impl also the defensive cards win condition
+            return GameStatus.draw
+        return GameStatus.ongoing
 
     def display(self):
         print()
@@ -145,4 +158,18 @@ class Board:
         return (
             (player_sign == PlayerSign.white and tile == TileType.white)
             or (player_sign == PlayerSign.black and tile == TileType.black)
+        )
+
+    def _is_player_win(
+        self,
+        player_sign: PlayerSign,
+    ) -> bool:
+        if player_sign == PlayerSign.white:
+            return any(
+                self._board[4][col_i] == TileType.white
+                for col_i in range(5)
+            )
+        return any(
+            self._board[0][col_i] == TileType.black
+            for col_i in range(5)
         )

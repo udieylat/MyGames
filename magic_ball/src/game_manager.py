@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from magic_ball.src.board import Board, InvalidMove
-from magic_ball.src.models import PlayerSign, PlayerType, MoveType
+from magic_ball.src.models import PlayerSign, PlayerType, MoveType, GameStatus
 from magic_ball.src.move import PushMove
 from magic_ball.src.player import Player
 
@@ -100,30 +100,16 @@ class GameManager:
         self._display()
 
     def _check_end_condition(self):
-        if any(
-            self._board[0][col_i] == 'B'
-            for col_i in range(5)
-        ):
-            print("Black wins!")
-            self._game_on = False
-        elif any(
-            self._board[4][col_i] == 'W'
-            for col_i in range(5)
-        ):
-            print("White wins!")
-            self._game_on = False
-        elif self._no_available_moves():
-            print("Game is drawn!")
-            self._game_on = False
+        game_status = self._board.get_game_status()
+        match game_status:
+            case GameStatus.white_win:
+                print("White wins!")
+                self._game_on = False
+            case GameStatus.black_win:
+                print("Black wins!")
+                self._game_on = False
+            case GameStatus.draw:
+                print("Game is drawn!")
+                self._game_on = False
 
         # TODO: implement random strategy
-
-    def _no_available_moves(self) -> bool:
-        return (
-            self._white_player.get_available_moves(
-                board=self._board,
-            ) == []
-            and self._black_player.get_available_moves(
-                board=self._board,
-            ) == []
-        )

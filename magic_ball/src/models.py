@@ -1,4 +1,11 @@
-from enum import StrEnum
+from enum import StrEnum, IntEnum
+
+
+class GameStatus(IntEnum):
+    ongoing = 1
+    white_win = 2
+    black_win = 3
+    draw = 4
 
 
 class PlayerSign(StrEnum):
