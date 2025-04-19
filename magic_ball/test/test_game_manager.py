@@ -3,6 +3,7 @@ import unittest
 from game_manager import GameManager
 from helper import Helper
 from models import GameStatus, PlayerSign
+from players.random_player import RandomPlayer
 
 
 class TestGameManager(unittest.TestCase):
