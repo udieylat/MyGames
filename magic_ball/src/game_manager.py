@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from board import InvalidMove, Board
+from cards_randomizer import CardsRandomizer
 from helper import Helper
 from move import Move
 from players.player import Player
@@ -47,6 +48,7 @@ class GameManager:
         self._black_player = black_player
         self._board = Board()
 
+        self._draw_cards()
         self._player_turn: PlayerSign = PlayerSign.white
 
         self._game_on = True
@@ -132,6 +134,15 @@ class GameManager:
         else:
             print("Pass turn, no available moves for player.")
             self._complete_turn()
+
+    def _draw_cards(self):
+        white_cards, black_cards = CardsRandomizer.draw_cards()
+        self._white_player.draw_cards(
+            cards=white_cards,
+        )
+        self._black_player.draw_cards(
+            cards=black_cards,
+        )
 
     def _play_move(
         self,

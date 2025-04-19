@@ -1,6 +1,7 @@
 from abc import abstractmethod
 
 from board import Board
+from cards.card import Card
 from move import Move
 from models import PlayerSign
 
@@ -12,10 +13,10 @@ class Player:
         player_sign: PlayerSign,
     ):
         self._player_sign = player_sign
-    #     self._cards: list[CardType] = []
-    #
-    # def draw_cards(self, cards: list[CardType]):
-    #     self._cards = cards
+        self._cards: list[Card] = []
+
+    def draw_cards(self, cards: list[Card]):
+        self._cards = cards
 
     @property
     def player_sign(self) -> PlayerSign:
