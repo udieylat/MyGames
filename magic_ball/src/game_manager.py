@@ -94,6 +94,9 @@ class GameManager:
         available_moves = self._get_card_available_moves(
             card_index=card_index,
         )
+        if not available_moves:
+            self._print("No available moves.")
+            return
         self._print("Available moves:")
         for i, move in enumerate(available_moves):
             self._print(f" {i}. {move.description}")
@@ -191,6 +194,7 @@ class GameManager:
             index_str = "X" if card.already_used else f"{i}."
             suffix = " [D]" if card.is_defensive else ""
             self._print(f" {index_str} {card.__class__.__name__}{suffix}")
+        self._print("")
         self._print(f"Player turn: {self._player_turn}")
 
     def _complete_turn(self):
@@ -241,6 +245,7 @@ class GameManager:
 
         player = self._get_player()
         if player.is_human:
+            self._display()
             return
 
         move = player.find_move(
