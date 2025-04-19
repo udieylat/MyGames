@@ -128,6 +128,7 @@ class GameManager:
         available_moves = Helper.get_available_moves(
             player_sign=self._player_turn,
             board=self._board,
+            cards=[],  # TODO
         )
         if available_moves:
             print("Cannot pass turn, there are available moves.")
@@ -170,7 +171,8 @@ class GameManager:
     def _check_end_condition(self):
         game_status = Helper.get_game_status(
             board=self._board,
-            white_cards=[],
+            white_cards=self._white_player.cards,
+            black_cards=self._black_player.cards,
         )
         match game_status:
             case GameStatus.white_win:

@@ -15,18 +15,18 @@ class TestGameManager(unittest.TestCase):
         gm.push("A4")
         gm.push("A2")
         gm.push("A3")
-        self.assertEqual(Helper.get_game_status(board=gm._board), GameStatus.ongoing)
+        self.assertEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
         gm.push("B2")
         gm.push("B4")
         gm.push("B3")
         gm.push("E4")
         gm.push("E2")
         gm.push("E3")
-        self.assertEqual(Helper.get_game_status(board=gm._board), GameStatus.ongoing)
+        self.assertEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
         gm.push("C2")
         gm.push("C4")
         gm.push("C3")
-        self.assertEqual(Helper.get_game_status(board=gm._board), GameStatus.draw)
+        self.assertEqual(self._get_game_status(gm=gm), GameStatus.draw)
 
     def test_base_push_game_vs_ai_in_black(self):
         gm = GameManager.new(
@@ -37,7 +37,7 @@ class TestGameManager(unittest.TestCase):
         gm.push("A2")
         gm.push("B2")
         gm.push("C2")
-        self.assertEqual(Helper.get_game_status(board=gm._board), GameStatus.ongoing)
+        self.assertEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
 
     def test_base_push_game_vs_ai_in_white(self):
         gm = GameManager.new(
@@ -47,4 +47,12 @@ class TestGameManager(unittest.TestCase):
         )
         gm.push("A4")
         gm.push("B4")
-        self.assertEqual(Helper.get_game_status(board=gm._board), GameStatus.ongoing)
+        self.assertEqual(self._get_game_status(gm=gm), GameStatus.ongoing)
+
+    @classmethod
+    def _get_game_status(cls, gm: GameManager) -> GameStatus:
+        return Helper.get_game_status(
+            board=gm._board,
+            white_cards=gm._white_player.cards,
+            black_cards=gm._black_player.cards,
+        )

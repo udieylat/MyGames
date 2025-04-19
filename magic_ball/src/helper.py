@@ -11,8 +11,8 @@ class Helper:
     def get_game_status(
         cls,
         board: Board,
-        white_cards: list = [],
-        black_cards: list = [],  # TODO: impl once ready with cards
+        white_cards: list[Card],
+        black_cards: list[Card],
     ) -> GameStatus:
         if cls._is_player_win(
             player_sign=PlayerSign.white,
@@ -28,7 +28,7 @@ class Helper:
             board=board,
             white_cards=white_cards,
             black_cards=black_cards,
-        ):  # TODO: impl also the defensive cards win condition
+        ):
             return GameStatus.draw
         return GameStatus.ongoing
 
@@ -151,12 +151,15 @@ class Helper:
         white_cards: list,
         black_cards: list,
     ) -> bool:
+        # TODO: impl also the defensive cards win condition
         white_available_push_moves = Helper.get_available_moves(
             player_sign=PlayerSign.white,
             board=board,
+            cards=white_cards,
         )
         black_available_push_moves = Helper.get_available_moves(
             player_sign=PlayerSign.black,
             board=board,
+            cards=black_cards,
         )
         return not white_available_push_moves and not black_available_push_moves

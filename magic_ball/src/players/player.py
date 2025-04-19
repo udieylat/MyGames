@@ -23,6 +23,10 @@ class Player:
         return self._player_sign
 
     @property
+    def cards(self) -> list[Card]:
+        return self._cards
+
+    @property
     def is_human(self) -> bool:
         return False
 

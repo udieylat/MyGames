@@ -19,6 +19,7 @@ class RandomPlayer(Player):
         available_moves = Helper.get_available_moves(
             board=board,
             player_sign=self._player_sign,
+            cards=self._cards,
         )
         assert available_moves, "No move to play"
         return random.choice(available_moves)
