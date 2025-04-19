@@ -29,9 +29,13 @@ class Player:
     def get_card_available_moves(
         self,
         card_index: int,
+        board: Board,
     ) -> list[Move]:
-        # TODO: verify that index is not used
-        pass
+        assert 0 <= card_index <= 2, f"invalid card index: {card_index}"
+        return self._cards[card_index].get_available_moves(
+            player_sign=self._player_sign,
+            board=board,
+        )
 
     @abstractmethod
     def find_move(
