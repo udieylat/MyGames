@@ -2,7 +2,7 @@ import random
 
 from board import Board
 from helper import Helper
-from move import PossibleMoveType
+from move import Move
 from players.player import Player
 
 
@@ -15,7 +15,7 @@ class RandomPlayer(Player):
     def find_move(
         self,
         board: Board,
-    ) -> PossibleMoveType:
+    ) -> Move:
         available_moves = Helper.get_available_moves(
             board=board,
             player_sign=self._player_sign,

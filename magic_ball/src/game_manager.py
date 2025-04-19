@@ -4,7 +4,6 @@ from board import InvalidMove, Board
 from helper import Helper
 from players.player import Player
 from models import PlayerSign, GameStatus
-from move import PushMove
 from players.player_config import PlayerConfig, PlayerType
 from players.player_factory import PlayerFactory
 
@@ -66,9 +65,10 @@ class GameManager:
             return
         try:
             self._board.play_move(
-                move=PushMove(
+                move=Helper.generate_push_move(
                     player_sign=self._player_turn,
                     target_tile=target_tile,
+                    board=self._board,
                 ),
             )
             self._complete_turn()

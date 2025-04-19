@@ -1,6 +1,6 @@
-from board import Board
+from board import Board, InvalidMove
 from board_utils import BoardUtils
-from move import PossibleMoveType, PushMove
+from move import Move
 from models import PlayerSign, TileType, GameStatus
 
 
@@ -38,7 +38,7 @@ class Helper:
         board: Board,
         # ball_position,
         # magic_cards: list,
-    ) -> list[PossibleMoveType]:
+    ) -> list[Move]:
         available_moves = []
         for row_i in range(5):
             for col_i in range(5):
@@ -48,22 +48,60 @@ class Helper:
                 ):
                     if player_sign == PlayerSign.white and row_i < 4 and board[row_i + 1][col_i] == TileType.vacant:
                         available_moves.append(
-                            PushMove(
+                            cls.generate_push_move(
                                 player_sign=PlayerSign.white,
                                 target_tile=BoardUtils.indices_to_tile(row_i=row_i + 1, col_i=col_i),
+                                board=board,
                             )
                         )
                     elif player_sign == PlayerSign.black and row_i > 0 and board[row_i - 1][col_i] == TileType.vacant:
                         available_moves.append(
-                            PushMove(
+                            cls.generate_push_move(
                                 player_sign=PlayerSign.black,
                                 target_tile=BoardUtils.indices_to_tile(row_i=row_i - 1, col_i=col_i),
+                                board=board,
                             )
                         )
 
         # TODO: magic cards, ball position, etc
 
         return available_moves
+
+    @classmethod
+    def generate_push_move(
+        cls,
+        player_sign: PlayerSign,
+        target_tile: str,
+        board: Board,
+    ) -> Move:
+        new_board = board.copy_board()
+
+        col_i, row_i = BoardUtils.tile_index(
+            tile=target_tile,
+        )
+        target_board_tile = new_board[row_i][col_i]
+        if target_board_tile != TileType.vacant:
+            raise InvalidMove(
+                description=f"target tile {target_tile} not vacant: {target_board_tile}",
+            )
+        source_row_i = (
+            row_i - 1
+            if player_sign == PlayerSign.white
+            else row_i + 1
+        )
+        new_board[source_row_i][col_i] = TileType.vacant
+        new_board[row_i][col_i] = (
+            TileType.white
+            if player_sign == PlayerSign.white
+            else TileType.black
+        )
+
+        return Move(
+            player_sign=player_sign,
+            result_board=new_board,
+            result_ball_position=board.ball_position,
+            description=f"push to target tile: {target_tile}",
+        )
 
     @classmethod
     def _is_player_win(

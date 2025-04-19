@@ -1,27 +1,11 @@
 from dataclasses import dataclass
 
-from models import PlayerSign, MoveType
+from models import PlayerSign, BallPosition
 
 
 @dataclass
-class PushMove:
+class Move:
     player_sign: PlayerSign
-    target_tile: str
-    type: MoveType = MoveType.push
-
-    @property
-    def description(self) -> str:
-        return f"push to target tile: {self.target_tile}"
-
-@dataclass
-class MagicCardMove:
-    player_sign: PlayerSign
-    # TODO
-    type: MoveType = MoveType.magic_card
-
-    @property
-    def description(self) -> str:
-        return ""
-
-
-PossibleMoveType = PushMove | MagicCardMove
+    result_board: list[list[str]]
+    result_ball_position: BallPosition
+    description: str

@@ -1,5 +1,5 @@
 from board import Board
-from move import PossibleMoveType
+from move import Move
 from players.player import Player
 
 
@@ -12,5 +12,5 @@ class HumanPlayer(Player):
     def find_move(
         self,
         board: Board,
-    ) -> PossibleMoveType:
+    ) -> Move:
         raise NotImplemented("find your own move")

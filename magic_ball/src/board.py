@@ -1,8 +1,9 @@
+import copy
 from dataclasses import dataclass
 
 from board_utils import BoardUtils
-from models import BallPosition, PlayerSign, MoveType, TileType
-from move import PossibleMoveType
+from models import BallPosition, PlayerSign, TileType
+from move import Move
 
 
 @dataclass
@@ -13,11 +14,18 @@ class InvalidMove(Exception):
 
 class Board:
     def __init__(self):
-        self._board = self._init_board()
+        self._board: list[list[str]] = self._init_board()
         self._ball_position: BallPosition = BallPosition.middle
 
     def __getitem__(self, item: int) -> list[str]:
         return self._board[item]
+
+    def copy_board(self) -> list[list[str]]:
+        return copy.deepcopy(self._board)
+
+    @property
+    def ball_position(self) -> BallPosition:
+        return self._ball_position
 
     def display(self):
         print()
@@ -30,19 +38,11 @@ class Board:
 
     def play_move(
         self,
-        move: PossibleMoveType,
+        move: Move,
     ):
-        match move.type:
-            case MoveType.push:
-                self._push(
-                    target_tile=move.target_tile,
-                    player=move.player_sign,
-                )
-            case MoveType.magic_card:
-                # TODO
-                pass
-
-        # TODO: end turn
+        print(f"{move.player_sign} play: {move.description}")
+        self._board = move.result_board
+        self._ball_position = move.result_ball_position
 
     def _push(
         self,
