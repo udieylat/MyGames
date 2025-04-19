@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from helper import Helper
 from models import BallPosition, GameStatus, PlayerSign, MoveType, TileType
-from move import PossibleMoveType, PushMove
+from move import PossibleMoveType
 
 
 @dataclass
@@ -151,16 +151,12 @@ class Board:
         white_magic_cards: list,
         black_magic_cards: list,
     ) -> bool:
-        white_available_push_moves = []
-        for row_i in range(5):
-            for col_i in range(5):
-                if self._board[row_i][col_i] == TileType.white:
-                    if row_i < 4 and self._board[row_i + 1][col_i] == TileType.vacant:
-                        white_available_push_moves.append(
-                            PushMove(
-                                player_sign=PlayerSign.white,
-                                target_tile=self._indices_to_tile(row_i=row_i, col_i=col_i),
-                            )
-                        )
-                    if i < 4 and board[i + 1][j] == '.':
-                        moves.append(((i, j), (i + 1, j)))  # Move down
+        white_available_push_moves = Helper.get_available_moves(
+            player_sign=PlayerSign.white,
+            board=self._board,
+        )
+        black_available_push_moves = Helper.get_available_moves(
+            player_sign=PlayerSign.black,
+            board=self._board,
+        )
+        return not white_available_push_moves and not black_available_push_moves
