@@ -1,8 +1,7 @@
 from dataclasses import dataclass
 
-from helper import Helper
 from board_utils import BoardUtils
-from models import BallPosition, GameStatus, PlayerSign, MoveType, TileType
+from models import BallPosition, PlayerSign, MoveType, TileType
 from move import PossibleMoveType
 
 
@@ -19,26 +18,6 @@ class Board:
 
     def __getitem__(self, item: int) -> list[str]:
         return self._board[item]
-
-    def get_game_status(
-        self,
-        white_magic_cards: list = [],
-        black_magic_cards: list = [],  # TODO: impl once ready with magic cards
-    ) -> GameStatus:
-        if self._is_player_win(
-            player_sign=PlayerSign.white,
-        ):
-            return GameStatus.white_win
-        if self._is_player_win(
-            player_sign=PlayerSign.black,
-        ):
-            return GameStatus.black_win
-        if self._is_draw(
-            white_magic_cards=white_magic_cards,
-            black_magic_cards=black_magic_cards,
-        ):  # TODO: impl also the defensive cards win condition
-            return GameStatus.draw
-        return GameStatus.ongoing
 
     def display(self):
         print()
@@ -132,32 +111,3 @@ class Board:
             raise InvalidMove(
                 description=f"tile '{tile}' format is invalid",
             )
-
-    def _is_player_win(
-        self,
-        player_sign: PlayerSign,
-    ) -> bool:
-        if player_sign == PlayerSign.white:
-            return any(
-                self._board[4][col_i] == TileType.white
-                for col_i in range(5)
-            )
-        return any(
-            self._board[0][col_i] == TileType.black
-            for col_i in range(5)
-        )
-
-    def _is_draw(
-        self,
-        white_magic_cards: list,
-        black_magic_cards: list,
-    ) -> bool:
-        white_available_push_moves = Helper.get_available_moves(
-            player_sign=PlayerSign.white,
-            board=self._board,
-        )
-        black_available_push_moves = Helper.get_available_moves(
-            player_sign=PlayerSign.black,
-            board=self._board,
-        )
-        return not white_available_push_moves and not black_available_push_moves

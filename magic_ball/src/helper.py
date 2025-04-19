@@ -1,14 +1,41 @@
+from board import Board
 from board_utils import BoardUtils
 from move import PossibleMoveType, PushMove
-from models import PlayerSign, TileType
+from models import PlayerSign, TileType, GameStatus
 
 
 class Helper:
+
+    @classmethod
+    def get_game_status(
+        cls,
+        board: Board,
+        white_magic_cards: list = [],
+        black_magic_cards: list = [],  # TODO: impl once ready with magic cards
+    ) -> GameStatus:
+        if cls._is_player_win(
+            player_sign=PlayerSign.white,
+            board=board,
+        ):
+            return GameStatus.white_win
+        if cls._is_player_win(
+            player_sign=PlayerSign.black,
+            board=board,
+        ):
+            return GameStatus.black_win
+        if cls._is_draw(
+            board=board,
+            white_magic_cards=white_magic_cards,
+            black_magic_cards=black_magic_cards,
+        ):  # TODO: impl also the defensive cards win condition
+            return GameStatus.draw
+        return GameStatus.ongoing
+
     @classmethod
     def get_available_moves(
         cls,
         player_sign: PlayerSign,
-        board: list[list[str]],
+        board: Board,
         # ball_position,
         # magic_cards: list,
     ) -> list[PossibleMoveType]:
@@ -37,3 +64,36 @@ class Helper:
         # TODO: magic cards, ball position, etc
 
         return available_moves
+
+    @classmethod
+    def _is_player_win(
+        cls,
+        player_sign: PlayerSign,
+        board: Board,
+    ) -> bool:
+        if player_sign == PlayerSign.white:
+            return any(
+                board[4][col_i] == TileType.white
+                for col_i in range(5)
+            )
+        return any(
+            board[0][col_i] == TileType.black
+            for col_i in range(5)
+        )
+
+    @classmethod
+    def _is_draw(
+        cls,
+        board: Board,
+        white_magic_cards: list,
+        black_magic_cards: list,
+    ) -> bool:
+        white_available_push_moves = Helper.get_available_moves(
+            player_sign=PlayerSign.white,
+            board=board,
+        )
+        black_available_push_moves = Helper.get_available_moves(
+            player_sign=PlayerSign.black,
+            board=board,
+        )
+        return not white_available_push_moves and not black_available_push_moves

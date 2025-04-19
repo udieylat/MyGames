@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from board import InvalidMove, Board
+from helper import Helper
 from models import PlayerSign, PlayerType, GameStatus
 from move import PushMove
 from player import Player
@@ -99,7 +100,9 @@ class GameManager:
         self._display()
 
     def _check_end_condition(self):
-        game_status = self._board.get_game_status()
+        game_status = Helper.get_game_status(
+            board=self._board,
+        )
         match game_status:
             case GameStatus.white_win:
                 print("White wins!")
