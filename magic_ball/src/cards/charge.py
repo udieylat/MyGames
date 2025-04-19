@@ -1,6 +1,7 @@
 from board import Board
 from board_utils import BoardUtils
 from cards.card import Card
+from cards.card_utils import CardUtils
 from helper import Helper
 from models import PlayerSign, TileType
 from move import Move
@@ -43,42 +44,15 @@ class Charge(Card):
                 move_indices.append((col_i, source_row_i, target_row_i))
 
         return [
-            cls._indices_to_move(
+            CardUtils.indices_to_move(
                 player_sign=player_sign,
-                col_i=col_i,
+                source_col_i=col_i,
                 source_row_i=source_row_i,
+                target_col_i=col_i,
                 target_row_i=target_row_i,
                 board=board,
+                description=f"charge to target tile: {BoardUtils.indices_to_tile(row_i=target_row_i, col_i=col_i)}",
                 card_index=card_index,
             )
             for col_i, source_row_i, target_row_i in move_indices
         ]
-
-    @classmethod
-    def _indices_to_move(
-        cls,
-        player_sign: PlayerSign,
-        col_i: int,
-        source_row_i: int,
-        target_row_i: int,
-        board: Board,
-        card_index: int,
-    ) -> Move:
-        result_board = Helper.move_pawn(
-            player_sign=player_sign,
-            source_col_i=col_i,
-            source_row_i=source_row_i,
-            target_col_i=col_i,
-            target_row_i=target_row_i,
-            board=board.copy_board(),
-        )
-        return Move(
-            player_sign=player_sign,
-            result_board=result_board,
-            result_ball_position=cls._push_ball(
-                player_sign=player_sign,
-                ball_position=board.ball_position,
-            ),
-            description=f"charge to target tile: {BoardUtils.indices_to_tile(row_i=target_row_i, col_i=col_i)}",
-            used_card_index=card_index,
-        )
