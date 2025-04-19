@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from magic_ball.src.board import Board, InvalidMove
 from magic_ball.src.models import PlayerSign, PlayerType, BallPosition
-from magic_ball.src.move import Move
 from magic_ball.src.player import Player
 
 
@@ -27,7 +26,6 @@ class GameManager:
         self._board = Board()
 
         self._player_turn: PlayerSign = PlayerSign.white
-        self._ball_position: BallPosition = BallPosition.middle
 
         self._game_on = True
         self._display()
@@ -78,8 +76,6 @@ class GameManager:
 
     def _display(self):
         self._board.display()
-        print(f"Ball position: {self._ball_position}")
-        print()
         print(f"Player turn: {self._player_turn}")
 
     def _complete_turn(self):
@@ -116,10 +112,8 @@ class GameManager:
         return (
             self._white_player.get_available_moves(
                 board=self._board,
-                ball_position=self._ball_position,
             ) == []
             and self._black_player.get_available_moves(
                 board=self._board,
-                ball_position=self._ball_position,
             ) == []
         )

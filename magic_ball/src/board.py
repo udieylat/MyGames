@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from magic_ball.src.models import PlayerSign
+from magic_ball.src.models import PlayerSign, BallPosition
 
 
 @dataclass
@@ -11,6 +11,7 @@ class InvalidMove(Exception):
 class Board:
     def __init__(self):
         self._board = self._init_board()
+        self._ball_position: BallPosition = BallPosition.middle
 
     def __getitem__(self, item: int) -> list[str]:
         return self._board[item]
@@ -20,6 +21,8 @@ class Board:
         for row_i in range(4, -1, -1):
             print(' '.join([str(row_i + 1)] + self._board[row_i]))
         print("  A B C D E")
+        print()
+        print(f"Ball position: {self._ball_position}")
         print()
 
     def push(

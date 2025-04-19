@@ -16,7 +16,6 @@ class Player:
     def get_available_moves(
         self,
         board: Board,
-        ball_position: BallPosition,
     ) -> list[Move]:
         # TODO
         pass
