@@ -14,7 +14,7 @@ class TestPull(unittest.TestCase):
 
     @parameterized.expand(PlayerSign.__members__.keys())
     def test_num_available_moves(self, player_sign: PlayerSign):
-        available_moves = self.pull.get_available_moves(
+        available_moves = self.pull.get_available_card_moves(
             player_sign=player_sign,
             board=self.board,
             card_index=0,
@@ -23,7 +23,7 @@ class TestPull(unittest.TestCase):
 
     def test_no_available_moves(self):
         self.board._ball_position = BallPosition.white
-        available_moves = self.pull.get_available_moves(
+        available_moves = self.pull.get_available_card_moves(
             player_sign=PlayerSign.white,
             board=self.board,
             card_index=0,
@@ -31,7 +31,7 @@ class TestPull(unittest.TestCase):
         self.assertEqual([], available_moves)
 
         self.board._ball_position = BallPosition.black
-        available_moves = self.pull.get_available_moves(
+        available_moves = self.pull.get_available_card_moves(
             player_sign=PlayerSign.black,
             board=self.board,
             card_index=0,
@@ -41,7 +41,7 @@ class TestPull(unittest.TestCase):
 
     @parameterized.expand(PlayerSign.__members__.keys())
     def test_ball_position(self, player_sign: PlayerSign):
-        available_moves = self.pull.get_available_moves(
+        available_moves = self.pull.get_available_card_moves(
             player_sign=player_sign,
             board=self.board,
             card_index=0,

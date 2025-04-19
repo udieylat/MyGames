@@ -14,7 +14,7 @@ class TestCharge(unittest.TestCase):
 
     @parameterized.expand(PlayerSign.__members__.keys())
     def test_num_available_moves(self, player_sign: PlayerSign):
-        available_moves = self.charge.get_available_moves(
+        available_moves = self.charge.get_available_card_moves(
             player_sign=player_sign,
             board=self.board,
             card_index=0,
@@ -23,7 +23,7 @@ class TestCharge(unittest.TestCase):
 
     @parameterized.expand(PlayerSign.__members__.keys())
     def test_ball_position(self, player_sign: PlayerSign):
-        available_moves = self.charge.get_available_moves(
+        available_moves = self.charge.get_available_card_moves(
             player_sign=player_sign,
             board=self.board,
             card_index=0,

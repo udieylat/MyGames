@@ -22,7 +22,7 @@ class Card:
         assert not self._already_used
         self._already_used = True
 
-    def get_available_moves(
+    def get_available_card_moves(
         self,
         player_sign: PlayerSign,
         board: Board,
