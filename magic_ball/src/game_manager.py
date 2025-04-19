@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from board import InvalidMove, Board
 from helper import Helper
+from players.player import Player
 from models import PlayerSign, PlayerType, GameStatus
 from move import PushMove
-from player import Player
 
 
 class GameManager:
@@ -131,8 +131,9 @@ class GameManager:
         if player.player_type == PlayerType.human:
             return
 
-        # TODO
-
+        move = player.find_move(
+            board=self._board,
+        )
         self._board.play_move(
             move=move,
         )
