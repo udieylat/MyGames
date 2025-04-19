@@ -175,7 +175,6 @@ class GameManager:
         self,
         card_index: int,
     ) -> list[Move]:
-        # TODO: verify that index is not used (maybe in card)
         player = (
             self._white_player
             if self._player_turn == PlayerSign.white

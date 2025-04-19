@@ -25,6 +25,13 @@ class Player:
     def is_human(self) -> bool:
         return False
 
+    def get_card_available_moves(
+        self,
+        card_index: int,
+    ) -> list[Move]:
+        # TODO: verify that index is not used
+        pass
+
     @abstractmethod
     def find_move(
         self,
