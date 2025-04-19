@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from magic_ball.src.board import Board, InvalidMove
-from magic_ball.src.models import PlayerSign, PlayerType
+from magic_ball.src.models import PlayerSign, PlayerType, MoveType
+from magic_ball.src.move import PushMove
 from magic_ball.src.player import Player
 
 
@@ -12,8 +13,14 @@ class GameManager:
         cls,
     ) -> GameManager:
         return GameManager(
-            white_player=Player(player_type=PlayerType.human),
-            black_player=Player(player_type=PlayerType.human),
+            white_player=Player(
+                player_sign=PlayerSign.white,
+                player_type=PlayerType.human,
+            ),
+            black_player=Player(
+                player_sign=PlayerSign.black,
+                player_type=PlayerType.human,
+            ),
         )
 
     def __init__(
@@ -42,9 +49,12 @@ class GameManager:
             print("Game is already over.")
             return
         try:
-            self._board.push(
-                target_tile=target_tile,
-                player=self._player_turn,
+            self._board.play_move(
+                move=PushMove(
+                    type=MoveType.push,
+                    player_sign=self._player_turn,
+                    # target_tile=target_tile,
+                ),
             )
             self._complete_turn()
         except InvalidMove as e:

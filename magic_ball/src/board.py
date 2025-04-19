@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from enum import StrEnum
 
-from magic_ball.src.models import PlayerSign, BallPosition
+from magic_ball.src.models import PlayerSign, BallPosition, MoveType
+from magic_ball.src.move import Move, PossibleMoveType
 
 
 @dataclass
@@ -33,7 +34,23 @@ class Board:
         print(f"Ball position: {self._ball_position}")
         print()
 
-    def push(
+    def play_move(
+        self,
+        move: PossibleMoveType,
+    ):
+        match move.type:
+            case MoveType.push:
+                self._push(
+                    target_tile=move.target_tile,
+                    player=move.player_sign,
+                )
+            case MoveType.magic_card:
+                # TODO
+                pass
+
+        # TODO: end turn
+
+    def _push(
         self,
         target_tile: str,
         player: PlayerSign,
@@ -75,13 +92,13 @@ class Board:
         # Complete push move.
         self._board[source_row_i][col_i] = TileType.vacant
         self._board[row_i][col_i] = (
-            'W'
+            TileType.white
             if player == PlayerSign.white
-            else 'B'
+            else TileType.black
         )
 
     @classmethod
-    def _init_board(cls) -> list[list[TileType]]:
+    def _init_board(cls) -> list[list[str]]:
         board = [[TileType.vacant for _ in range(5)] for _ in range(5)]
         board[0] = [TileType.white for _ in range(5)]  # White pawns
         board[4] = [TileType.black for _ in range(5)]  # Black pawns
@@ -123,7 +140,7 @@ class Board:
     def _is_tile_player_pawn(
         cls,
         player_sign: PlayerSign,
-        tile: TileType,
+        tile: str,
     ) -> bool:
         return (
             (player_sign == PlayerSign.white and tile == TileType.white)
