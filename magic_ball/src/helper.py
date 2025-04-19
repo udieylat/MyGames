@@ -14,14 +14,14 @@ class Helper:
         white_cards: list[Card],
         black_cards: list[Card],
     ) -> GameStatus:
-        if cls._is_player_win(
+        if BoardUtils.is_player_win(
             player_sign=PlayerSign.white,
-            board=board,
+            board=board.copy_board(),
         ):
             return GameStatus.white_win
-        if cls._is_player_win(
+        if BoardUtils.is_player_win(
             player_sign=PlayerSign.black,
-            board=board,
+            board=board.copy_board(),
         ):
             return GameStatus.black_win
         if cls._no_available_moves(
@@ -216,22 +216,6 @@ class Helper:
             col_i=col_i,
             row_i=row_i,
             board=board,
-        )
-
-    @classmethod
-    def _is_player_win(
-        cls,
-        player_sign: PlayerSign,
-        board: Board,
-    ) -> bool:
-        if player_sign == PlayerSign.white:
-            return any(
-                board[4][col_i] == TileType.white
-                for col_i in range(5)
-            )
-        return any(
-            board[0][col_i] == TileType.black
-            for col_i in range(5)
         )
 
     @classmethod

@@ -1,7 +1,23 @@
-from models import PlayerSign, TileType
+from models import PlayerSign, TileType, BoardType
 
 
 class BoardUtils:
+
+    @classmethod
+    def is_player_win(
+        cls,
+        player_sign: PlayerSign,
+        board: BoardType,
+    ) -> bool:
+        if player_sign == PlayerSign.white:
+            return any(
+                board[4][col_i] == TileType.white
+                for col_i in range(5)
+            )
+        return any(
+            board[0][col_i] == TileType.black
+            for col_i in range(5)
+        )
 
     @classmethod
     def is_tile_player_pawn(

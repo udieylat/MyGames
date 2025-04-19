@@ -1,6 +1,7 @@
 from abc import abstractmethod
 
 from board import Board
+from board_utils import BoardUtils
 from models import PlayerSign, BallPosition
 from move import Move
 
@@ -28,12 +29,17 @@ class Card:
             ball_position=board.ball_position,
         ):
             return []
-        # TODO: verify it's not a winning move
-        return self._get_available_moves(
+        available_moves = self._get_available_moves(
             player_sign=player_sign,
             board=board,
             card_index=card_index,
         )
+        for move in available_moves:
+            assert not BoardUtils.is_player_win(
+                player_sign=player_sign,
+                board=move.result_board,
+            ), f"Logical error, following card move is a winning move: {move.description}"
+        return available_moves
 
     @classmethod
     def _ball_position_allowed(
