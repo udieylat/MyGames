@@ -8,6 +8,13 @@ class GameStatus(IntEnum):
     draw = 4
 
 
+class TileType(StrEnum):
+    white = "W"
+    black = "B"
+    vacant = "."
+    wall = "#"
+
+
 class PlayerSign(StrEnum):
     white = "white"
     black = "black"

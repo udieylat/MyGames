@@ -1,20 +1,14 @@
 from dataclasses import dataclass
-from enum import StrEnum
 
-from models import BallPosition, GameStatus, PlayerSign, MoveType
-from move import PossibleMoveType
+from helper import Helper
+from models import BallPosition, GameStatus, PlayerSign, MoveType, TileType
+from move import PossibleMoveType, PushMove
 
 
 @dataclass
 class InvalidMove(Exception):
     description: str
 
-
-class TileType(StrEnum):
-    white = "W"
-    black = "B"
-    vacant = "."
-    wall = "#"
 
 
 class Board:
@@ -25,7 +19,11 @@ class Board:
     def __getitem__(self, item: int) -> list[str]:
         return self._board[item]
 
-    def get_game_status(self) -> GameStatus:
+    def get_game_status(
+        self,
+        white_magic_cards: list = [],
+        black_magic_cards: list = [],  # TODO: impl once ready with magic cards
+    ) -> GameStatus:
         if self._is_player_win(
             player_sign=PlayerSign.white,
         ):
@@ -34,7 +32,10 @@ class Board:
             player_sign=PlayerSign.black,
         ):
             return GameStatus.black_win
-        if self._is_draw():  # TODO: impl also the defensive cards win condition
+        if self._is_draw(
+            white_magic_cards=white_magic_cards,
+            black_magic_cards=black_magic_cards,
+        ):  # TODO: impl also the defensive cards win condition
             return GameStatus.draw
         return GameStatus.ongoing
 
@@ -71,7 +72,7 @@ class Board:
         self._validate_tile(
             tile=target_tile,
         )
-        col_i, row_i = self._tile_index(
+        col_i, row_i = Helper.tile_index(
             tile=target_tile,
         )
         target_board_tile = self._board[row_i][col_i]
@@ -91,14 +92,14 @@ class Board:
             )
 
         source_board_tile = self._board[source_row_i][col_i]
-        if not self._is_tile_player_pawn(
+        if not Helper.is_tile_player_pawn(
             player_sign=player,
             tile=source_board_tile,
         ):
             raise InvalidMove(
                 description=(
                     f"source board tile is not a valid pawn: "
-                    f"{self._indices_to_tile(col_i=col_i, row_i=source_row_i)} = {source_board_tile}"
+                    f"{Helper.indices_to_tile(col_i=col_i, row_i=source_row_i)} = {source_board_tile}"
                 ),
             )
 
@@ -131,35 +132,6 @@ class Board:
                 description=f"tile '{tile}' format is invalid",
             )
 
-    @classmethod
-    def _tile_index(
-        cls,
-        tile: str,
-    ) -> tuple[int, int]:
-        return (
-            "ABCDE".index(tile[0]),
-            "12345".index(tile[1]),
-        )
-
-    @classmethod
-    def _indices_to_tile(
-        cls,
-        col_i: int,
-        row_i: int,
-    ) -> str:
-        return "ABCDE"[col_i] + "12345"[row_i]
-
-    @classmethod
-    def _is_tile_player_pawn(
-        cls,
-        player_sign: PlayerSign,
-        tile: str,
-    ) -> bool:
-        return (
-            (player_sign == PlayerSign.white and tile == TileType.white)
-            or (player_sign == PlayerSign.black and tile == TileType.black)
-        )
-
     def _is_player_win(
         self,
         player_sign: PlayerSign,
@@ -173,3 +145,22 @@ class Board:
             self._board[0][col_i] == TileType.black
             for col_i in range(5)
         )
+
+    def _is_draw(
+        self,
+        white_magic_cards: list,
+        black_magic_cards: list,
+    ) -> bool:
+        white_available_push_moves = []
+        for row_i in range(5):
+            for col_i in range(5):
+                if self._board[row_i][col_i] == TileType.white:
+                    if row_i < 4 and self._board[row_i + 1][col_i] == TileType.vacant:
+                        white_available_push_moves.append(
+                            PushMove(
+                                player_sign=PlayerSign.white,
+                                target_tile=self._indices_to_tile(row_i=row_i, col_i=col_i),
+                            )
+                        )
+                    if i < 4 and board[i + 1][j] == '.':
+                        moves.append(((i, j), (i + 1, j)))  # Move down
