@@ -5,6 +5,7 @@ from cards.card import Card
 from cards.charge import Charge
 from cards.fire import Fire
 from cards.jump import Jump
+from cards.kamikaze import Kamikaze
 from cards.knife import Knife
 from cards.pull import Pull
 from cards.side_step import SideStep
@@ -40,6 +41,6 @@ class CardsRandomizer:
             SideStep(),
             Jump(),
             # Tank(),
-            # Kamikaze(),
+            Kamikaze(),
             Spawn(),
         ]
