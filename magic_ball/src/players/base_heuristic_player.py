@@ -52,4 +52,4 @@ class BaseHeuristicPlayer(Player):
             )
             for move in available_moves
         ]
-        return min(scores_and_moves)[1]
+        return max(scores_and_moves)[1]

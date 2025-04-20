@@ -20,14 +20,16 @@ class Scorer:
         num_unused_opponent_cards: int,
     ) -> int:
         """
-        Minimal score is best.
+        Maximal score is best.
+        Method: score board for each player and reduce the player score from the opponent score.
+        This means: positive score means player has the advantage and negative score means the opponent has advantage.
         """
         # Always choose a winning move.
         if BoardUtils.is_player_win(
             player_sign=self._player_sign,
             board=result_board,
         ):
-            return -99999999999
+            return 99999999999
         # Always avoid a losing move.
         if BoardUtils.is_player_one_to_win(
             player_sign=BoardUtils.inverse_player_sign(
@@ -35,6 +37,6 @@ class Scorer:
             ),
             board=result_board,
         ):
-            return 99999999999
-        # TODO
+            return -99999999999
+        # TODO: return player_score - opponent_score
         return 0
