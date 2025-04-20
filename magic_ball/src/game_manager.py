@@ -160,7 +160,7 @@ class GameManager:
             self._print("Pass turn, no available moves for player.")
             self._complete_turn()
 
-    def show_game_log(self):
+    def log(self):
         for i, (white_move, black_move) in enumerate(zip(self._game_log[::2], self._game_log[1::2])):
             print(f" {i+1}. {white_move} ; {black_move}")
         if len(self._game_log) % 2 == 1:
@@ -237,25 +237,26 @@ class GameManager:
         )
         match game_status:
             case GameStatus.white_win:
-                self._print("White wins!")
+                self._print("\nWhite wins!")
                 self._game_on = False
             case GameStatus.black_win:
-                self._print("Black wins!")
+                self._print("\nBlack wins!")
                 self._game_on = False
             case GameStatus.draw:
-                self._print("Game is drawn!")
+                self._print("\nGame is drawn!")
                 self._game_on = False
             case GameStatus.white_defensive_win:
-                self._print("White wins! (defensive)")
+                self._print("\nWhite wins! (defensive)")
                 self._game_on = False
             case GameStatus.black_defensive_win:
-                self._print("Black wins! (defensive)")
+                self._print("\nBlack wins! (defensive)")
                 self._game_on = False
 
         if self._game_on:
             return
 
         # Display all cards at end of game.
+        self._print()
         self._print("White cards:")
         self._display_player_cards(
             player=self._white_player,

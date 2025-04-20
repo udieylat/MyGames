@@ -51,4 +51,7 @@ class BaseHeuristicPlayer(Player):
             )
             for move in available_moves
         ]
-        return max(scores_and_moves)[1]
+        return max(
+            scores_and_moves,
+            key=lambda scores_and_move: scores_and_move[0],
+        )[1]

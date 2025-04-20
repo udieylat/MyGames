@@ -62,6 +62,10 @@ class Scorer:
         ball_position: BallPosition,
         num_unused_player_cards: int,
     ) -> int:
+
+        # TODO: no opponent unused cards is a huge advantage
+        # TODO: how does the AI not play "pull" immediately?
+
         return (
             self._config.score_multipliers.score_per_unused_card * num_unused_player_cards
             + self._board_score(
