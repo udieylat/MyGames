@@ -45,7 +45,6 @@ class Scorer:
             board=board,
             ball_position=ball_position,
             num_unused_player_cards=num_unused_player_cards,
-            num_unused_opponent_cards=num_unused_opponent_cards,
         ) - self._score_move_for_player(
             player_sign=BoardUtils.inverse_player_sign(
                 player_sign=self._player_sign,
@@ -53,7 +52,6 @@ class Scorer:
             board=board,
             ball_position=ball_position,
             num_unused_player_cards=num_unused_opponent_cards,
-            num_unused_opponent_cards=num_unused_player_cards,
         )
 
     def _score_move_for_player(
@@ -62,21 +60,26 @@ class Scorer:
         board: BoardType,
         ball_position: BallPosition,
         num_unused_player_cards: int,
-        num_unused_opponent_cards: int,
     ) -> int:
-        multipliers = self._config.score_multipliers
-        ball_position_score = self._ball_score(
-            player_sign=player_sign,
-            ball_position=ball_position,
-        )
-
-        # TODO: board score
-
         return (
-            multipliers.num_unused_player_cards_score * num_unused_player_cards
-            - multipliers.num_unused_player_cards_score * num_unused_opponent_cards
-            + ball_position_score
+            self._config.score_multipliers.num_unused_player_cards_score * num_unused_player_cards
+            + self._board_score(
+                player_sign=player_sign,
+                board=board,
+            )
+            + self._ball_score(
+                player_sign=player_sign,
+                ball_position=ball_position,
+            )
         )
+
+    def _board_score(
+        self,
+        player_sign: PlayerSign,
+        board: BoardType,
+    ) -> int:
+        # TODO
+        return 0
 
     def _ball_score(
         self,
@@ -84,15 +87,13 @@ class Scorer:
         ball_position: BallPosition,
     ) -> int:
         return (
-            0
-            if ball_position == BallPosition.middle
-            else 1
+            self._config.score_multipliers.ball_position_score
             if self._is_ball_at_player(
                 player_sign=player_sign,
                 ball_position=ball_position,
             )
-            else -1
-        ) * self._config.score_multipliers.ball_position_score
+            else 0
+        )
 
     @classmethod
     def _is_ball_at_player(
