@@ -170,7 +170,7 @@ class GameManager:
     def _verbose(self) -> bool:
         return self._white_player.is_human or self._black_player.is_human
 
-    def _print(self, message: str):
+    def _print(self, message: str = ""):
         if self._verbose:
             print(message)
 
@@ -207,13 +207,20 @@ class GameManager:
         self._board.display()
         if not self._game_on:
             return
-        player = self._get_player()
+        self._display_player_cards(
+            player=self._get_player(),
+        )
+        self._print("")
+        self._print(f"Player turn: {self._player_turn}")
+
+    def _display_player_cards(
+        self,
+        player: Player,
+    ):
         for i, card in enumerate(player.cards):
             index_str = "X" if card.already_used else f"{i}."
             suffix = " [D]" if card.is_defensive else ""
             self._print(f" {index_str} {card.__class__.__name__}{suffix}")
-        self._print("")
-        self._print(f"Player turn: {self._player_turn}")
 
     def _complete_turn(self):
         self._player_turn = BoardUtils.inverse_player_sign(
@@ -245,7 +252,15 @@ class GameManager:
                 self._print("Black wins! (defensive)")
                 self._game_on = False
 
-        # TODO: print both hands
+        self._print("White cards:")
+        self._display_player_cards(
+            player=self._white_player,
+        )
+        self._print()
+        self._print("Black cards:")
+        self._display_player_cards(
+            player=self._white_player,
+        )
 
     def _get_player(self) -> Player:
         return (
