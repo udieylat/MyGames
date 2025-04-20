@@ -63,5 +63,43 @@ class Scorer:
         num_unused_player_cards: int,
         num_unused_opponent_cards: int,
     ) -> int:
-        # TODO
-        return 0
+        multipliers = self._config.score_multipliers
+        ball_position_score = self._ball_score(
+            player_sign=player_sign,
+            ball_position=result_ball_position,
+        )
+
+        # TODO: board score
+
+        return (
+            multipliers.num_unused_player_cards_score * num_unused_player_cards
+            - multipliers.num_unused_player_cards_score * num_unused_opponent_cards
+            + ball_position_score
+        )
+
+    def _ball_score(
+        self,
+        player_sign: PlayerSign,
+        ball_position: BallPosition,
+    ) -> int:
+        return (
+            0
+            if ball_position == BallPosition.middle
+            else 1
+            if self._is_ball_at_player(
+                player_sign=player_sign,
+                ball_position=ball_position,
+            )
+            else -1
+        ) * self._config.score_multipliers.ball_position_score
+
+    @classmethod
+    def _is_ball_at_player(
+        cls,
+        player_sign: PlayerSign,
+        ball_position: BallPosition,
+    ) -> bool:
+        return (
+            (ball_position == BallPosition.white and player_sign == PlayerSign.white)
+            or (ball_position == BallPosition.black and player_sign == PlayerSign.black)
+        )
