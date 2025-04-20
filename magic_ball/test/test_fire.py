@@ -5,7 +5,7 @@ from parameterized import parameterized
 from board import Board
 from board_utils import BoardUtils
 from cards.fire import Fire
-from models import PlayerSign, BallPosition
+from models import PlayerSign
 
 
 class TestFire(unittest.TestCase):
