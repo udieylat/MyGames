@@ -1,6 +1,6 @@
 from board_utils import BoardUtils
 from helper import Helper
-from models import PlayerSign, BoardType, BallPosition
+from models import PlayerSign, BoardType, BallPosition, TileType
 from players.player_config import PlayerConfig
 
 
@@ -79,12 +79,69 @@ class Scorer:
         player_sign: PlayerSign,
         board: BoardType,
     ) -> int:
-        # TODO: score per pawn. for each free pawn: distance from last row. for each other pawn... const?
         pawn_indices = Helper.get_pawn_indices(
             player_sign=player_sign,
             board=board,
         )
-        return 0
+        free_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
+            player_sign=player_sign,
+            board=board,
+            pawn_indices=pawn_indices,
+        )
+
+        num_pawns_score = len(pawn_indices) * self._config.score_multipliers.score_per_pawn
+        free_pawns_score = len(free_pawn_distances_from_start_tile) * self._config.score_multipliers.score_per_free_pawn
+        free_pawns_distance_score = sum(
+            free_pawn_distance_from_start_tile * self._config.score_multipliers.free_pawn_score_per_distance_from_start_tile
+            for free_pawn_distance_from_start_tile in free_pawn_distances_from_start_tile
+        )
+        return num_pawns_score + free_pawns_score + free_pawns_distance_score
+
+    @classmethod
+    def _get_free_pawn_distances_from_start_tile(
+        cls,
+        player_sign: PlayerSign,
+        board: BoardType,
+        pawn_indices: list[tuple[int, int]],
+    ) -> list[int]:
+        # TODO: test
+        free_pawn_row_indices = [
+            row_i
+            for col_i, row_i in pawn_indices
+            if cls._is_free_pawn(
+                player_sign=player_sign,
+                board=board,
+                col_i=col_i,
+                row_i=row_i,
+            )
+        ]
+        return (
+            free_pawn_row_indices
+            if player_sign == PlayerSign.white
+            else [
+                4 - free_pawn_row_index
+                for free_pawn_row_index in free_pawn_row_indices
+            ]
+        )
+
+    @classmethod
+    def _is_free_pawn(
+        cls,
+        player_sign: PlayerSign,
+        board: BoardType,
+        col_i: int,
+        row_i: int,
+    ) -> bool:
+        # TODO: test
+        rows_range = (
+            range(row_i + 1, 5)
+            if player_sign == PlayerSign.white
+            else range(row_i - 1, -1, -1)
+        )
+        return all(
+            board[target_row_i][col_i] == TileType.vacant
+            for target_row_i in rows_range
+        )
 
     def _ball_score(
         self,
