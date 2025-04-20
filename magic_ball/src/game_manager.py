@@ -72,8 +72,7 @@ class GameManager:
 
         self._game_on = True
         self._game_log: list[str] = []
-        self._play_ai_player_turn_if_necessary()
-        self._display()
+        self._play_ai_player_turn_if_necessary()  # Also displays board on human's turn.
 
     def __repr__(self) -> str:
         self._display()
@@ -164,6 +163,8 @@ class GameManager:
     def show_game_log(self):
         for i, (white_move, black_move) in enumerate(zip(self._game_log[::2], self._game_log[1::2])):
             print(f" {i+1}. {white_move} ; {black_move}")
+        if len(self._game_log) % 2 == 1:
+            print(f" {int(len(self._game_log)/2) + 1}. {self._game_log[-1]}")
 
     @property
     def _verbose(self) -> bool:
