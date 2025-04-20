@@ -20,7 +20,7 @@ class Wall(Card):
         board: Board,
         card_index: int,
     ) -> list[Move]:
-        pawn_indices = CardUtils.get_pawn_indices(
+        pawn_indices = Helper.get_pawn_indices(
             player_sign=player_sign,
             board=board,
         )

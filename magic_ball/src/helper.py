@@ -223,6 +223,22 @@ class Helper:
         )
 
     @classmethod
+    def get_pawn_indices(
+        cls,
+        player_sign: PlayerSign,
+        board: Board | BoardType,
+    ) -> list[tuple[int, int]]:
+        return [
+            (col_i, row_i)
+            for col_i in range(5)
+            for row_i in range(5)
+            if BoardUtils.is_tile_player_pawn(
+                player_sign=player_sign,
+                tile=board[row_i][col_i],
+            )
+        ]
+
+    @classmethod
     def _no_available_moves(
         cls,
         board: Board,

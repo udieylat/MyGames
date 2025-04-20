@@ -1,4 +1,5 @@
 from board_utils import BoardUtils
+from helper import Helper
 from models import PlayerSign, BoardType, BallPosition
 from players.player_config import PlayerConfig
 
@@ -79,6 +80,10 @@ class Scorer:
         board: BoardType,
     ) -> int:
         # TODO: score per pawn. for each free pawn: distance from last row. for each other pawn... const?
+        pawn_indices = Helper.get_pawn_indices(
+            player_sign=player_sign,
+            board=board,
+        )
         return 0
 
     def _ball_score(

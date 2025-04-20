@@ -2,6 +2,7 @@ from board import Board
 from board_utils import BoardUtils
 from cards.card import Card
 from cards.card_utils import CardUtils
+from helper import Helper
 from models import PlayerSign, TileType
 from move import Move
 
@@ -19,7 +20,7 @@ class Charge(Card):
         board: Board,
         card_index: int,
     ) -> list[Move]:
-        pawn_indices = CardUtils.get_pawn_indices(
+        pawn_indices = Helper.get_pawn_indices(
             player_sign=player_sign,
             board=board,
         )
