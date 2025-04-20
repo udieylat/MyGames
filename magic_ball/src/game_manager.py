@@ -263,7 +263,7 @@ class GameManager:
         self._print()
         self._print("Black cards:")
         self._display_player_cards(
-            player=self._white_player,
+            player=self._black_player,
         )
 
     def _get_player(self) -> Player:
