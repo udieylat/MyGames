@@ -19,6 +19,8 @@ class Bishop(Card):
             player_sign=player_sign,
             board=board,
         )
+        min_allowed_row = 0 if player_sign == PlayerSign.white else 1
+        max_allowed_row = 3 if player_sign == PlayerSign.white else 4
         direction_offsets = [
             (1, 1),
             (1, -1),
@@ -35,7 +37,7 @@ class Bishop(Card):
                     target_row_i += row_i_offset
                     if (
                         not 0 <= target_col_i <= 4
-                        or not 0 <= target_row_i <= 4
+                        or not min_allowed_row <= target_row_i <= max_allowed_row
                         or board[target_row_i][target_col_i] != TileType.vacant
                     ):
                         break
