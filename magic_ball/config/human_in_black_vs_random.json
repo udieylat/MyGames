@@ -1,0 +1,8 @@
+{
+  "white_player": {
+    "type": "random"
+  },
+  "black_player": {
+    "type": "human"
+  }
+}
