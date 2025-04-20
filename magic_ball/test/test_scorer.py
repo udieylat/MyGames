@@ -13,7 +13,10 @@ class TestScorer(unittest.TestCase):
             config=PlayerConfig(
                 type=PlayerType.base_heuristic,
                 score_multipliers=ScoreMultipliers(
-                    num_unused_player_cards_score=50,
+                    score_per_pawn=10,
+                    score_per_free_pawn=100,
+                    free_pawn_score_per_distance_from_start_tile=200,
+                    score_per_unused_card=50,
                     ball_position_score=100,
                 ),
             ),

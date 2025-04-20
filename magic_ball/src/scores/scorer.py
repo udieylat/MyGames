@@ -62,7 +62,7 @@ class Scorer:
         num_unused_player_cards: int,
     ) -> int:
         return (
-            self._config.score_multipliers.num_unused_player_cards_score * num_unused_player_cards
+            self._config.score_multipliers.score_per_unused_card * num_unused_player_cards
             + self._board_score(
                 player_sign=player_sign,
                 board=board,
@@ -78,7 +78,7 @@ class Scorer:
         player_sign: PlayerSign,
         board: BoardType,
     ) -> int:
-        # TODO
+        # TODO: score per pawn. for each free pawn: distance from last row. for each other pawn... const?
         return 0
 
     def _ball_score(
