@@ -51,8 +51,8 @@ class Scorer:
             ),
             result_board=result_board,
             result_ball_position=result_ball_position,
-            num_unused_player_cards=num_unused_player_cards,
-            num_unused_opponent_cards=num_unused_opponent_cards,
+            num_unused_player_cards=num_unused_opponent_cards,
+            num_unused_opponent_cards=num_unused_player_cards,
         )
 
     def _score_move_for_player(

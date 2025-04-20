@@ -59,6 +59,7 @@ class GameManager:
         self._player_turn: PlayerSign = PlayerSign.white
 
         self._game_on = True
+        self._game_log: list[str] = []
         self._play_ai_player_turn_if_necessary()
         self._display()
 
@@ -148,6 +149,10 @@ class GameManager:
             self._print("Pass turn, no available moves for player.")
             self._complete_turn()
 
+    def show_game_log(self):
+        for i, (white_move, black_move) in enumerate(zip(self._game_log[::2], self._game_log[1::2])):
+            print(f" {i+1}. {white_move} ; {black_move}")
+
     @property
     def _verbose(self) -> bool:
         return self._white_player.is_human or self._black_player.is_human
@@ -181,6 +186,7 @@ class GameManager:
         self._board.play_move(
             move=move,
         )
+        self._game_log.append(move.description)
 
     def _display(self):
         if not self._verbose:
