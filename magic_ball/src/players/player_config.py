@@ -10,7 +10,8 @@ class PlayerType(StrEnum):
 
 
 class ScoreMultipliers(BaseModel):
-    pass
+    num_unused_player_cards_score: int
+    ball_position_score: int
 
 
 class PlayerConfig(BaseModel):

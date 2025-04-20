@@ -1,5 +1,4 @@
 from board import Board
-from board_utils import BoardUtils
 from cards.card import Card
 from helper import Helper
 from models import PlayerSign
@@ -43,8 +42,8 @@ class BaseHeuristicPlayer(Player):
         scores_and_moves = [
             (
                 self._scorer.score_move(
-                    result_board=move.result_board,
-                    result_ball_position=move.result_ball_position,
+                    board=move.result_board,
+                    ball_position=move.result_ball_position,
                     num_unused_player_cards=len(unused_player_cards),
                     num_unused_opponent_cards=len(unused_opponent_cards),
                 ),
