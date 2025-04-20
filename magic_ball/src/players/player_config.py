@@ -9,5 +9,10 @@ class PlayerType(StrEnum):
     base_heuristic = "base_heuristic"
 
 
+class ScoreMultipliers(BaseModel):
+    pass
+
+
 class PlayerConfig(BaseModel):
     type: PlayerType
+    score_multipliers: ScoreMultipliers | None = None

@@ -38,5 +38,30 @@ class Scorer:
             board=result_board,
         ):
             return -99999999999
-        # TODO: return player_score - opponent_score
+
+        return self._score_move_for_player(
+            player_sign=self._player_sign,
+            result_board=result_board,
+            result_ball_position=result_ball_position,
+            num_unused_player_cards=num_unused_player_cards,
+            num_unused_opponent_cards=num_unused_opponent_cards,
+        ) - self._score_move_for_player(
+            player_sign=BoardUtils.inverse_player_sign(
+                player_sign=self._player_sign,
+            ),
+            result_board=result_board,
+            result_ball_position=result_ball_position,
+            num_unused_player_cards=num_unused_player_cards,
+            num_unused_opponent_cards=num_unused_opponent_cards,
+        )
+
+    def _score_move_for_player(
+        self,
+        player_sign: PlayerSign,
+        result_board: BoardType,
+        result_ball_position: BallPosition,
+        num_unused_player_cards: int,
+        num_unused_opponent_cards: int,
+    ) -> int:
+        # TODO
         return 0
