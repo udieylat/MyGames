@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from pydantic import BaseModel, Field
+
 from board import InvalidMove, Board
 from board_utils import BoardUtils
 from cards.card import Card
@@ -12,30 +14,26 @@ from players.player_config import PlayerConfig, PlayerType
 from players.player_factory import PlayerFactory
 
 
+class GameConfig(BaseModel):
+    white_player: PlayerConfig = Field(default_factory=PlayerConfig.human)
+    black_player: PlayerConfig = Field(default_factory=PlayerConfig.human)
+
+
 class GameManager:
 
     @classmethod
     def new(
         cls,
-        white_player_config: PlayerConfig | None = None,
-        black_player_config: PlayerConfig | None = None,
+        config: GameConfig = GameConfig(),
         cards_pull: list[Card] | None = None,
     ) -> GameManager:
-        if white_player_config is None:
-            white_player_config = PlayerConfig(
-                type=PlayerType.human,
-            )
-        if black_player_config is None:
-            black_player_config = PlayerConfig(
-                type=PlayerType.human,
-            )
         return GameManager(
             white_player=PlayerFactory.generate_player(
-                player_config=white_player_config,
+                player_config=config.white_player,
                 player_sign=PlayerSign.white,
             ),
             black_player=PlayerFactory.generate_player(
-                player_config=black_player_config,
+                player_config=config.black_player,
                 player_sign=PlayerSign.black,
             ),
             cards_pull=cards_pull,

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from enum import StrEnum
 
 from pydantic import BaseModel
@@ -17,3 +19,9 @@ class ScoreMultipliers(BaseModel):
 class PlayerConfig(BaseModel):
     type: PlayerType
     score_multipliers: ScoreMultipliers | None = None
+
+    @classmethod
+    def human(cls) -> PlayerConfig:
+        return PlayerConfig(
+            type=PlayerType.human,
+        )
