@@ -1,5 +1,6 @@
 import random
 
+from cards.bishop import Bishop
 from cards.card import Card
 from cards.charge import Charge
 from cards.fire import Fire
@@ -31,7 +32,7 @@ class CardsRandomizer:
             Wall(),
             Knife(),
             Charge(),
-            # Diag(),
+            Bishop(),
             Pull(),
             # Negate(),
             # Scare(),
