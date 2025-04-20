@@ -33,6 +33,12 @@ class Board:
     def __getitem__(self, item: int) -> list[str]:
         return self._board[item]
 
+    def clone(self) -> Board:
+        return Board(
+            board=self.copy_board(),
+            ball_position=self._ball_position,
+        )
+
     def copy_board(self) -> BoardType:
         return copy.deepcopy(self._board)
 
