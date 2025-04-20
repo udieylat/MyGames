@@ -252,6 +252,10 @@ class GameManager:
                 self._print("Black wins! (defensive)")
                 self._game_on = False
 
+        if self._game_on:
+            return
+
+        # Display all cards at end of game.
         self._print("White cards:")
         self._display_player_cards(
             player=self._white_player,
