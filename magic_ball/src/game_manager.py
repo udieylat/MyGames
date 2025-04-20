@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import json
+
 from pydantic import BaseModel, Field
 
 from board import InvalidMove, Board
@@ -10,7 +12,7 @@ from helper import Helper
 from move import Move
 from players.player import Player, NoAvailableMoves
 from models import PlayerSign, GameStatus
-from players.player_config import PlayerConfig, PlayerType
+from players.player_config import PlayerConfig
 from players.player_factory import PlayerFactory
 
 
@@ -36,6 +38,18 @@ class GameManager:
                 player_config=config.black_player,
                 player_sign=PlayerSign.black,
             ),
+            cards_pull=cards_pull,
+        )
+
+    @classmethod
+    def from_config_filename(
+        cls,
+        config_filename: str,
+        cards_pull: list[Card] | None = None,
+    ) -> GameManager:
+        config = GameConfig.model_validate(json.load(open(config_filename)))
+        return GameManager.new(
+            config=config,
             cards_pull=cards_pull,
         )
 

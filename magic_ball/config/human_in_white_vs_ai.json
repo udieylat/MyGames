@@ -1,0 +1,12 @@
+{
+  "white_player": {
+    "type": "human"
+  },
+  "black_player": {
+    "type": "base_heuristic",
+    "score_multipliers": {
+      "num_unused_player_cards_score": 1,
+      "ball_position_score": 1
+    }
+  }
+}
