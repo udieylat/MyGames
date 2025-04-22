@@ -57,7 +57,7 @@ class Fire(Card):
                 player_sign=player_sign,
                 ball_position=board.ball_position,
             ),
-            description=f"{cls.name} in row: {row_i}",
+            description=f"{cls.name} in row: {row_i + 1}",
             used_card_index=card_index,
         )
 
