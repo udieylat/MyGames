@@ -17,6 +17,8 @@ class CardsRandomizer:
     @classmethod
     def draw_cards(
         cls,
+        white_card_names: list[str] | None = None,
+        black_card_names: list[str] | None = None,
         cards_pull: list[Card] | None = None,
     ) -> tuple[list[Card], list[Card]]:
         all_cards = (
@@ -24,8 +26,66 @@ class CardsRandomizer:
             if cards_pull is None
             else cards_pull[:]
         )
-        random.shuffle(all_cards)
-        return all_cards[:3], all_cards[3: 6]
+        if not white_card_names and not black_card_names:
+            random.shuffle(all_cards)
+            return all_cards[:3], all_cards[3: 6]
+        elif white_card_names and not black_card_names:
+            white_cards = cls._get_cards(
+                card_names=white_card_names,
+                cards_pull=cards_pull,
+            )
+            black_cards = cls._randomize_from_pull(
+                cards_pull=cards_pull,
+                ignore_card_names=white_card_names,
+            )
+        elif not white_card_names and black_card_names:
+            black_cards = cls._get_cards(
+                card_names=black_card_names,
+                cards_pull=cards_pull,
+            )
+            white_cards = cls._randomize_from_pull(
+                cards_pull=cards_pull,
+                ignore_card_names=black_card_names,
+            )
+        else:
+            white_cards = cls._get_cards(
+                card_names=white_card_names,
+                cards_pull=cards_pull,
+            )
+            black_cards = cls._get_cards(
+                card_names=black_card_names,
+                cards_pull=cards_pull,
+            )
+        return white_cards, black_cards
+
+    @classmethod
+    def _randomize_from_pull(
+        cls,
+        cards_pull: list[Card],
+        ignore_card_names: list[str],
+    ) -> list[Card]:
+        all_valid_cards = [
+            card
+            for card in cards_pull
+            if card.name not in ignore_card_names
+        ]
+        random.shuffle(all_valid_cards)
+        return all_valid_cards[:3]
+
+    @classmethod
+    def _get_cards(
+        cls,
+        card_names: list[str],
+        cards_pull: list[Card],
+    ) -> list[Card]:
+        name_to_card = {
+            card.name: card
+            for card in cards_pull
+        }
+        return [
+            name_to_card[card_name]
+            for card_name in card_names
+        ]
 
     @classmethod
     def _full_compendium(cls) -> list[Card]:
