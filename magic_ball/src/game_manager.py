@@ -197,7 +197,6 @@ class GameManager:
         self._print_game_over_if_necessary(force=True)
 
     def export_summary(self) -> GameSummary:
-        # player cards (sorted), result (w/o defensive), defensive, num (white) moves
         return GameSummary(
             white_cards=self._white_player.card_names,
             black_cards=self._black_player.card_names,

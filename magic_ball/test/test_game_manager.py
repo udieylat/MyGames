@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from game_manager import GameManager, GameConfig
@@ -72,6 +73,14 @@ class TestGameManager(unittest.TestCase):
 
         # No cards scenario means white defensive win.
         self.assertEqual(self._get_game_status(gm=gm), GameStatus.white_defensive_win)
+
+    def test_fixed_game(self):
+        filename = os.path.dirname(os.path.abspath(__file__))
+        gm = GameManager.from_config_filename(f"{filename}/../config/fixed_game.json")
+        game_summary = gm.export_summary()
+        self.assertEqual(game_summary.winner, "black")
+        self.assertEqual(game_summary.num_white_moves, 5)
+        self.assertEqual(game_summary.final_ball_position, "white")
 
     @classmethod
     def _get_game_status(cls, gm: GameManager) -> GameStatus:

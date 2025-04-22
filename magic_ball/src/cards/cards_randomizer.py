@@ -21,14 +21,14 @@ class CardsRandomizer:
         black_card_names: list[str] | None = None,
         cards_pull: list[Card] | None = None,
     ) -> tuple[list[Card], list[Card]]:
-        all_cards = (
+        cards_pull = (
             cls._full_compendium()
             if cards_pull is None
             else cards_pull[:]
         )
         if not white_card_names and not black_card_names:
-            random.shuffle(all_cards)
-            return all_cards[:3], all_cards[3: 6]
+            random.shuffle(cards_pull)
+            return cards_pull[:3], cards_pull[3: 6]
         elif white_card_names and not black_card_names:
             white_cards = cls._get_cards(
                 card_names=white_card_names,

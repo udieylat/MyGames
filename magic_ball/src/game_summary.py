@@ -1,7 +1,5 @@
 from pydantic import BaseModel
 
-from models import BallPosition
-
 
 class GameSummary(BaseModel):
     white_cards: list[str]
@@ -10,4 +8,4 @@ class GameSummary(BaseModel):
     is_black_defensive: bool
     winner: str  # white / black / draw
     num_white_moves: int
-    final_ball_position: BallPosition
+    final_ball_position: str
