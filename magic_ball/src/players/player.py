@@ -31,8 +31,22 @@ class Player:
         return self._cards
 
     @property
+    def card_names(self) -> list[str]:
+        return sorted(
+            card.name
+            for card in self.cards
+        )
+
+    @property
     def is_human(self) -> bool:
         return False
+
+    @property
+    def is_defensive(self) -> bool:
+        return all(
+            card.is_defensive
+            for card in self.cards
+        )
 
     @abstractmethod
     def find_move(

@@ -8,6 +8,7 @@ from board import InvalidMove, Board
 from board_utils import BoardUtils
 from cards.card import Card
 from cards.cards_randomizer import CardsRandomizer
+from game_summary import GameSummary
 from helper import Helper
 from move import Move
 from players.player import Player, NoAvailableMoves
@@ -194,6 +195,24 @@ class GameManager:
             print(f" {int(len(self._game_log)/2) + 1}. {self._game_log[-1]}")
         self._board.display()
         self._print_game_over_if_necessary(force=True)
+
+    def export_summary(self) -> GameSummary:
+        # player cards (sorted), result (w/o defensive), defensive, num (white) moves
+        return GameSummary(
+            white_cards=self._white_player.card_names,
+            black_cards=self._black_player.card_names,
+            is_white_defensive=self._white_player.is_defensive,
+            is_black_defensive=self._black_player.is_defensive,
+            winner=(
+                "white"
+                if self._game_status in [GameStatus.white_win, GameStatus.white_defensive_win]
+                else "black"
+                if self._game_status in [GameStatus.black_win, GameStatus.black_defensive_win]
+                else "draw"
+            ),
+            num_white_moves=int(len(self._game_log)/2),
+            final_ball_position=self._board.ball_position,
+        )
 
     @property
     def _verbose(self) -> bool:
