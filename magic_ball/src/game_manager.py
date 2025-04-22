@@ -167,7 +167,7 @@ class GameManager:
         if len(self._game_log) % 2 == 1:
             print(f" {int(len(self._game_log)/2) + 1}. {self._game_log[-1]}")
         self._board.display()
-        # TODO: display player cards (or maybe do that only in full game summary?)
+        self._print_game_over_if_necessary()
 
     @property
     def _verbose(self) -> bool:
@@ -178,7 +178,7 @@ class GameManager:
         return self._game_status == GameStatus.ongoing
 
     def _print(self, message: str = ""):
-        if self._verbose:
+        if self._verbose or not self._game_on:
             print(message)
 
     def _draw_cards(
@@ -238,10 +238,10 @@ class GameManager:
             white_cards=self._white_player.cards,
             black_cards=self._black_player.cards,
         )
-        self._check_end_condition()
+        self._print_game_over_if_necessary()
         self._play_ai_player_turn_if_necessary()
 
-    def _check_end_condition(self):
+    def _print_game_over_if_necessary(self):
         match self._game_status:
             case GameStatus.white_win:
                 self._print("\nWhite wins!")
