@@ -70,7 +70,7 @@ class GameManager:
         )
         self._player_turn: PlayerSign = PlayerSign.white
 
-        self._game_on = True
+        self._game_status: GameStatus = GameStatus.ongoing
         self._game_log: list[str] = []
         self._play_ai_player_turn_if_necessary()  # Also displays board on human's turn.
 
@@ -158,6 +158,7 @@ class GameManager:
             self._print("Cannot pass turn, there are available moves.")
         else:
             self._print("Pass turn, no available moves for player.")
+            self._game_log.append("pass")
             self._complete_turn()
 
     def log(self):
@@ -171,6 +172,10 @@ class GameManager:
     @property
     def _verbose(self) -> bool:
         return self._white_player.is_human or self._black_player.is_human
+
+    @property
+    def _game_on(self) -> bool:
+        return self._game_status == GameStatus.ongoing
 
     def _print(self, message: str = ""):
         if self._verbose:
@@ -228,31 +233,26 @@ class GameManager:
         self._player_turn = BoardUtils.inverse_player_sign(
             player_sign=self._player_turn,
         )
-        self._check_end_condition()
-        self._play_ai_player_turn_if_necessary()
-
-    def _check_end_condition(self):
-        game_status = Helper.get_game_status(
+        self._game_status = Helper.get_game_status(
             board=self._board,
             white_cards=self._white_player.cards,
             black_cards=self._black_player.cards,
         )
-        match game_status:
+        self._check_end_condition()
+        self._play_ai_player_turn_if_necessary()
+
+    def _check_end_condition(self):
+        match self._game_status:
             case GameStatus.white_win:
                 self._print("\nWhite wins!")
-                self._game_on = False
             case GameStatus.black_win:
                 self._print("\nBlack wins!")
-                self._game_on = False
             case GameStatus.draw:
                 self._print("\nGame is drawn!")
-                self._game_on = False
             case GameStatus.white_defensive_win:
                 self._print("\nWhite wins! (defensive)")
-                self._game_on = False
             case GameStatus.black_defensive_win:
                 self._print("\nBlack wins! (defensive)")
-                self._game_on = False
 
         if self._game_on:
             return

@@ -13,7 +13,7 @@ class Card:
     @classmethod
     @property
     def name(cls) -> str:
-        return cls.__class__.__name__.lower()
+        return cls.__name__.lower()
 
     @property
     def already_used(self) -> bool:
