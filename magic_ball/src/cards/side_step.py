@@ -38,7 +38,12 @@ class SideStep(Card):
                 target_col_i=target_col_i,
                 target_row_i=row_i,
                 board=board,
-                description=f"side-step to target tile: {BoardUtils.indices_to_tile(row_i=row_i, col_i=target_col_i)}",
+                description=cls._describe_pawn_move(
+                    source_col_i=source_col_i,
+                    source_row_i=row_i,
+                    target_col_i=target_col_i,
+                    target_row_i=row_i,
+                ),
                 card_index=card_index,
             )
             for source_col_i, target_col_i, row_i in move_indices

@@ -10,6 +10,11 @@ class Card:
     def __init__(self):
         self._already_used = False
 
+    @classmethod
+    @property
+    def name(cls) -> str:
+        return cls.__class__.__name__.lower()
+
     @property
     def already_used(self) -> bool:
         return self._already_used
@@ -46,6 +51,16 @@ class Card:
         return available_moves
 
     @classmethod
+    @abstractmethod
+    def _get_available_moves(
+        cls,
+        player_sign: PlayerSign,
+        board: Board,
+        card_index: int,
+    ) -> list[Move]:
+        pass
+
+    @classmethod
     def _ball_position_allowed(
         cls,
         player_sign: PlayerSign,
@@ -58,11 +73,15 @@ class Card:
                 return True
 
     @classmethod
-    @abstractmethod
-    def _get_available_moves(
+    def _describe_pawn_move(
         cls,
-        player_sign: PlayerSign,
-        board: Board,
-        card_index: int,
-    ) -> list[Move]:
-        pass
+        source_col_i: int,
+        source_row_i: int,
+        target_col_i: int,
+        target_row_i: int,
+    ) -> str:
+        return (
+            f"{cls.name}: "
+            f"{BoardUtils.indices_to_tile(col_i=source_col_i, row_i=source_row_i)}->"
+            f"{BoardUtils.indices_to_tile(col_i=target_col_i, row_i=target_row_i)}"
+        )

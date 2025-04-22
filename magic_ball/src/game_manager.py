@@ -165,6 +165,8 @@ class GameManager:
             print(f" {i+1}. {white_move} ; {black_move}")
         if len(self._game_log) % 2 == 1:
             print(f" {int(len(self._game_log)/2) + 1}. {self._game_log[-1]}")
+        self._board.display()
+        # TODO: display player cards (or maybe do that only in full game summary?)
 
     @property
     def _verbose(self) -> bool:
@@ -220,7 +222,7 @@ class GameManager:
         for i, card in enumerate(player.cards):
             index_str = "X" if card.already_used else f"{i}."
             suffix = " [D]" if card.is_defensive else ""
-            self._print(f" {index_str} {card.__class__.__name__}{suffix}")
+            self._print(f" {index_str} {card.name}{suffix}")
 
     def _complete_turn(self):
         self._player_turn = BoardUtils.inverse_player_sign(

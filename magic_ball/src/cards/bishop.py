@@ -52,8 +52,11 @@ class Bishop(Card):
                 target_col_i=target_col_i,
                 target_row_i=target_row_i,
                 board=board,
-                description=(
-                    f"bishop move to target tile: {BoardUtils.indices_to_tile(col_i=target_col_i, row_i=target_row_i)}"
+                description=cls._describe_pawn_move(
+                    source_col_i=source_col_i,
+                    source_row_i=source_row_i,
+                    target_col_i=target_col_i,
+                    target_row_i=target_row_i,
                 ),
                 card_index=card_index,
             )
