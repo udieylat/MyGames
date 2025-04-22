@@ -93,7 +93,6 @@ class GameManager:
                     board=self._board,
                 ),
             )
-            self._complete_turn()
         except InvalidMove as e:
             self._print(f"** Invalid move: {e.description}")
             raise
@@ -135,7 +134,6 @@ class GameManager:
             self._play_move(
                 move=available_moves[move_index],
             )
-            self._complete_turn()
         except InvalidMove as e:
             self._print(f"** Invalid move: {e.description}")
             raise
@@ -207,6 +205,7 @@ class GameManager:
             move=move,
         )
         self._game_log.append(move.description)
+        self._complete_turn()
 
     def _display(self):
         if not self._verbose:
@@ -220,14 +219,15 @@ class GameManager:
         self._print("")
         self._print(f"Player turn: {self._player_turn}")
 
+    @classmethod
     def _display_player_cards(
-        self,
+        cls,
         player: Player,
     ):
         for i, card in enumerate(player.cards):
             index_str = "X" if card.already_used else f"{i}."
             suffix = " [D]" if card.is_defensive else ""
-            self._print(f" {index_str} {card.name}{suffix}")
+            print(f" {index_str} {card.name}{suffix}")
 
     def _complete_turn(self):
         self._player_turn = BoardUtils.inverse_player_sign(
@@ -247,26 +247,26 @@ class GameManager:
 
         match self._game_status:
             case GameStatus.white_win:
-                self._print("\nWhite wins!")
+                print("\nWhite wins!")
             case GameStatus.black_win:
-                self._print("\nBlack wins!")
+                print("\nBlack wins!")
             case GameStatus.draw:
-                self._print("\nGame is drawn!")
+                print("\nGame is drawn!")
             case GameStatus.white_defensive_win:
-                self._print("\nWhite wins! (defensive)")
+                print("\nWhite wins! (defensive)")
             case GameStatus.black_defensive_win:
-                self._print("\nBlack wins! (defensive)")
+                print("\nBlack wins! (defensive)")
             case GameStatus.ongoing:
                 return
 
         # Display all cards at end of game.
-        self._print()
-        self._print("White cards:")
+        print()
+        print("White cards:")
         self._display_player_cards(
             player=self._white_player,
         )
-        self._print()
-        self._print("Black cards:")
+        print()
+        print("Black cards:")
         self._display_player_cards(
             player=self._black_player,
         )
@@ -317,8 +317,7 @@ class GameManager:
             )
         except NoAvailableMoves:
             self._print("Skip player turn since there are no available moves.")
-
-        self._complete_turn()
+            self.pass_turn()
 
     @classmethod
     def _get_num_unused_cards(
