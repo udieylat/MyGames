@@ -77,10 +77,9 @@ class Kamikaze(Card):
                     ball_position=board.ball_position,
                 ),
                 description=(
-                    f"kamikaze: eliminate player pawn at: "
-                    f"{BoardUtils.indices_to_tile(col_i=player_pawn_col_i, row_i=player_pawn_row_i)} "
-                    f"and opponent pawn at: "
-                    f"{BoardUtils.indices_to_tile(col_i=opponent_pawn_col_i, row_i=opponent_pawn_row_i)}"
+                    f"{cls.name}: eliminate pawns "
+                    f"{BoardUtils.indices_to_tile(col_i=opponent_pawn_col_i, row_i=opponent_pawn_row_i)} (opponent) "
+                    f"and {BoardUtils.indices_to_tile(col_i=player_pawn_col_i, row_i=player_pawn_row_i)} (player)"
                 ),
                 used_card_index=card_index,
             )
