@@ -128,6 +128,38 @@ class Helper:
         """
         Notice: change input board argument in-place.
         """
+        source_board_tile = board[source_row_i][source_col_i]
+        if not BoardUtils.is_tile_player_pawn(
+            player_sign=player_sign,
+            tile=source_board_tile,
+        ):
+            raise InvalidMove(
+                description=(
+                    f"source board tile is not a valid pawn: "
+                    f"{BoardUtils.indices_to_tile(col_i=source_col_i, row_i=source_row_i)} = {source_board_tile}"
+                ),
+            )
+
+        return cls.move_tile(
+            source_col_i=source_col_i,
+            source_row_i=source_row_i,
+            target_col_i=target_col_i,
+            target_row_i=target_row_i,
+            board=board,
+        )
+
+    @classmethod
+    def move_tile(
+        cls,
+        source_col_i: int,
+        source_row_i: int,
+        target_col_i: int,
+        target_row_i: int,
+        board: BoardType,
+    ) -> BoardType:
+        """
+        Notice: change input board argument in-place.
+        """
         assert 0 <= source_col_i <= 4
         assert 0 <= source_row_i <= 4
         assert 0 <= target_col_i <= 4
@@ -142,31 +174,17 @@ class Helper:
                 ),
             )
 
-        source_board_tile = board[source_row_i][source_col_i]
-        if not BoardUtils.is_tile_player_pawn(
-            player_sign=player_sign,
-            tile=source_board_tile,
-        ):
-            raise InvalidMove(
-                description=(
-                    f"source board tile is not a valid pawn: "
-                    f"{BoardUtils.indices_to_tile(col_i=source_col_i, row_i=source_row_i)} = {source_board_tile}"
-                ),
-            )
-
         # Complete move
-        board = cls.eliminate_pawn(
+        return cls.vacate_tile(
             col_i=source_col_i,
             row_i=source_row_i,
-            board=board,
+            board=cls.set_tile(
+                tile_type=TileType(board[source_row_i][source_col_i]),
+                col_i=target_col_i,
+                row_i=target_row_i,
+                board=board,
+            ),
         )
-        board = cls.set_pawn_tile(
-            player_sign=player_sign,
-            col_i=target_col_i,
-            row_i=target_row_i,
-            board=board,
-        )
-        return board
 
     @classmethod
     def set_tile(
@@ -214,6 +232,23 @@ class Helper:
         board: BoardType,
         safe: bool = False,
     ) -> BoardType:
+        if not safe:
+            assert board[row_i][col_i] in [TileType.white, TileType.black]
+        return cls.vacate_tile(
+            col_i=col_i,
+            row_i=row_i,
+            board=board,
+            safe=safe,
+        )
+
+    @classmethod
+    def vacate_tile(
+        cls,
+        col_i: int,
+        row_i: int,
+        board: BoardType,
+        safe: bool = False,
+    ) -> BoardType:
         return cls.set_tile(
             tile_type=TileType.vacant,
             col_i=col_i,
@@ -221,6 +256,7 @@ class Helper:
             board=board,
             safe=safe,
         )
+
 
     @classmethod
     def get_pawn_indices(

@@ -10,6 +10,7 @@ from cards.knife import Knife
 from cards.pull import Pull
 from cards.side_step import SideStep
 from cards.spawn import Spawn
+from cards.tank import Tank
 from cards.wall import Wall
 
 
@@ -100,7 +101,7 @@ class CardsRandomizer:
             Fire(),
             SideStep(),
             Jump(),
-            # Tank(),
+            Tank(),
             Kamikaze(),
             Spawn(),
         ]
