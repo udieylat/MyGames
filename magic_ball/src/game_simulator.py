@@ -1,5 +1,6 @@
 from game_config import GameConfig
 from game_manager import GameManager
+from simulation_summary import SimulationSummary
 
 
 class GameSimulator:
@@ -12,10 +13,27 @@ class GameSimulator:
     def run(
         self,
         num_games: int,
-    ):
+    ) -> SimulationSummary:
+        summary = SimulationSummary(
+            config=self._config,
+            num_games=num_games,
+            num_white_wins=0,
+            num_draws=0,
+            num_black_wins=0,
+        )
         for _ in range(num_games):
             gm = GameManager.new(
                 config=self._config,
             )
-            gm.export_summary()
-            # TODO
+            game_summary = gm.export_summary()
+            match game_summary.winner:
+                case "white":
+                    summary.num_white_wins += 1
+                case "black":
+                    summary.num_black_wins += 1
+                case "draw":
+                    summary.num_draws += 1
+                case _:
+                    raise RuntimeError(f"Unexpected game summary winner value: {game_summary.winner}")
+
+        return summary
