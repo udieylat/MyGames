@@ -257,7 +257,6 @@ class Helper:
             safe=safe,
         )
 
-
     @classmethod
     def get_pawn_indices(
         cls,
