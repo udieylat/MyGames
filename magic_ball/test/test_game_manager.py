@@ -1,7 +1,8 @@
 import os
 import unittest
 
-from game_manager import GameManager, GameConfig
+from game_config import GameConfig
+from game_manager import GameManager
 from helper import Helper
 from models import GameStatus
 from players.player_config import PlayerConfig, PlayerType
