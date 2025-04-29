@@ -19,6 +19,6 @@
       "ball_position_score": 100
     }
   },
-  "white_cards": ["jump", "kamikaze", "pull"],
+  "white_cards": ["jump", "kamikaze", "wall"],
   "black_cards": ["bishop", "knife", "sidestep"]
 }
