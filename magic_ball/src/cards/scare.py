@@ -38,22 +38,29 @@ class Scare(Card):
         ]
 
         return [
-            CardUtils.pawn_move(
-                player_sign=BoardUtils.inverse_player_sign(
-                    player_sign=player_sign,
+            Move(
+                player_sign=player_sign,
+                result_board=Helper.move_pawn(
+                    player_sign=BoardUtils.inverse_player_sign(
+                        player_sign=player_sign,
+                    ),
+                    source_col_i=col_i,
+                    source_row_i=source_row_i,
+                    target_col_i=col_i,
+                    target_row_i=target_row_i,
+                    board=board.copy_board(),
                 ),
-                source_col_i=col_i,
-                source_row_i=source_row_i,
-                target_col_i=col_i,
-                target_row_i=target_row_i,
-                board=board,
+                result_ball_position=CardUtils.push_ball(
+                    player_sign=player_sign,
+                    ball_position=board.ball_position,
+                ),
                 description=cls._describe_pawn_move(
                     source_col_i=col_i,
                     source_row_i=source_row_i,
                     target_col_i=col_i,
                     target_row_i=target_row_i,
                 ),
-                card_index=card_index,
+                used_card_index=card_index,
             )
             for col_i, source_row_i, target_row_i in move_indices
         ]

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import time
 
 from game_config import GameConfig
 from game_manager import GameManager
@@ -36,6 +37,8 @@ class GameSimulator:
             num_draws=0,
             num_black_wins=0,
         )
+
+        start_ts = time.time()
         for _ in range(num_games):
             gm = GameManager.new(
                 config=self._config,
@@ -51,4 +54,5 @@ class GameSimulator:
                 case _:
                     raise RuntimeError(f"Unexpected game summary winner value: {game_summary.winner}")
 
+        summary.runtime_sec = time.time() - start_ts
         return summary
