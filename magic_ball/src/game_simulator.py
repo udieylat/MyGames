@@ -1,9 +1,24 @@
+from __future__ import annotations
+
+import json
+
 from game_config import GameConfig
 from game_manager import GameManager
 from simulation_summary import SimulationSummary
 
 
 class GameSimulator:
+
+    @classmethod
+    def from_config_filename(
+        cls,
+        config_filename: str,
+    ) -> GameSimulator:
+        config = GameConfig.model_validate(json.load(open(config_filename)))
+        return GameSimulator(
+            config=config,
+        )
+
     def __init__(
         self,
         config: GameConfig,
