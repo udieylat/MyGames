@@ -3,6 +3,7 @@ import random
 from cards.bishop import Bishop
 from cards.card import Card
 from cards.charge import Charge
+from cards.dagger import Dagger
 from cards.fire import Fire
 from cards.jump import Jump
 from cards.kamikaze import Kamikaze
@@ -95,7 +96,7 @@ class CardsRandomizer:
             Knife(),
             Charge(),
             Bishop(),
-            Pull(),
+            # Pull(),
             # Negate(),
             # Scare(),
             Fire(),
@@ -104,4 +105,6 @@ class CardsRandomizer:
             Tank(),
             Kamikaze(),
             Spawn(),
+            Dagger(),
+            # Peace(),
         ]

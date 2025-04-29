@@ -103,3 +103,21 @@ class BoardUtils:
             for col_i, row_i in all_neighbor_tiles_indices
             if 0 <= col_i <= 4 and 0 <= row_i <= 4
         ]
+
+    @classmethod
+    def get_diagonal_neighbor_tiles_indices(
+        cls,
+        col_i: int,
+        row_i: int,
+    ) -> list[tuple[int, int]]:
+        all_neighbor_tiles_indices = [
+            (col_i + 1, row_i + 1),
+            (col_i + 1, row_i - 1),
+            (col_i - 1, row_i - 1),
+            (col_i - 1, row_i + 1),
+        ]
+        return [
+            (col_i, row_i)
+            for col_i, row_i in all_neighbor_tiles_indices
+            if 0 <= col_i <= 4 and 0 <= row_i <= 4
+        ]
