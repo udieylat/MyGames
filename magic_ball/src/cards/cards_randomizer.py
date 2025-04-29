@@ -115,4 +115,5 @@ class CardsRandomizer:
             ignore_cards=cards + ignore_cards,
             num_cards=total_num_cards - len(cards),
         )
+        assert total_num_cards == len(cards)
         return cards

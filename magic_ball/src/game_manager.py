@@ -24,6 +24,7 @@ class GameManager:
         cards_pull: list[Card] | None = None,
     ) -> GameManager:
         return GameManager(
+            config=config,
             white_player=PlayerFactory.generate_player(
                 player_config=config.white_player,
                 player_sign=PlayerSign.white,
@@ -51,6 +52,7 @@ class GameManager:
 
     def __init__(
         self,
+        config: GameConfig,
         white_player: Player,
         black_player: Player,
         white_cards: list[str] | None = None,
@@ -59,6 +61,7 @@ class GameManager:
     ):
         assert white_player.player_sign == PlayerSign.white
         assert black_player.player_sign == PlayerSign.black
+        self._config = config
         self._white_player = white_player
         self._black_player = black_player
         self._board = Board.new()
@@ -182,6 +185,17 @@ class GameManager:
             ),
             num_white_moves=int(len(self._game_log)/2),
             final_ball_position=self._board.ball_position,
+        )
+
+    def to_game_config(self) -> GameConfig:
+        config = self._config.model_copy()
+        config.white_cards = self._white_player.card_names
+        config.black_cards = self._black_player.card_names
+        return config
+
+    def rematch(self) -> GameManager:
+        return GameManager.new(
+            config=self.to_game_config(),
         )
 
     @property

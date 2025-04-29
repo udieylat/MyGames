@@ -11,5 +11,6 @@
       "score_per_unused_card": 50,
       "ball_position_score": 100
     }
-  }
+  },
+  "white_cards": ["jump"]
 }

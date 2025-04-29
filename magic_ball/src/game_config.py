@@ -28,3 +28,19 @@ class GameConfig(BaseModel):
                 raise ValueError("white_cards and black_cards must not share any cards.")
 
         return config
+
+    def clone_with_white_cards(
+        self,
+        white_cards: list[str],
+    ) -> GameConfig:
+        clone = self.model_copy()
+        clone.white_cards = white_cards
+        return clone
+
+    def clone_with_black_cards(
+        self,
+        black_cards: list[str],
+    ) -> GameConfig:
+        clone = self.model_copy()
+        clone.black_cards = black_cards
+        return clone
