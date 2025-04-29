@@ -21,18 +21,28 @@ class CardsRandomizer:
     @classmethod
     def draw_cards(
         cls,
+        # TODO: receive CardsConfig with num white/black cards to randomize
         white_card_names: list[str] | None = None,
         black_card_names: list[str] | None = None,
         cards_pull: list[Card] | None = None,
     ) -> tuple[list[Card], list[Card]]:
+        if not cards_pull and cards_pull is not None:
+            return [], []
+
         cards_pull = (
             cls._full_compendium()
             if cards_pull is None
             else cards_pull[:]
         )
         if not white_card_names and not black_card_names:
-            random.shuffle(cards_pull)
-            return cards_pull[:3], cards_pull[3: 6]
+            white_cards = cls._randomize_from_pull(
+                cards_pull=cards_pull,
+                ignore_card_names=[],
+            )
+            black_cards = cls._randomize_from_pull(
+                cards_pull=cards_pull,
+                ignore_card_names=white_card_names,
+            )
         elif white_card_names and not black_card_names:
             white_cards = cls._get_cards(
                 card_names=white_card_names,
@@ -67,14 +77,16 @@ class CardsRandomizer:
         cls,
         cards_pull: list[Card],
         ignore_card_names: list[str],
+        num_cards: int = 3,
     ) -> list[Card]:
         all_valid_cards = [
             card
             for card in cards_pull
             if card.name not in ignore_card_names
         ]
+        assert len(all_valid_cards) >= num_cards, "Cannot randomize enough cards"
         random.shuffle(all_valid_cards)
-        return all_valid_cards[:3]
+        return all_valid_cards[:num_cards]
 
     @classmethod
     def _get_cards(

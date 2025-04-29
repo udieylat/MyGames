@@ -8,19 +8,17 @@ from players.player_config import PlayerConfig
 class GameConfig(BaseModel):
     white_player: PlayerConfig = Field(default_factory=PlayerConfig.human)
     black_player: PlayerConfig = Field(default_factory=PlayerConfig.human)
+    # TODO: move this to CardsConfig
     white_cards: list[str] | None = None
     black_cards: list[str] | None = None
+    # TODO: add num_white_cards, num_black_cards and fix validator and cards randomization accordingly
 
     @model_validator(mode="after")
     def validate_cards(cls, config: GameConfig) -> GameConfig:
-        white_cards = config.white_cards
-        black_cards = config.black_cards
+        white_cards = config.white_cards or []
+        black_cards = config.black_cards or []
 
-        if white_cards is not None and black_cards is not None:
-            # Ensure both lists have exactly 3 items
-            if len(white_cards) != 3 or len(black_cards) != 3:
-                raise ValueError("Each of white_cards and black_cards must contain exactly 3 cards.")
-
+        if white_cards or black_cards:
             # Ensure all cards are lowercase
             if any(card != card.lower() for card in white_cards + black_cards):
                 raise ValueError("All card names must be lowercase.")
