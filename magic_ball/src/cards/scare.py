@@ -3,7 +3,7 @@ from board_utils import BoardUtils
 from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
-from models import PlayerSign
+from models import PlayerSign, TileType
 from move import Move
 
 
@@ -34,6 +34,7 @@ class Scare(Card):
         move_indices = [
             (col_i, source_row_i, opponent_start_row_i)
             for col_i, source_row_i in opponent_pawn_indices
+            if board[opponent_start_row_i][col_i] == TileType.vacant
         ]
 
         return [
