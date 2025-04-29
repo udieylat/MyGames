@@ -1,20 +1,7 @@
 import random
 
-from cards.bishop import Bishop
 from cards.card import Card
-from cards.charge import Charge
-from cards.dagger import Dagger
-from cards.fire import Fire
-from cards.jump import Jump
-from cards.kamikaze import Kamikaze
-from cards.knife import Knife
-from cards.peace import Peace
-# from cards.pull import Pull
-from cards.scare import Scare
-from cards.side_step import SideStep
-from cards.spawn import Spawn
-from cards.tank import Tank
-from cards.wall import Wall
+from cards.compendium import Compendium
 
 
 class CardsRandomizer:
@@ -32,7 +19,7 @@ class CardsRandomizer:
             return [], []
 
         cards_pull = (
-            cls._full_compendium()
+            Compendium.get_cards()
             if cards_pull is None
             else cards_pull[:]
         )
@@ -129,23 +116,3 @@ class CardsRandomizer:
             num_cards=total_num_cards - len(cards),
         )
         return cards
-
-    @classmethod
-    def _full_compendium(cls) -> list[Card]:
-        return [
-            Wall(),
-            Knife(),
-            Charge(),
-            Bishop(),
-            # Pull(),
-            # Negate(),
-            Scare(),
-            Fire(),
-            SideStep(),
-            Jump(),
-            Tank(),
-            Kamikaze(),
-            Spawn(),
-            Dagger(),
-            Peace(),
-        ]

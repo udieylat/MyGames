@@ -1,0 +1,44 @@
+from cards.bishop import Bishop
+from cards.card import Card
+from cards.charge import Charge
+from cards.dagger import Dagger
+from cards.fire import Fire
+from cards.jump import Jump
+from cards.kamikaze import Kamikaze
+from cards.knife import Knife
+from cards.peace import Peace
+# from cards.pull import Pull
+from cards.scare import Scare
+from cards.side_step import SideStep
+from cards.spawn import Spawn
+from cards.tank import Tank
+from cards.wall import Wall
+
+
+class Compendium:
+    @classmethod
+    def get_cards(cls) -> list[Card]:
+        return [
+            Wall(),
+            Knife(),
+            Charge(),
+            Bishop(),
+            # Pull(),
+            # Negate(),
+            Scare(),
+            Fire(),
+            SideStep(),
+            Jump(),
+            Tank(),
+            Kamikaze(),
+            Spawn(),
+            Dagger(),
+            Peace(),
+        ]
+
+    @classmethod
+    def get_cards_names(cls) -> list[str]:
+        return [
+            card.name
+            for card in cls.get_cards()
+        ]
