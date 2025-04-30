@@ -1,6 +1,7 @@
 from board import Board, InvalidMove
 from board_utils import BoardUtils
 from cards.card import Card
+from constants import NUM_PLAYABLE_CARDS
 from move import Move
 from models import PlayerSign, TileType, GameStatus, BoardType
 
@@ -306,6 +307,15 @@ class Helper:
         board: Board,
         cards: list[Card],
     ) -> list[Move]:
+        num_used_cards = len([
+            card
+            for card in cards
+            if card.already_used
+        ])
+        if num_used_cards >= NUM_PLAYABLE_CARDS:
+            # Forbid using more than NUM_PLAYABLE_CARDS cards.
+            return []
+
         return [
             move
             for card_index, card in enumerate(cards)
