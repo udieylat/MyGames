@@ -193,16 +193,27 @@ class GameManager:
             final_ball_position=self._board.ball_position,
         )
 
-    def to_game_config(self) -> GameConfig:
-        return self._config.clone_with_white_cards(
-            white_card_names=self._white_player.card_names,
-        ).clone_with_black_cards(
-            black_card_names=self._black_player.card_names,
+    def rematch_keep_white(self) -> GameManager:
+        return GameManager.new(
+            config=self._config.clone_with_white_cards(
+                white_card_names=self._white_player.card_names,
+            ),
         )
 
-    def rematch(self) -> GameManager:
+    def rematch_keep_black(self) -> GameManager:
         return GameManager.new(
-            config=self.to_game_config(),
+            config=self._config.clone_with_black_cards(
+                black_card_names=self._black_player.card_names,
+            ),
+        )
+
+    def rematch_keep_both(self) -> GameManager:
+        return GameManager.new(
+            config=self._config.clone_with_white_cards(
+                white_card_names=self._white_player.card_names,
+            ).clone_with_black_cards(
+                black_card_names=self._black_player.card_names,
+            ),
         )
 
     @property
