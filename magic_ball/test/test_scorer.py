@@ -11,11 +11,13 @@ class TestScorer(unittest.TestCase):
     def setUp(self):
         self.scorer = Scorer(
             player_sign=PlayerSign.white,
-            config=PlayerConfig.default_ai_opponent(),
+            config=PlayerConfig.default_ai_opponent(
+                random_tie_break=False,
+            ),
         )
 
     def test_score_new_board(self):
-        score = self.scorer.score_move(
+        score = self.scorer.score_board(
             board=Board.new().copy_board(),
             ball_position=BallPosition.middle,
             num_unused_player_cards=DEFAULT_NUM_CARDS_PER_PLAYER,

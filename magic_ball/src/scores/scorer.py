@@ -14,7 +14,7 @@ class Scorer:
         self._player_sign = player_sign
         self._config = config
 
-    def score_move(
+    def score_board(
         self,
         board: BoardType,
         ball_position: BallPosition,
@@ -23,7 +23,7 @@ class Scorer:
     ) -> int:
         """
         Maximal score is best.
-        Method: score board for each player and reduce the player score from the opponent score.
+        Method: score board for each player and reduce the opponent score from the player score.
         This means: positive score means player has the advantage and negative score means the opponent has advantage.
         """
         # Always choose a winning move.
@@ -41,19 +41,21 @@ class Scorer:
         ):
             return -99999999999
 
-        return self._score_move_for_player(
+        board_score_for_player = self._score_move_for_player(
             player_sign=self._player_sign,
             board=board,
             ball_position=ball_position,
             num_unused_player_cards=num_unused_player_cards,
-        ) - self._score_move_for_player(
+        )
+        board_score_for_opponent = self._score_move_for_player(
             player_sign=BoardUtils.inverse_player_sign(
                 player_sign=self._player_sign,
             ),
             board=board,
             ball_position=ball_position,
             num_unused_player_cards=num_unused_opponent_cards,
-        )  # TODO: add here a random float<1 to have a random tie-break between same-score moves
+        )
+        return board_score_for_player - board_score_for_opponent  # TODO: add here a random float<1 to have a random tie-break between same-score moves
 
     def _score_move_for_player(
         self,

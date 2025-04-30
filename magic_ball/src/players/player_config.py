@@ -22,6 +22,7 @@ class ScoreMultipliers(BaseModel):
 class PlayerConfig(BaseModel):
     type: PlayerType
     score_multipliers: ScoreMultipliers | None = None
+    random_tie_break: bool = True
 
     @classmethod
     def human(cls) -> PlayerConfig:
@@ -30,7 +31,7 @@ class PlayerConfig(BaseModel):
         )
 
     @classmethod
-    def default_ai_opponent(cls) -> PlayerConfig:
+    def default_ai_opponent(cls, random_tie_break: bool = True) -> PlayerConfig:
         return PlayerConfig(
             type=PlayerType.base_heuristic,
             score_multipliers=ScoreMultipliers(
@@ -40,4 +41,5 @@ class PlayerConfig(BaseModel):
                 score_per_unused_card=50,
                 ball_position_score=100,
             ),
+            random_tie_break=random_tie_break,
         )

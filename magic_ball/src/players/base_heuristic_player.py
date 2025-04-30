@@ -41,7 +41,7 @@ class BaseHeuristicPlayer(Player):
 
         scores_and_moves = [
             (
-                self._scorer.score_move(
+                self._scorer.score_board(
                     board=move.result_board,
                     ball_position=move.result_ball_position,
                     num_unused_player_cards=len(unused_player_cards),
