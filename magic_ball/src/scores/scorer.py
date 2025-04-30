@@ -1,3 +1,5 @@
+import random
+
 from board_utils import BoardUtils
 from helper import Helper
 from models import PlayerSign, BoardType, BallPosition, TileType
@@ -20,7 +22,7 @@ class Scorer:
         ball_position: BallPosition,
         num_unused_player_cards: int,
         num_unused_opponent_cards: int,
-    ) -> int:
+    ) -> float:
         """
         Maximal score is best.
         Method: score board for each player and reduce the opponent score from the player score.
@@ -41,13 +43,13 @@ class Scorer:
         ):
             return -99999999999
 
-        board_score_for_player = self._score_move_for_player(
+        board_score_for_player = self._score_board_for_player(
             player_sign=self._player_sign,
             board=board,
             ball_position=ball_position,
             num_unused_player_cards=num_unused_player_cards,
         )
-        board_score_for_opponent = self._score_move_for_player(
+        board_score_for_opponent = self._score_board_for_player(
             player_sign=BoardUtils.inverse_player_sign(
                 player_sign=self._player_sign,
             ),
@@ -55,15 +57,15 @@ class Scorer:
             ball_position=ball_position,
             num_unused_player_cards=num_unused_opponent_cards,
         )
-        return board_score_for_player - board_score_for_opponent  # TODO: add here a random float<1 to have a random tie-break between same-score moves
+        return board_score_for_player - board_score_for_opponent
 
-    def _score_move_for_player(
+    def _score_board_for_player(
         self,
         player_sign: PlayerSign,
         board: BoardType,
         ball_position: BallPosition,
         num_unused_player_cards: int,
-    ) -> int:
+    ) -> float:
 
         # TODO: no opponent unused cards is a huge advantage
         # TODO: how does the AI not play "pull" immediately?
@@ -78,6 +80,7 @@ class Scorer:
                 player_sign=player_sign,
                 ball_position=ball_position,
             )
+            + self._random_tie_break()
         )
 
     def _board_score(
@@ -170,4 +173,11 @@ class Scorer:
         return (
             (ball_position == BallPosition.white and player_sign == PlayerSign.white)
             or (ball_position == BallPosition.black and player_sign == PlayerSign.black)
+        )
+
+    def _random_tie_break(self) -> float:
+        return (
+            random.random()
+            if self._config.random_tie_break
+            else 0.0
         )
