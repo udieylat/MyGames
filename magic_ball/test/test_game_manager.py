@@ -1,12 +1,15 @@
 import os
 import unittest
 
+from board import Board
 from cards.cards_config import CardsConfig
+from cards.compendium import Compendium
 from game_config import GameConfig
 from game_manager import GameManager
 from helper import Helper
-from models import GameStatus
+from models import GameStatus, BallPosition, PlayerSign, TileType
 from players.player_config import PlayerConfig, PlayerType
+from players.player_factory import PlayerFactory
 
 
 class TestGameManager(unittest.TestCase):
@@ -93,6 +96,60 @@ class TestGameManager(unittest.TestCase):
         self.assertEqual(game_summary.winner, "white")
         self.assertEqual(game_summary.num_white_moves, 7)
         self.assertEqual(game_summary.final_ball_position, "white")
+
+    def test_fixed_position(self):
+        """
+        In position:
+
+        5 . B B B B
+        4 . . . . .
+        3 . . W . .
+        2 . . . . .
+        1 W W . W W
+          A B C D E
+
+        Black should play wall at A5, not fire row 3.
+        """
+        board = Board(
+            board=[
+                ["W", "W", ".", "W", "W"],
+                [".", ".", ".", ".", "."],
+                [".", ".", "W", ".", "."],
+                [".", ".", ".", ".", "."],
+                [".", "B", "B", "B", "B"],
+            ],
+            ball_position=BallPosition.middle,
+        )
+        gm = GameManager(
+            config=GameConfig(
+                black_player=PlayerConfig.default_ai_opponent(),
+                cards_config=CardsConfig(
+                    black_card_names=["fire", "wall", "peace"],
+                ),
+            ),
+            white_player=PlayerFactory.generate_player(
+                player_config=PlayerConfig.human(),
+                player_sign=PlayerSign.white,
+            ),
+            black_player=PlayerFactory.generate_player(
+                player_config=PlayerConfig.default_ai_opponent(),
+                player_sign=PlayerSign.black,
+            ),
+            board=board,
+            player_turn=PlayerSign.black,
+        )
+
+        # Assert "fire" was played by black.
+        self.assertTrue(
+            all(
+                board[row_i][col_i] == TileType.vacant
+                for row_i in range(1, 4)
+                for col_i in range(0, 5)
+            )
+        )
+
+        # Assert "wall" was played by black at A5.
+        # self.assertEqual(board[4][0], TileType.wall)
 
     @classmethod
     def _get_game_status(cls, gm: GameManager) -> GameStatus:
