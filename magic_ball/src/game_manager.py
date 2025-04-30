@@ -118,7 +118,7 @@ class GameManager:
     def show_possible_opponent_cards(self):
         used_opponent_card_names = [
             card.name
-            for card in self._get_player().cards
+            for card in self._get_opponent().cards
             if card.already_used
         ]
         possible_opponent_card_names = [

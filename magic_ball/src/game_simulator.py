@@ -26,6 +26,9 @@ class GameSimulator:
     ):
         self._config = config
 
+    def clone_config(self) -> GameConfig:
+        return self._config.model_copy()
+
     def run(
         self,
         num_games: int,
