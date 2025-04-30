@@ -29,13 +29,27 @@ class Peace(Card):
         if not pawn_indices or not opponent_pawn_indices:
             return []
 
-        farthest_player_pawn_row_i = max(
-            row_i
-            for _, row_i in pawn_indices
+        farthest_player_pawn_row_i = (
+            max(
+                row_i
+                for _, row_i in pawn_indices
+            )
+            if player_sign == PlayerSign.white
+            else min(
+                row_i
+                for _, row_i in pawn_indices
+            )
         )
-        farthest_opponent_pawn_row_i = min(
-            row_i
-            for _, row_i in opponent_pawn_indices
+        farthest_opponent_pawn_row_i = (
+            min(
+                row_i
+                for _, row_i in opponent_pawn_indices
+            )
+            if player_sign == PlayerSign.white
+            else max(
+                row_i
+                for _, row_i in opponent_pawn_indices
+            )
         )
         indices_pairs_to_eliminate = [
             (player_pawn_col_i, player_pawn_row_i, opponent_pawn_col_i, opponent_pawn_row_i)

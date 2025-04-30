@@ -13,6 +13,6 @@
     }
   },
   "cards_config": {
-    "white_card_names": ["jump"]
+    "num_black_cards": 5
   }
 }
