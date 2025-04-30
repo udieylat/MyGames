@@ -5,6 +5,7 @@ import json
 from board import InvalidMove, Board
 from board_utils import BoardUtils
 from cards.card import Card
+from cards.cards_config import CardsConfig
 from cards.cards_randomizer import CardsRandomizer
 from cards.compendium import Compendium
 from game_config import GameConfig
@@ -22,7 +23,6 @@ class GameManager:
     def new(
         cls,
         config: GameConfig = GameConfig(),
-        # cards_pull: list[Card] | None = None,
     ) -> GameManager:
         return GameManager(
             config=config,
@@ -34,21 +34,16 @@ class GameManager:
                 player_config=config.black_player,
                 player_sign=PlayerSign.black,
             ),
-            white_cards=config.white_cards,
-            black_cards=config.black_cards,
-            cards_pull=cards_pull,
         )
 
     @classmethod
     def from_config_filename(
         cls,
         config_filename: str,
-        cards_pull: list[Card] | None = None,
     ) -> GameManager:
         config = GameConfig.model_validate(json.load(open(config_filename)))
         return GameManager.new(
             config=config,
-            # cards_pull=cards_pull,
         )
 
     def __init__(
@@ -56,9 +51,6 @@ class GameManager:
         config: GameConfig,
         white_player: Player,
         black_player: Player,
-        # white_cards: list[str] | None = None,
-        # black_cards: list[str] | None = None,
-        # cards_pull: list[Card] | None = None,
     ):
         assert white_player.player_sign == PlayerSign.white
         assert black_player.player_sign == PlayerSign.black
@@ -68,9 +60,7 @@ class GameManager:
         self._board = Board.new()
 
         self._draw_cards(
-            white_cards=white_cards,
-            black_cards=black_cards,
-            cards_pull=cards_pull,
+            cards_config=self._config.cards_config,
         )
         self._player_turn: PlayerSign = PlayerSign.white
 
@@ -228,21 +218,20 @@ class GameManager:
 
     def _draw_cards(
         self,
-        white_cards: list[str] | None = None,
-        black_cards: list[str] | None = None,
-        cards_pull: list[Card] | None = None,
+        cards_config: CardsConfig,
     ):
-        white_cards, black_cards = CardsRandomizer.draw_cards(
-            white_card_names=white_cards,
-            black_card_names=black_cards,
-            # TODO
-            cards_pull=cards_pull,
+        white_card_names, black_card_names = CardsRandomizer.draw_cards(
+            white_card_names=cards_config.white_card_names,
+            black_card_names=cards_config.black_card_names,
+            num_white_cards=cards_config.num_white_cards,
+            num_black_cards=cards_config.num_black_cards,
+            cards_pull=cards_config.cards_pull,
         )
         self._white_player.set_cards(
-            cards=white_cards,
+            cards=white_card_names,
         )
         self._black_player.set_cards(
-            cards=black_cards,
+            cards=black_card_names,
         )
 
     def _play_move(

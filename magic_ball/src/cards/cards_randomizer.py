@@ -9,7 +9,6 @@ class CardsRandomizer:
     @classmethod
     def draw_cards(
         cls,
-        # TODO: receive CardsConfig with num white/black cards to randomize
         white_card_names: list[str] | None = None,
         black_card_names: list[str] | None = None,
         num_white_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER,

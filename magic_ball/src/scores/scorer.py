@@ -108,7 +108,6 @@ class Scorer:
         board: BoardType,
         pawn_indices: list[tuple[int, int]],
     ) -> list[int]:
-        # TODO: test
         free_pawn_row_indices = [
             row_i
             for col_i, row_i in pawn_indices
@@ -136,7 +135,6 @@ class Scorer:
         col_i: int,
         row_i: int,
     ) -> bool:
-        # TODO: test
         rows_range = (
             range(row_i + 1, 5)
             if player_sign == PlayerSign.white

@@ -10,8 +10,6 @@ class GameConfig(BaseModel):
     white_player: PlayerConfig = Field(default_factory=PlayerConfig.human)
     black_player: PlayerConfig = Field(default_factory=PlayerConfig.human)
     cards_config: CardsConfig = Field(default_factory=CardsConfig)
-    # white_cards: list[str] | None = None
-    # black_cards: list[str] | None = None
 
     @model_validator(mode="after")
     def validate_cards(cls, config: GameConfig) -> GameConfig:
