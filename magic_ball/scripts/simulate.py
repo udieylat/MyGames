@@ -2,15 +2,14 @@ import json
 import time
 
 from cards.compendium import Compendium
+from game_config import GameConfig
 from game_simulator import GameSimulator
 
-sim = GameSimulator.from_config_filename(
-	config_filename="config/ai_vs_ai.json",
-)
+base_config = GameConfig.model_validate(json.load(open("config/ai_vs_ai.json")))
 card_to_summary = {}
 
 for card_name in Compendium.get_cards_names():
-	config = sim.clone_config()
+	config = base_config.model_copy()
 	config.cards_config.white_card_names = [
 		card_name,
 	]

@@ -67,8 +67,8 @@ class Scorer:
         num_unused_player_cards: int,
     ) -> float:
 
-        # TODO: no opponent unused cards is a huge advantage
-        # TODO: how does the AI not play "pull" immediately?
+        # TODO: no opponent unused cards is a huge advantage (only against a human player)
+        # TODO: how does the AI not play "pull" immediately if available?
 
         return (
             self._config.score_multipliers.score_per_unused_card * num_unused_player_cards
@@ -80,7 +80,7 @@ class Scorer:
                 player_sign=player_sign,
                 ball_position=ball_position,
             )
-            + self._random_tie_break()
+            + self._random_tie_break_if_necessary()
         )
 
     def _board_score(
@@ -175,7 +175,7 @@ class Scorer:
             or (ball_position == BallPosition.black and player_sign == PlayerSign.black)
         )
 
-    def _random_tie_break(self) -> float:
+    def _random_tie_break_if_necessary(self) -> float:
         return (
             random.random()
             if self._config.random_tie_break
