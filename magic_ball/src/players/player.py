@@ -19,7 +19,7 @@ class Player:
         self._player_sign = player_sign
         self._cards: list[Card] = []
 
-    def draw_cards(self, cards: list[Card]):
+    def set_cards(self, cards: list[Card]):
         self._cards = cards
 
     @property

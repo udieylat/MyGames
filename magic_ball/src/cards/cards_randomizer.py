@@ -23,10 +23,6 @@ class CardsRandomizer:
             if cards_pull is None
             else cards_pull[:]
         )
-        name_to_card = {
-            card.name: card
-            for card in cards_pull
-        }
         if not white_card_names and not black_card_names:
             white_cards = cls._randomize_from_pull(
                 cards_pull=cards_pull,

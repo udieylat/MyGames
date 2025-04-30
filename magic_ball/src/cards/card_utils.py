@@ -1,5 +1,4 @@
 from board import Board
-from board_utils import BoardUtils
 from helper import Helper
 from models import PlayerSign, BallPosition
 from move import Move

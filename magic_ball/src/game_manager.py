@@ -237,10 +237,10 @@ class GameManager:
             black_card_names=black_cards,
             cards_pull=cards_pull,
         )
-        self._white_player.draw_cards(
+        self._white_player.set_cards(
             cards=white_cards,
         )
-        self._black_player.draw_cards(
+        self._black_player.set_cards(
             cards=black_cards,
         )
 
