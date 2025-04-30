@@ -13,34 +13,34 @@ class GameConfig(BaseModel):
 
     @model_validator(mode="after")
     def validate_cards(cls, config: GameConfig) -> GameConfig:
-        white_cards_names = config.cards_config.white_cards_names or []
-        black_cards_names = config.cards_config.black_cards_names or []
+        white_card_names = config.cards_config.white_card_names or []
+        black_card_names = config.cards_config.black_card_names or []
 
-        if white_cards_names or black_cards_names:
+        if white_card_names or black_card_names:
             # Ensure all cards are lowercase
-            if any(card != card.lower() for card in white_cards_names + black_cards_names):
+            if any(card != card.lower() for card in white_card_names + black_card_names):
                 raise ValueError("All card names must be lowercase.")
 
             # Ensure no overlapping cards
-            if set(white_cards_names) & set(black_cards_names):
-                raise ValueError("white_cards_names and black_cards_names must not share any cards.")
+            if set(white_card_names) & set(black_card_names):
+                raise ValueError("white_card_names and black_card_names must not share any cards.")
 
         return config
 
     def clone_with_white_cards(
         self,
-        white_cards_names: list[str],
+        white_card_names: list[str],
     ) -> GameConfig:
         clone = self.model_copy()
         clone.cards_config = self.cards_config.model_copy()
-        clone.cards_config.white_cards_name = white_cards_names
+        clone.cards_config.white_card_names = white_card_names
         return clone
 
     def clone_with_black_cards(
         self,
-        black_cards_names: list[str],
+        black_card_names: list[str],
     ) -> GameConfig:
         clone = self.model_copy()
         clone.cards_config = self.cards_config.model_copy()
-        clone.cards_config.black_cards_names = black_cards_names
+        clone.cards_config.black_card_names = black_card_names
         return clone
