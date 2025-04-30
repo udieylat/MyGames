@@ -53,7 +53,7 @@ class Scorer:
             board=board,
             ball_position=ball_position,
             num_unused_player_cards=num_unused_opponent_cards,
-        )
+        )  # TODO: add here a random float<1 to have a random tie-break between same-score moves
 
     def _score_move_for_player(
         self,

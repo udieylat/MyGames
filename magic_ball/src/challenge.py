@@ -49,6 +49,7 @@ class Challenge:
         self._level += 1
         if self._level == 4:
             print("YOU WON THE CHALLENGE!!!")
+            return None
 
         print(f"LEVEL UP: {self._level}")
         return self.start()
