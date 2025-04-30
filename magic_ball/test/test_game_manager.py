@@ -97,7 +97,7 @@ class TestGameManager(unittest.TestCase):
         self.assertEqual(game_summary.num_white_moves, 7)
         self.assertEqual(game_summary.final_ball_position, "white")
 
-    def test_fixed_position(self):
+    def test_fixed_position_fire_vs_wall(self):
         """
         In position:
 
@@ -120,7 +120,7 @@ class TestGameManager(unittest.TestCase):
             ],
             ball_position=BallPosition.middle,
         )
-        gm = GameManager(
+        _ = GameManager(
             config=GameConfig(
                 black_player=PlayerConfig.default_ai_opponent(),
                 cards_config=CardsConfig(
