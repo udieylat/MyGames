@@ -31,6 +31,14 @@ class Player:
         return self._cards
 
     @property
+    def unused_cards(self) -> list[Card]:
+        return [
+            card
+            for card in self._cards
+            if not card.already_used
+        ]
+
+    @property
     def card_names(self) -> list[str]:
         return sorted(
             card.name

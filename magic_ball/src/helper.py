@@ -49,40 +49,15 @@ class Helper:
         board: Board,
         cards: list[Card],
     ) -> list[Move]:
-        available_push_moves = []
-        for row_i in range(5):
-            for col_i in range(5):
-                if BoardUtils.is_tile_player_pawn(
-                    player_sign=player_sign,
-                    tile=board[row_i][col_i],
-                ):
-                    if player_sign == PlayerSign.white and row_i < 4 and board[row_i + 1][col_i] == TileType.vacant:
-                        available_push_moves.append(
-                            cls.generate_push_move(
-                                player_sign=PlayerSign.white,
-                                target_tile=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i + 1),
-                                board=board,
-                            )
-                        )
-                    elif player_sign == PlayerSign.black and row_i > 0 and board[row_i - 1][col_i] == TileType.vacant:
-                        available_push_moves.append(
-                            cls.generate_push_move(
-                                player_sign=PlayerSign.black,
-                                target_tile=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i - 1),
-                                board=board,
-                            )
-                        )
-
-        available_card_moves = [
-            move
-            for card_index, card in enumerate(cards)
-            for move in card.get_available_card_moves(
-                player_sign=player_sign,
-                board=board,
-                card_index=card_index,
-            )
-        ]
-
+        available_push_moves = cls._get_available_push_moves(
+            player_sign=player_sign,
+            board=board,
+        )
+        available_card_moves = cls._get_available_card_moves(
+            player_sign=player_sign,
+            board=board,
+            cards=cards,
+        )
         return available_push_moves + available_card_moves
 
     @classmethod
@@ -291,3 +266,52 @@ class Helper:
             cards=black_cards,
         )
         return not white_available_push_moves and not black_available_push_moves
+
+    @classmethod
+    def _get_available_push_moves(
+        cls,
+        player_sign: PlayerSign,
+        board: Board,
+    ) -> list[Move]:
+        available_push_moves = []
+        for row_i in range(5):
+            for col_i in range(5):
+                if BoardUtils.is_tile_player_pawn(
+                    player_sign=player_sign,
+                    tile=board[row_i][col_i],
+                ):
+                    if player_sign == PlayerSign.white and row_i < 4 and board[row_i + 1][col_i] == TileType.vacant:
+                        available_push_moves.append(
+                            cls.generate_push_move(
+                                player_sign=PlayerSign.white,
+                                target_tile=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i + 1),
+                                board=board,
+                            )
+                        )
+                    elif player_sign == PlayerSign.black and row_i > 0 and board[row_i - 1][col_i] == TileType.vacant:
+                        available_push_moves.append(
+                            cls.generate_push_move(
+                                player_sign=PlayerSign.black,
+                                target_tile=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i - 1),
+                                board=board,
+                            )
+                        )
+
+        return available_push_moves
+
+    @classmethod
+    def _get_available_card_moves(
+        cls,
+        player_sign: PlayerSign,
+        board: Board,
+        cards: list[Card],
+    ) -> list[Move]:
+        return [
+            move
+            for card_index, card in enumerate(cards)
+            for move in card.get_available_card_moves(
+                player_sign=player_sign,
+                board=board,
+                card_index=card_index,
+            )
+        ]
