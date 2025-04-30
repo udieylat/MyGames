@@ -6,6 +6,7 @@ from board import InvalidMove, Board
 from board_utils import BoardUtils
 from cards.card import Card
 from cards.cards_randomizer import CardsRandomizer
+from cards.compendium import Compendium
 from game_config import GameConfig
 from game_summary import GameSummary
 from helper import Helper
@@ -113,6 +114,21 @@ class GameManager:
         self._print("Available moves:")
         for i, move in enumerate(available_moves):
             self._print(f" {i}. {move.description}")
+
+    def show_possible_opponent_cards(self):
+        used_opponent_card_names = [
+            card.name
+            for card in self._get_player().cards
+            if card.already_used
+        ]
+        possible_opponent_card_names = [
+            card_name
+            for card_name in Compendium.get_cards_names()
+            if card_name not in self._get_player().card_names
+            and card_name not in used_opponent_card_names
+        ]
+        for i, card_name in enumerate(possible_opponent_card_names):
+            self._print(f" {i+1}. {card_name}")
 
     def play_card(
         self,
