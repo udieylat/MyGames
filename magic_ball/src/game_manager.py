@@ -22,7 +22,7 @@ class GameManager:
     def new(
         cls,
         config: GameConfig = GameConfig(),
-        cards_pull: list[Card] | None = None,
+        # cards_pull: list[Card] | None = None,
     ) -> GameManager:
         return GameManager(
             config=config,
@@ -48,7 +48,7 @@ class GameManager:
         config = GameConfig.model_validate(json.load(open(config_filename)))
         return GameManager.new(
             config=config,
-            cards_pull=cards_pull,
+            # cards_pull=cards_pull,
         )
 
     def __init__(
@@ -56,9 +56,9 @@ class GameManager:
         config: GameConfig,
         white_player: Player,
         black_player: Player,
-        white_cards: list[str] | None = None,
-        black_cards: list[str] | None = None,
-        cards_pull: list[Card] | None = None,
+        # white_cards: list[str] | None = None,
+        # black_cards: list[str] | None = None,
+        # cards_pull: list[Card] | None = None,
     ):
         assert white_player.player_sign == PlayerSign.white
         assert black_player.player_sign == PlayerSign.black
@@ -235,6 +235,7 @@ class GameManager:
         white_cards, black_cards = CardsRandomizer.draw_cards(
             white_card_names=white_cards,
             black_card_names=black_cards,
+            # TODO
             cards_pull=cards_pull,
         )
         self._white_player.set_cards(

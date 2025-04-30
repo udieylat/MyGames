@@ -12,5 +12,7 @@
       "ball_position_score": 100
     }
   },
-  "white_cards": ["jump"]
+  "cards_config": {
+    "white_card_names": ["jump"]
+  }
 }

@@ -19,6 +19,16 @@
       "ball_position_score": 100
     }
   },
-  "white_cards": ["jump", "kamikaze", "wall"],
-  "black_cards": ["bishop", "knife", "sidestep"]
+  "cards_config": {
+    "white_card_names": [
+      "jump",
+      "kamikaze",
+      "wall"
+    ],
+    "black_card_names": [
+      "bishop",
+      "knife",
+      "sidestep"
+    ]
+  }
 }
