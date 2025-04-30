@@ -6,8 +6,8 @@ from cards.cards_config import CardsConfig
 from constants import DEFAULT_NUM_CARDS_PER_PLAYER
 from game_config import GameConfig
 from game_manager import GameManager
-from models import PlayerSign
-from players.player_config import PlayerConfig
+from models import PlayerSign, GameStatus
+from players.player_config import PlayerConfig, PlayerType
 
 
 class Challenge:
@@ -32,8 +32,17 @@ class Challenge:
         )
         return self._game_manager
 
-    def next_level(self):
-        pass
+    def next_level(self) -> GameManager | None:
+        if not self._game_is_won_by_human():
+            print(f"Game is not won. Stay in level {self._level} and restart.")
+            return self.start()
+
+        self._level += 1
+        if self._level == 4:
+            print("YOU WON THE CHALLENGE!!!")
+
+        print(f"LEVEL UP: {self._level}")
+        return self.start()
 
     def _to_game_config(
         self,
@@ -70,3 +79,17 @@ class Challenge:
                 return 7
             case _:
                 return 10
+
+    def _game_is_won_by_human(self) -> bool:
+        if (
+            self._game_manager.game_config.white_player.type == PlayerType.human
+            and self._game_manager.game_status in [GameStatus.white_win, GameStatus.white_defensive_win]
+        ):
+            return True
+        if (
+            self._game_manager.game_config.black_player.type == PlayerType.human
+            and self._game_manager.game_status in [GameStatus.black_win, GameStatus.black_defensive_win]
+        ):
+            return True
+
+        return False

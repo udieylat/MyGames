@@ -72,6 +72,14 @@ class GameManager:
         self._display()
         return ""
 
+    @property
+    def game_config(self) -> GameConfig:
+        return self._config
+
+    @property
+    def game_status(self) -> GameStatus:
+        return self._game_status
+
     def push(
         self,
         target_tile: str,
