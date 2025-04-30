@@ -9,4 +9,4 @@ class CardsConfig(BaseModel):
     black_card_names: list[str] | None = None
     num_white_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER
     num_black_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER
-    cards_pull: list[Card] | None = None
+    cards_pull: list[str] | None = None

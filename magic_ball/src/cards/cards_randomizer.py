@@ -13,16 +13,20 @@ class CardsRandomizer:
         black_card_names: list[str] | None = None,
         num_white_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER,
         num_black_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER,
-        cards_pull: list[Card] | None = None,
+        cards_pull: list[str] | None = None,
     ) -> tuple[list[Card], list[Card]]:
         if not cards_pull and cards_pull is not None:
             return [], []
 
-        cards_pull = (
-            Compendium.get_cards()
-            if cards_pull is None
-            else cards_pull[:]
-        )
+        all_cards = Compendium.get_cards()
+        if cards_pull is None:
+            cards_pull = all_cards
+        else:
+            cards_pull = cls._get_cards(
+                card_names=cards_pull,
+                cards_pull=all_cards,
+                total_num_cards=len(cards_pull),
+            )
         if not white_card_names and not black_card_names:
             white_cards = cls._randomize_from_pull(
                 cards_pull=cards_pull,

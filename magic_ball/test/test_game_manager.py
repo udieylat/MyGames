@@ -1,6 +1,7 @@
 import os
 import unittest
 
+from cards.cards_config import CardsConfig
 from game_config import GameConfig
 from game_manager import GameManager
 from helper import Helper
@@ -11,7 +12,11 @@ from players.player_config import PlayerConfig, PlayerType
 class TestGameManager(unittest.TestCase):
     def test_base_push_game(self):
         gm = GameManager.new(
-            cards_pull=[],
+            config=GameConfig(
+                cards_config=CardsConfig(
+                    cards_pull=[],
+                ),
+            ),
         )
         gm.push("D2")
         gm.push("D4")
@@ -38,8 +43,10 @@ class TestGameManager(unittest.TestCase):
                 black_player=PlayerConfig(
                     type=PlayerType.random,
                 ),
+                cards_config=CardsConfig(
+                    cards_pull=[],
+                ),
             ),
-            cards_pull=[],
         )
         gm.push("A2")
         gm.push("B2")
@@ -52,8 +59,10 @@ class TestGameManager(unittest.TestCase):
                 white_player=PlayerConfig(
                     type=PlayerType.random,
                 ),
+                cards_config=CardsConfig(
+                    cards_pull=[],
+                ),
             ),
-            cards_pull=[],
         )
         gm.push("A4")
         gm.push("B4")
@@ -68,8 +77,10 @@ class TestGameManager(unittest.TestCase):
                 black_player=PlayerConfig(
                     type=PlayerType.random,
                 ),
+                cards_config=CardsConfig(
+                    cards_pull=[],
+                ),
             ),
-            cards_pull=[],
         )
 
         # No cards scenario means white defensive win.
