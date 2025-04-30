@@ -28,3 +28,16 @@ class PlayerConfig(BaseModel):
         return PlayerConfig(
             type=PlayerType.human,
         )
+
+    @classmethod
+    def default_ai_opponent(cls) -> PlayerConfig:
+        return PlayerConfig(
+            type=PlayerType.base_heuristic,
+            score_multipliers=ScoreMultipliers(
+                score_per_pawn=10,
+                score_per_free_pawn=100,
+                free_pawn_score_per_distance_from_start_tile=200,
+                score_per_unused_card=50,
+                ball_position_score=100,
+            ),
+        )

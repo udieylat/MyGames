@@ -11,16 +11,7 @@ class TestScorer(unittest.TestCase):
     def setUp(self):
         self.scorer = Scorer(
             player_sign=PlayerSign.white,
-            config=PlayerConfig(
-                type=PlayerType.base_heuristic,
-                score_multipliers=ScoreMultipliers(
-                    score_per_pawn=10,
-                    score_per_free_pawn=100,
-                    free_pawn_score_per_distance_from_start_tile=200,
-                    score_per_unused_card=50,
-                    ball_position_score=100,
-                ),
-            ),
+            config=PlayerConfig.default_ai_opponent(),
         )
 
     def test_score_new_board(self):
