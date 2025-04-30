@@ -1,0 +1,37 @@
+5 . B B B B
+4 . . . . .
+3 . . W . .
+2 . . B . .
+1 W W . W W
+  A B C D E
+
+
+Game continues:
+ white play: dagger pawn: C2
+ black play: fire in row: 3
+
+5 . B B B B
+4 . . . . .
+3 . . . . .
+2 . . . . .
+1 W W . W W
+  A B C D E
+
+Ball position: white
+
+And it's a push win for white on A file.
+
+Black cards revealed:
+ 0. jump
+ 1. wall [D]
+ 2. kamikaze
+ 3. knife
+ X bishop
+ 5. tank
+ X fire
+
+Why not play wall on A5 instead of fire?
+
+Fire leaves a free pawn for each player, but white plays first and ball position is at white - so white wins.
+
+Scorer must know: if ball position is at the opponent then need to make sure opponent doesn't push to win.

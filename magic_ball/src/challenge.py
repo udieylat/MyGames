@@ -20,11 +20,13 @@ class Challenge:
         self._cards_config = cards_config
         self._game_manager: GameManager | None = None
         self._level = 0
+        # TODO: lock challenge hand (and sign??)
 
     def start(
         self,
         player_sign: PlayerSign | None = None,
     ) -> GameManager:
+        # TODO: keep hand, also keep sign??
         self._game_manager = GameManager.new(
             config=self._to_game_config(
                 player_sign=player_sign,
@@ -33,6 +35,7 @@ class Challenge:
         return self._game_manager
 
     def next_level(self) -> GameManager | None:
+        # TODO: keep hand, also keep sign??
         if not self._game_is_won_by_human():
             print(f"Game is not won. Stay in level {self._level} and restart.")
             return self.start()
@@ -43,6 +46,10 @@ class Challenge:
 
         print(f"LEVEL UP: {self._level}")
         return self.start()
+
+    def my_level(self):
+        print(f"Level: {self._level}")
+        print(f"Number of opponent cards: {self._get_num_opponent_cards()}")
 
     def _to_game_config(
         self,
@@ -57,11 +64,13 @@ class Challenge:
             black_player = self._opponent_config
             cards_config.num_white_cards = DEFAULT_NUM_CARDS_PER_PLAYER
             cards_config.num_black_cards = self._get_num_opponent_cards()
+            # cards_config.white_card_names = [...]
         else:
             white_player = self._opponent_config
             black_player = PlayerConfig.human()
             cards_config.num_white_cards = self._get_num_opponent_cards()
             cards_config.num_black_cards = DEFAULT_NUM_CARDS_PER_PLAYER
+            # cards_config.black_card_names = [...]
 
         return GameConfig(
             white_player=white_player,
