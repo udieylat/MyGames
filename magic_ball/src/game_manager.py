@@ -133,10 +133,16 @@ class GameManager:
     def play_card(
         self,
         card_index: int,
-        move_index: int,
+        move_index: int | None = None,
     ):
         if not self._game_on:
             self._print("Game is already over.")
+            return
+
+        if move_index is None:
+            self.show_card_available_moves(
+                card_index=card_index,
+            )
             return
 
         available_moves = self._get_available_card_moves(
