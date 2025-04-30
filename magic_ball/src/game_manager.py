@@ -194,10 +194,11 @@ class GameManager:
         )
 
     def to_game_config(self) -> GameConfig:
-        config = self._config.model_copy()
-        config.white_cards = self._white_player.card_names
-        config.black_cards = self._black_player.card_names
-        return config
+        return self._config.clone_with_white_cards(
+            white_card_names=self._white_player.card_names,
+        ).clone_with_black_cards(
+            black_card_names=self._black_player.card_names,
+        )
 
     def rematch(self) -> GameManager:
         return GameManager.new(
