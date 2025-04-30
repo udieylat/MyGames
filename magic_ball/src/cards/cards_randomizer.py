@@ -2,6 +2,7 @@ import random
 
 from cards.card import Card
 from cards.compendium import Compendium
+from constants import DEFAULT_NUM_CARDS_PER_PLAYER
 
 
 class CardsRandomizer:
@@ -11,8 +12,8 @@ class CardsRandomizer:
         # TODO: receive CardsConfig with num white/black cards to randomize
         white_card_names: list[str] | None = None,
         black_card_names: list[str] | None = None,
-        num_white_cards: int = 3,
-        num_black_cards: int = 3,
+        num_white_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER,
+        num_black_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER,
         cards_pull: list[Card] | None = None,
     ) -> tuple[list[Card], list[Card]]:
         if not cards_pull and cards_pull is not None:

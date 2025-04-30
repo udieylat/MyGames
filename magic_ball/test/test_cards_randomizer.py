@@ -1,6 +1,7 @@
 import unittest
 
 from cards.cards_randomizer import CardsRandomizer
+from constants import DEFAULT_NUM_CARDS_PER_PLAYER
 
 
 class TestCardsRandomizer(unittest.TestCase):
@@ -11,8 +12,8 @@ class TestCardsRandomizer(unittest.TestCase):
                 card_name,
             ],
         )
-        self.assertEqual(3, len(white_cards))
-        self.assertEqual(3, len(black_cards))
+        self.assertEqual(DEFAULT_NUM_CARDS_PER_PLAYER, len(white_cards))
+        self.assertEqual(DEFAULT_NUM_CARDS_PER_PLAYER, len(black_cards))
         self.assertIn(card_name, [card.name for card in white_cards])
         self.assertNotIn(card_name, [card.name for card in black_cards])
 
@@ -23,8 +24,8 @@ class TestCardsRandomizer(unittest.TestCase):
                 card_name,
             ],
         )
-        self.assertEqual(3, len(white_cards))
-        self.assertEqual(3, len(black_cards))
+        self.assertEqual(DEFAULT_NUM_CARDS_PER_PLAYER, len(white_cards))
+        self.assertEqual(DEFAULT_NUM_CARDS_PER_PLAYER, len(black_cards))
         self.assertNotIn(card_name, [card.name for card in white_cards])
         self.assertIn(card_name, [card.name for card in black_cards])
 

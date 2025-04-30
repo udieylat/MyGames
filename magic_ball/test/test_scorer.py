@@ -1,6 +1,7 @@
 import unittest
 
 from board import Board
+from constants import DEFAULT_NUM_CARDS_PER_PLAYER
 from models import PlayerSign, BallPosition
 from players.player_config import PlayerConfig, PlayerType, ScoreMultipliers
 from scores.scorer import Scorer
@@ -26,7 +27,7 @@ class TestScorer(unittest.TestCase):
         score = self.scorer.score_move(
             board=Board.new().copy_board(),
             ball_position=BallPosition.middle,
-            num_unused_player_cards=3,
-            num_unused_opponent_cards=3,
+            num_unused_player_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
+            num_unused_opponent_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
         )
         self.assertEqual(0, score)
