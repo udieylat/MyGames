@@ -1,14 +1,12 @@
 from __future__ import annotations
 
-import random
-
 from cards.cards_config import CardsConfig
 from cards.cards_randomizer import CardsRandomizer
 from constants import DEFAULT_NUM_CARDS_PER_PLAYER
 from game_config import GameConfig
 from game_manager import GameManager
 from models import PlayerSign, GameStatus
-from players.player_config import PlayerConfig, PlayerType
+from players.player_config import PlayerConfig
 
 
 class Challenge:
@@ -20,6 +18,11 @@ class Challenge:
     ):
         self._player_sign = player_sign
         self._opponent_config = opponent_config
+
+        if challenge_card_names is None:
+            challenge_card_names = self._randomize_challenge_cards()
+        else:
+            assert len(challenge_card_names) == DEFAULT_NUM_CARDS_PER_PLAYER, "Input challenge cards must be of size 3"
 
         if self._player_sign == PlayerSign.white:
             self._cards_config = CardsConfig(
@@ -106,3 +109,11 @@ class Challenge:
             return True
 
         return False
+
+    @classmethod
+    def _randomize_challenge_cards(cls) -> list[str]:
+        cards, _ = CardsRandomizer.draw_cards()
+        return [
+            card.name
+            for card in cards
+        ]
