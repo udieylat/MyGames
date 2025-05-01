@@ -115,7 +115,29 @@ class Scorer:
 
         Notice: this doesn't work if "pull" card is in play.
         """
-        pass
+        if not self._is_ball_at_player(
+            player_sign=self._player_sign,
+            ball_position=ball_position,
+        ):
+            return False
+
+        free_player_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
+            player_sign=self._player_sign,
+            board=board,
+        )
+        if not free_player_pawn_distances_from_start_tile:
+            return False
+
+        free_opponent_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
+            player_sign=self._opponent_player_sign,
+            board=board,
+        )
+        if not free_opponent_pawn_distances_from_start_tile:
+            return True
+
+        farthest_free_opponent_pawn_distance = max(free_opponent_pawn_distances_from_start_tile)
+        farthest_free_player_pawn_distance = max(free_player_pawn_distances_from_start_tile)
+        return farthest_free_player_pawn_distance > farthest_free_opponent_pawn_distance
 
     def _is_opponent_free_push_to_win(
         self,
@@ -138,10 +160,6 @@ class Scorer:
         free_opponent_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
             player_sign=self._opponent_player_sign,
             board=board,
-            pawn_indices=Helper.get_pawn_indices(
-                player_sign=self._opponent_player_sign,
-                board=board,
-            ),
         )
         if not free_opponent_pawn_distances_from_start_tile:
             return False
@@ -149,10 +167,6 @@ class Scorer:
         free_player_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
             player_sign=self._player_sign,
             board=board,
-            pawn_indices=Helper.get_pawn_indices(
-                player_sign=self._player_sign,
-                board=board,
-            ),
         )
         if not free_player_pawn_distances_from_start_tile:
             return True
@@ -196,7 +210,6 @@ class Scorer:
         free_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
             player_sign=player_sign,
             board=board,
-            pawn_indices=pawn_indices,
         )
 
         num_pawns_score = len(pawn_indices) * self._config.score_multipliers.score_per_pawn
@@ -212,7 +225,6 @@ class Scorer:
         cls,
         player_sign: PlayerSign,
         board: BoardType,
-        pawn_indices: list[tuple[int, int]],
     ) -> list[int]:
         """
         Return list of "free pawns" distances from start tile for input player.
@@ -221,6 +233,10 @@ class Scorer:
             - player (white or black) has 2 free pawns, one at the starting row and one at row 3 (middle row).
             - Return value: [0, 2]
         """
+        pawn_indices = Helper.get_pawn_indices(
+            player_sign=player_sign,
+            board=board,
+        )
         free_pawn_row_indices = [
             row_i
             for col_i, row_i in pawn_indices

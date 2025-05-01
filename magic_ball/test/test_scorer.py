@@ -74,23 +74,13 @@ class TestScorer(unittest.TestCase):
         self.assertSetEqual(free_black_pawns_indices, expected_free_black_pawns_indices)
 
     def test_get_free_pawn_distances_from_start_tile(self):
-        white_pawn_indices = Helper.get_pawn_indices(
-            player_sign=PlayerSign.white,
-            board=self._board_example,
-        )
-        black_pawn_indices = Helper.get_pawn_indices(
-            player_sign=PlayerSign.black,
-            board=self._board_example,
-        )
         free_white_pawn_distances_from_start_tile = self.scorer._get_free_pawn_distances_from_start_tile(
             player_sign=PlayerSign.white,
             board=self._board_example,
-            pawn_indices=white_pawn_indices,
         )
         free_black_pawn_distances_from_start_tile = self.scorer._get_free_pawn_distances_from_start_tile(
             player_sign=PlayerSign.black,
             board=self._board_example,
-            pawn_indices=black_pawn_indices,
         )
         self.assertListEqual([0, 2], free_white_pawn_distances_from_start_tile)
         self.assertListEqual([3, 3], free_black_pawn_distances_from_start_tile)
