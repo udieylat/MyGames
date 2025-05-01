@@ -13,7 +13,7 @@ class HumanPlayer(Player):
     def find_move(
         self,
         board: Board,
-        unused_player_cards: list[Card],
-        unused_opponent_cards: list[Card],
+        player_cards: list[Card],
+        opponent_cards: list[Card],
     ) -> Move:
         raise NotImplemented("find your own move")

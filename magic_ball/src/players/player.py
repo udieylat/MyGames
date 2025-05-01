@@ -31,14 +31,6 @@ class Player:
         return self._cards
 
     @property
-    def unused_cards(self) -> list[Card]:
-        return [
-            card
-            for card in self._cards
-            if not card.already_used
-        ]
-
-    @property
     def card_names(self) -> list[str]:
         return sorted(
             card.name
@@ -60,7 +52,7 @@ class Player:
     def find_move(
         self,
         board: Board,
-        unused_player_cards: list[Card],
-        unused_opponent_cards: list[Card],
+        player_cards: list[Card],
+        opponent_cards: list[Card],
     ) -> Move:
         pass

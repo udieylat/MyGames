@@ -28,14 +28,15 @@ class BaseHeuristicPlayer(Player):
     def find_move(
         self,
         board: Board,
-        unused_player_cards: list[Card],
-        unused_opponent_cards: list[Card],
+        player_cards: list[Card],
+        opponent_cards: list[Card],
     ) -> Move:
+        num_allowed_playable_cards = min(len(player_cards), len(opponent_cards))
         available_moves = Helper.get_available_moves(
             board=board,
             player_sign=self._player_sign,
             cards=self._cards,
-            num_allowed_playable_cards=3,  # TODO
+            num_allowed_playable_cards=num_allowed_playable_cards,
         )
         if not available_moves:
             raise NoAvailableMoves()
@@ -45,8 +46,8 @@ class BaseHeuristicPlayer(Player):
                 self._scorer.score_board(
                     board=move.result_board,
                     ball_position=move.result_ball_position,
-                    num_unused_player_cards=len(unused_player_cards),
-                    num_unused_opponent_cards=len(unused_opponent_cards),
+                    num_unused_player_cards=len(player_cards),
+                    num_unused_opponent_cards=len(opponent_cards),
                 ),
                 move,
             )

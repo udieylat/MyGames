@@ -318,7 +318,7 @@ class Helper:
             for card in cards
             if card.already_used
         ])
-        if num_used_cards >= NUM_PLAYABLE_CARDS:
+        if num_used_cards >= num_allowed_playable_cards:
             # Forbid using more than NUM_PLAYABLE_CARDS cards.
             return []
 
