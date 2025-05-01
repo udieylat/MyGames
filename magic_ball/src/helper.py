@@ -1,7 +1,6 @@
 from board import Board, InvalidMove
 from board_utils import BoardUtils
 from cards.card import Card
-from constants import NUM_PLAYABLE_CARDS
 from move import Move
 from models import PlayerSign, TileType, GameStatus, BoardType
 
@@ -319,7 +318,7 @@ class Helper:
             if card.already_used
         ])
         if num_used_cards >= num_allowed_playable_cards:
-            # Forbid using more than NUM_PLAYABLE_CARDS cards.
+            # Forbid using more than allowed number of cards.
             return []
 
         return [

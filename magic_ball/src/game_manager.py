@@ -8,7 +8,6 @@ from cards.card import Card
 from cards.cards_config import CardsConfig
 from cards.cards_randomizer import CardsRandomizer
 from cards.compendium import Compendium
-from constants import NUM_PLAYABLE_CARDS
 from game_config import GameConfig
 from game_summary import GameSummary
 from helper import Helper
@@ -122,7 +121,7 @@ class GameManager:
             for card in self._get_opponent().cards
             if card.already_used
         ]
-        if len(used_opponent_card_names) == NUM_PLAYABLE_CARDS:
+        if len(used_opponent_card_names) == self._num_allowed_playable_cards():
             self._print(f"Opponent already played all allowed cards: {used_opponent_card_names}")
             return
 
@@ -132,6 +131,10 @@ class GameManager:
             if card_name not in self._get_player().card_names
             and card_name not in used_opponent_card_names
         ]
+        self._print(
+            f"Opponent ({self._get_opponent().player_sign}) already played cards {used_opponent_card_names} "
+            f"and has {self._num_allowed_playable_cards() - len(used_opponent_card_names)} more cards to play out of: "
+        )
         for i, card_name in enumerate(possible_opponent_card_names):
             self._print(f" {i+1}. {card_name}")
 
