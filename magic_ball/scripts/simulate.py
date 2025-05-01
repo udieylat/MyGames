@@ -9,7 +9,7 @@ from game_simulator import GameSimulator
 parser = argparse.ArgumentParser()
 parser.add_argument("-i", "--input_filename", default="config/ai_vs_ai.json")
 parser.add_argument("-o", "--output_filename", default="results/new_sim.json")
-parser.add_argument("-n", "--num_games", default=10000)
+parser.add_argument("-n", "--num_games", type=int, default=10000)
 parser.add_argument("-p", "--player", choices=["white", "black"], default="white")
 args = parser.parse_args()
 
