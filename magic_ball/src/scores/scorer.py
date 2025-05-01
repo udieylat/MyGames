@@ -32,18 +32,25 @@ class Scorer:
         Method: score board for each player and reduce the opponent score from the player score.
         This means: positive score means player has the advantage and negative score means the opponent has advantage.
         """
-        # Always choose a winning move.
-        if self._is_winning_move(
+        # Return winning/losing score is board is won by either side.
+        # For player win, increase score if number of moves to win is lower.
+        # For opponent win, increase score if number of opponent moves to win is higher.
+        winning_score = self._winning_score(
             board=board,
             ball_position=ball_position,
-        ):
-            return self.WINNING_SCORE
-        # Always avoid a losing move.
-        if self._is_losing_move(
+        )
+        losing_score = self._losing_score(
             board=board,
             ball_position=ball_position,
-        ):
-            return self.LOSING_SCORE
+        )
+        assert None in [winning_score, losing_score], \
+            f"Cannot have both winning and losing scores: {winning_score}, {losing_score}"
+        if winning_score is not None:
+            return winning_score
+        if losing_score is not None:
+            return losing_score
+
+        # Game is not won yet by either side.
 
         board_score_for_player = self._score_board_for_player(
             player_sign=self._player_sign,
@@ -61,16 +68,18 @@ class Scorer:
         )
         return board_score_for_player - board_score_for_opponent
 
-    def _is_winning_move(
+    def _winning_score(
         self,
         board: BoardType,
         ball_position: BallPosition,
-    ) -> bool:
+    ) -> int | None:
         num_moves_to_win = self._num_moves_to_win(
             board=board,
             ball_position=ball_position,
         )
-        return num_moves_to_win is not None
+        if num_moves_to_win is None:
+            return None
+        return self.WINNING_SCORE - 10 * num_moves_to_win
 
     def _num_moves_to_win(
         self,
@@ -97,16 +106,18 @@ class Scorer:
         )
         return 4 - max(free_player_pawn_distances_from_start_tile)
 
-    def _is_losing_move(
+    def _losing_score(
         self,
         board: BoardType,
         ball_position: BallPosition,
-    ) -> bool:
+    ) -> int | None:
         num_opponent_moves_to_win = self._num_opponent_moves_to_win(
             board=board,
             ball_position=ball_position,
         )
-        return num_opponent_moves_to_win is not None
+        if num_opponent_moves_to_win is None:
+            return None
+        return self.LOSING_SCORE + 10 * num_opponent_moves_to_win
 
     def _num_opponent_moves_to_win(
         self,

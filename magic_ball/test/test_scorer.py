@@ -85,7 +85,7 @@ class TestScorer(unittest.TestCase):
         self.assertListEqual([0, 2], free_white_pawn_distances_from_start_tile)
         self.assertListEqual([3, 3], free_black_pawn_distances_from_start_tile)
 
-    def test_is_winning_move(self):
+    def test_winning_score(self):
         board = [
             ["W", "W", "W", "W", "W"],
             [".", ".", ".", ".", "."],
@@ -93,20 +93,20 @@ class TestScorer(unittest.TestCase):
             [".", ".", ".", ".", "."],
             [".", "B", "B", "B", "B"],
         ]
-        self.assertTrue(
-            self.scorer._is_winning_move(
+        self.assertIsNotNone(
+            self.scorer._winning_score(
                 board=board,
                 ball_position=BallPosition.white,
             )
         )
-        self.assertFalse(
-            self.scorer._is_winning_move(
+        self.assertIsNone(
+            self.scorer._winning_score(
                 board=board,
                 ball_position=BallPosition.middle,
             )
         )
 
-    def test_is_losing_move(self):
+    def test_losing_score(self):
         board = [
             ["W", "W", "W", "W", "."],
             [".", ".", ".", ".", "."],
@@ -114,14 +114,14 @@ class TestScorer(unittest.TestCase):
             [".", ".", ".", ".", "B"],
             [".", "B", "B", "B", "."],
         ]
-        self.assertTrue(
-            self.scorer._is_losing_move(
+        self.assertIsNotNone(
+            self.scorer._losing_score(
                 board=board,
                 ball_position=BallPosition.black,
             )
         )
-        self.assertFalse(
-            self.scorer._is_losing_move(
+        self.assertIsNone(
+            self.scorer._losing_score(
                 board=board,
                 ball_position=BallPosition.middle,
             )
