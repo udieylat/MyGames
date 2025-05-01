@@ -106,6 +106,27 @@ class TestScorer(unittest.TestCase):
             )
         )
 
+    def test_is_losing_move(self):
+        board = [
+            ["W", "W", "W", "W", "."],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "B"],
+            [".", "B", "B", "B", "."],
+        ]
+        self.assertTrue(
+            self.scorer._is_losing_move(
+                board=board,
+                ball_position=BallPosition.black,
+            )
+        )
+        self.assertFalse(
+            self.scorer._is_losing_move(
+                board=board,
+                ball_position=BallPosition.middle,
+            )
+        )
+
     def test_score_distant_free_pawn(self):
         board = [
             ["W", "W", "W", "W", "W"],
