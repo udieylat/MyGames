@@ -127,6 +127,33 @@ class TestScorer(unittest.TestCase):
             )
         )
 
+    def test_num_moves_to_win(self):
+        board = [
+            ["W", "W", "W", "W", "W"],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "."],
+            [".", "B", "B", "B", "B"],
+        ]
+        num_moves_to_win = self.scorer._num_moves_to_win(
+            board=board,
+            ball_position=BallPosition.white,
+        )
+        self.assertEqual(4, num_moves_to_win)
+
+        board = [
+            [".", "W", "W", "W", "W"],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "."],
+            ["W", ".", ".", ".", "."],
+            [".", "B", "B", "B", "B"],
+        ]
+        num_moves_to_win = self.scorer._num_moves_to_win(
+            board=board,
+            ball_position=BallPosition.white,
+        )
+        self.assertEqual(1, num_moves_to_win)
+
     def test_score_distant_free_pawn(self):
         board = [
             ["W", "W", "W", "W", "W"],

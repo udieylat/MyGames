@@ -82,6 +82,29 @@ class Scorer:
 
         return False
 
+    def _num_moves_to_win(
+        self,
+        board: BoardType,
+        ball_position: BallPosition,
+    ) -> int | None:
+        if BoardUtils.is_player_win(
+            player_sign=self._player_sign,
+            board=board,
+        ):
+            return 0
+
+        if not self._is_player_free_push_to_win(
+            board=board,
+            ball_position=ball_position,
+        ):
+            return None
+
+        free_player_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
+            player_sign=self._player_sign,
+            board=board,
+        )
+        return 4 - max(free_player_pawn_distances_from_start_tile)
+
     def _is_losing_move(
         self,
         board: BoardType,
