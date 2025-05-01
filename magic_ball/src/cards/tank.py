@@ -73,7 +73,7 @@ class Tank(Card):
         target_row_i: int,
     ) -> bool:
         match pushed_tile, target_row_i:
-            case (PlayerSign.white, 0) | (PlayerSign.black, 4):
+            case (TileType.white, 4) | (TileType.black, 0):
                 return True
             case _:
                 return False
