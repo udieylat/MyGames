@@ -7,6 +7,10 @@ from players.player_config import PlayerConfig
 
 
 class Scorer:
+
+    WINNING_SCORE = 99999999999
+    LOSING_SCORE = -WINNING_SCORE
+
     def __init__(
         self,
         player_sign: PlayerSign,
@@ -33,15 +37,12 @@ class Scorer:
             player_sign=self._player_sign,
             board=board,
         ):
-            return 99999999999
+            return self.WINNING_SCORE
         # Always avoid a losing move.
-        if BoardUtils.is_player_one_to_win(
-            player_sign=BoardUtils.inverse_player_sign(
-                player_sign=self._player_sign,
-            ),
+        if self._is_losing_move(
             board=board,
         ):
-            return -99999999999
+            return self.LOSING_SCORE
 
         board_score_for_player = self._score_board_for_player(
             player_sign=self._player_sign,
@@ -58,6 +59,20 @@ class Scorer:
             num_unused_player_cards=num_unused_opponent_cards,
         )
         return board_score_for_player - board_score_for_opponent
+
+    def _is_losing_move(
+        self,
+        board: BoardType,
+    ) -> bool:
+        # Losing move if the result board gives the opponent a single push to win.
+        if BoardUtils.is_player_single_push_to_win(
+            player_sign=BoardUtils.inverse_player_sign(
+                player_sign=self._player_sign,
+            ),
+            board=board,
+        ):
+            return True
+        return False
 
     def _score_board_for_player(
         self,

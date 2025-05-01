@@ -31,7 +31,7 @@ class BoardUtils:
         )
 
     @classmethod
-    def is_player_one_to_win(
+    def is_player_single_push_to_win(
         cls,
         player_sign: PlayerSign,
         board: BoardType,
