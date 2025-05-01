@@ -100,26 +100,30 @@ class Scorer:
         ):
             return False
 
-        farthest_free_opponent_pawn_distance = max(
-            self._get_free_pawn_distances_from_start_tile(
+        free_opponent_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
+            player_sign=self._opponent_player_sign,
+            board=board,
+            pawn_indices=Helper.get_pawn_indices(
                 player_sign=self._opponent_player_sign,
                 board=board,
-                pawn_indices=Helper.get_pawn_indices(
-                    player_sign=self._opponent_player_sign,
-                    board=board,
-                ),
-            )
+            ),
         )
-        farthest_free_player_pawn_distance = max(
-            self._get_free_pawn_distances_from_start_tile(
+        if not free_opponent_pawn_distances_from_start_tile:
+            return False
+
+        free_player_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
+            player_sign=self._player_sign,
+            board=board,
+            pawn_indices=Helper.get_pawn_indices(
                 player_sign=self._player_sign,
                 board=board,
-                pawn_indices=Helper.get_pawn_indices(
-                    player_sign=self._player_sign,
-                    board=board,
-                ),
-            )
+            ),
         )
+        if not free_player_pawn_distances_from_start_tile:
+            return True
+
+        farthest_free_opponent_pawn_distance = max(free_opponent_pawn_distances_from_start_tile)
+        farthest_free_player_pawn_distance = max(free_player_pawn_distances_from_start_tile)
         return farthest_free_opponent_pawn_distance >= farthest_free_player_pawn_distance
 
     def _score_board_for_player(
