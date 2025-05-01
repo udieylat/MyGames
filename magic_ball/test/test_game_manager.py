@@ -3,7 +3,6 @@ import unittest
 
 from board import Board
 from cards.cards_config import CardsConfig
-from cards.compendium import Compendium
 from game_config import GameConfig
 from game_manager import GameManager
 from helper import Helper
@@ -120,11 +119,66 @@ class TestGameManager(unittest.TestCase):
             ],
             ball_position=BallPosition.middle,
         )
-        _ = GameManager(
+        gm = self._black_ai_turn_vs_human(
+            black_card_names=["fire"],
+            board=board,
+        )
+
+        # Assert "fire" was NOT played by black.
+        self.assertFalse(
+            all(
+                board[row_i][col_i] == TileType.vacant
+                for row_i in range(1, 4)
+                for col_i in range(0, 5)
+            ),
+            msg=f"Unexpected 'fire' play, game log: {gm._game_log}",
+        )
+
+    def test_fixed_position_black_push_to_win(self):
+        """
+        Naive score would suggest "charge" improves black's position.
+        But, black is "free push to win" (has ball position).
+        """
+        board = Board(
+            board=[
+                ["W", "W", ".", "W", "W"],
+                [".", ".", ".", ".", "."],
+                [".", ".", ".", ".", "."],
+                [".", ".", ".", ".", "."],
+                [".", "B", "B", "B", "B"],
+            ],
+            ball_position=BallPosition.black,
+        )
+        gm = self._black_ai_turn_vs_human(
+            black_card_names=["charge"],
+            board=board,
+        )
+
+        # Only one reasonable play here: C4.
+        self.assertEqual("C4", gm._game_log[-1], msg=f"Unexpected play, game log: {gm._game_log}")
+        self.assertEqual(board[3][2], TileType.black)
+        self.assertEqual(board[4][2], TileType.vacant)
+        self.assertEqual(board.ball_position, BallPosition.black)
+
+    @classmethod
+    def _get_game_status(cls, gm: GameManager) -> GameStatus:
+        return Helper.get_game_status(
+            board=gm._board,
+            white_cards=gm._white_player.cards,
+            black_cards=gm._black_player.cards,
+        )
+
+    @classmethod
+    def _black_ai_turn_vs_human(
+        cls,
+        board: Board,
+        black_card_names: list[str],
+    ) -> GameManager:
+        return GameManager(
             config=GameConfig(
                 black_player=PlayerConfig.default_ai_opponent(),
                 cards_config=CardsConfig(
-                    black_card_names=["fire", "wall", "peace"],
+                    black_card_names=black_card_names,
                 ),
             ),
             white_player=PlayerFactory.generate_player(
@@ -137,21 +191,4 @@ class TestGameManager(unittest.TestCase):
             ),
             board=board,
             player_turn=PlayerSign.black,
-        )
-
-        # Assert "fire" was NOT played by black.
-        self.assertFalse(
-            all(
-                board[row_i][col_i] == TileType.vacant
-                for row_i in range(1, 4)
-                for col_i in range(0, 5)
-            )
-        )
-
-    @classmethod
-    def _get_game_status(cls, gm: GameManager) -> GameStatus:
-        return Helper.get_game_status(
-            board=gm._board,
-            white_cards=gm._white_player.cards,
-            black_cards=gm._black_player.cards,
         )

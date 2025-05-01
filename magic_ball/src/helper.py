@@ -88,7 +88,7 @@ class Helper:
             player_sign=player_sign,
             result_board=new_board,
             result_ball_position=board.ball_position,
-            description=target_tile,  # f"push to target tile: {target_tile}",
+            description=target_tile,
         )
 
     @classmethod
