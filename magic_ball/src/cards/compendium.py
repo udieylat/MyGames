@@ -1,3 +1,5 @@
+import math
+
 from cards.bishop import Bishop
 from cards.card import Card
 from cards.charge import Charge
@@ -42,3 +44,13 @@ class Compendium:
             card.name
             for card in cls.get_cards()
         ]
+
+    @classmethod
+    def get_num_decks_options(
+        cls,
+        num_cards: int,
+        num_cards_in_pull: int | None = None,
+    ) -> int:
+        if num_cards_in_pull is None:
+            num_cards_in_pull = len(cls.get_cards())
+        return math.comb(num_cards_in_pull, num_cards)
