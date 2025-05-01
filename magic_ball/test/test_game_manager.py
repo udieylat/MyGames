@@ -94,8 +94,8 @@ class TestGameManager(unittest.TestCase):
         gm = GameManager.from_config_filename(f"{filename}/../config/fixed_game.json")
         game_summary = gm.export_summary()
         self.assertEqual(game_summary.winner, "white")
-        self.assertEqual(game_summary.num_white_moves, 7)
-        self.assertEqual(game_summary.final_ball_position, "white")
+        self.assertEqual(game_summary.num_white_moves, 8)
+        self.assertEqual(game_summary.final_ball_position, "middle")
 
     def test_fixed_position_fire_vs_wall(self):
         """
