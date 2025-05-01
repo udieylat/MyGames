@@ -97,7 +97,7 @@ class TestGameManager(unittest.TestCase):
         self.assertEqual(game_summary.num_white_moves, 8)
         self.assertEqual(game_summary.final_ball_position, "middle")
 
-    def test_fixed_position_fire_vs_wall(self):
+    def test_fixed_position_fire_loses(self):
         """
         In position:
 
@@ -139,17 +139,14 @@ class TestGameManager(unittest.TestCase):
             player_turn=PlayerSign.black,
         )
 
-        # Assert "fire" was played by black.
-        self.assertTrue(
+        # Assert "fire" was NOT played by black.
+        self.assertFalse(
             all(
                 board[row_i][col_i] == TileType.vacant
                 for row_i in range(1, 4)
                 for col_i in range(0, 5)
             )
         )
-
-        # Assert "wall" was played by black at A5.
-        # self.assertEqual(board[4][0], TileType.wall)
 
     @classmethod
     def _get_game_status(cls, gm: GameManager) -> GameStatus:
