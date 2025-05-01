@@ -66,27 +66,18 @@ class Scorer:
         board: BoardType,
         ball_position: BallPosition,
     ) -> bool:
-        # Game won by player - the move is the final winning move.
-        if BoardUtils.is_player_win(
-            player_sign=self._player_sign,
-            board=board,
-        ):
-            return True
-
-        # Winning move if the result board gives the player a free push to win.
-        if self._is_player_free_push_to_win(
+        num_moves_to_win = self._num_moves_to_win(
             board=board,
             ball_position=ball_position,
-        ):
-            return True
-
-        return False
+        )
+        return num_moves_to_win is not None
 
     def _num_moves_to_win(
         self,
         board: BoardType,
         ball_position: BallPosition,
     ) -> int | None:
+        # No more moves, the board is wo by player.
         if BoardUtils.is_player_win(
             player_sign=self._player_sign,
             board=board,
@@ -97,6 +88,7 @@ class Scorer:
             board=board,
             ball_position=ball_position,
         ):
+            # Game is not won.
             return None
 
         free_player_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
@@ -110,21 +102,36 @@ class Scorer:
         board: BoardType,
         ball_position: BallPosition,
     ) -> bool:
-        # Losing move if the result board gives the opponent a single push to win.
+        num_opponent_moves_to_win = self._num_opponent_moves_to_win(
+            board=board,
+            ball_position=ball_position,
+        )
+        return num_opponent_moves_to_win is not None
+
+    def _num_opponent_moves_to_win(
+        self,
+        board: BoardType,
+        ball_position: BallPosition,
+    ) -> int | None:
+        # The opponent has a single push move to win.
         if BoardUtils.is_player_single_push_to_win(
             player_sign=self._opponent_player_sign,
             board=board,
         ):
-            return True
+            return 1
 
-        # Losing move if the result board gives the opponent a free push to win.
-        if self._is_opponent_free_push_to_win(
+        if not self._is_opponent_free_push_to_win(
             board=board,
             ball_position=ball_position,
         ):
-            return True
+            # Game is not lost.
+            return None
 
-        return False
+        free_opponent_pawn_distances_from_start_tile = self._get_free_pawn_distances_from_start_tile(
+            player_sign=self._opponent_player_sign,
+            board=board,
+        )
+        return 4 - max(free_opponent_pawn_distances_from_start_tile)
 
     def _is_player_free_push_to_win(
         self,
