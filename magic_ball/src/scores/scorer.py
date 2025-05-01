@@ -66,22 +66,41 @@ class Scorer:
         board: BoardType,
         ball_position: BallPosition,
     ) -> bool:
-        opponent_player_sign = BoardUtils.inverse_player_sign(
-            player_sign=self._player_sign,
-        )
-
         # Losing move if the result board gives the opponent a single push to win.
         if BoardUtils.is_player_single_push_to_win(
-            player_sign=opponent_player_sign,
+            player_sign=self._opponent_player_sign,
             board=board,
         ):
             return True
 
+        # Losing move if the result board gives the opponent a free push to win.
+        if self._is_opponent_free_push_to_win(
+            board=board,
+            ball_position=ball_position,
+        ):
+            return True
+
+        return False
+
+    def _is_opponent_free_push_to_win(
+        self,
+        board: BoardType,
+        ball_position: BallPosition,
+    ) -> bool:
+        """
+        If the ball position is at the opponent, and they have a free pawn then the player cannot stop their free pawn.
+        Therefore, if their free pawn distance closer or equal to the player's farthest free pawn,
+        the opponent is "free push to win" and the board is losing for the player.
+
+        Notice: this doesn't work if "pull" card is in play.
+        """
         if not self._is_ball_at_player(
-            player_sign=opponent_player_sign,
+            player_sign=self._opponent_player_sign,
             ball_position=ball_position,
         ):
             return False
+
+        # TODO
 
         return False
 
@@ -194,6 +213,12 @@ class Scorer:
                 ball_position=ball_position,
             )
             else 0
+        )
+
+    @property
+    def _opponent_player_sign(self) -> PlayerSign:
+        return BoardUtils.inverse_player_sign(
+            player_sign=self._player_sign,
         )
 
     @classmethod
