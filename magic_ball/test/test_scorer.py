@@ -84,3 +84,54 @@ class TestScorer(unittest.TestCase):
         )
         self.assertListEqual([0, 2], free_white_pawn_distances_from_start_tile)
         self.assertListEqual([3, 3], free_black_pawn_distances_from_start_tile)
+
+    def test_is_winning_move(self):
+        board = [
+            ["W", "W", "W", "W", "W"],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "."],
+            [".", "B", "B", "B", "B"],
+        ]
+        self.assertTrue(
+            self.scorer._is_winning_move(
+                board=board,
+                ball_position=BallPosition.white,
+            )
+        )
+        self.assertFalse(
+            self.scorer._is_winning_move(
+                board=board,
+                ball_position=BallPosition.middle,
+            )
+        )
+
+    def test_score_distant_free_pawn(self):
+        board = [
+            ["W", "W", "W", "W", "W"],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "."],
+            [".", "B", "B", "B", "B"],
+        ]
+        score_distant_free_pawn = self.scorer.score_board(
+            board=board,
+            ball_position=BallPosition.white,
+            num_unused_player_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
+            num_unused_opponent_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
+        )
+
+        board = [
+            [".", "W", "W", "W", "W"],
+            [".", ".", ".", ".", "."],
+            [".", ".", ".", ".", "."],
+            ["W", ".", ".", ".", "."],
+            [".", "B", "B", "B", "B"],
+        ]
+        score_close_free_pawn = self.scorer.score_board(
+            board=board,
+            ball_position=BallPosition.white,
+            num_unused_player_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
+            num_unused_opponent_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
+        )
+        self.assertGreater(score_close_free_pawn, score_distant_free_pawn)
