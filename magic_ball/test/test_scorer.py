@@ -16,6 +16,13 @@ class TestScorer(unittest.TestCase):
                 random_tie_break=False,
             ),
         )
+        self._board_example = [
+            ["W", "#", ".", "W", "."],
+            [".", ".", "B", ".", "B"],
+            [".", ".", "W", ".", "."],
+            [".", ".", ".", ".", "B"],
+            [".", "B", ".", "B", "B"],
+        ]
 
     def test_score_new_board(self):
         score = self.scorer.score_board(
@@ -27,27 +34,20 @@ class TestScorer(unittest.TestCase):
         self.assertEqual(0, score)
 
     def test_is_free_pawn(self):
-        board = [
-            ["W", "#", ".", "W", "."],
-            [".", ".", "B", ".", "B"],
-            [".", ".", "W", ".", "."],
-            [".", ".", ".", ".", "B"],
-            [".", "B", ".", "B", "B"],
-        ]
         white_pawn_indices = Helper.get_pawn_indices(
             player_sign=PlayerSign.white,
-            board=board,
+            board=self._board_example,
         )
         black_pawn_indices = Helper.get_pawn_indices(
             player_sign=PlayerSign.black,
-            board=board,
+            board=self._board_example,
         )
         free_white_pawns_indices = {
             (col_i, row_i)
             for col_i, row_i in white_pawn_indices
             if self.scorer._is_free_pawn(
                 player_sign=PlayerSign.white,
-                board=board,
+                board=self._board_example,
                 col_i=col_i,
                 row_i=row_i,
             )
@@ -57,7 +57,7 @@ class TestScorer(unittest.TestCase):
             for col_i, row_i in black_pawn_indices
             if self.scorer._is_free_pawn(
                 player_sign=PlayerSign.black,
-                board=board,
+                board=self._board_example,
                 col_i=col_i,
                 row_i=row_i,
             )
@@ -72,3 +72,25 @@ class TestScorer(unittest.TestCase):
         }
         self.assertSetEqual(free_white_pawns_indices, expected_free_white_pawns_indices)
         self.assertSetEqual(free_black_pawns_indices, expected_free_black_pawns_indices)
+
+    def test_get_free_pawn_distances_from_start_tile(self):
+        white_pawn_indices = Helper.get_pawn_indices(
+            player_sign=PlayerSign.white,
+            board=self._board_example,
+        )
+        black_pawn_indices = Helper.get_pawn_indices(
+            player_sign=PlayerSign.black,
+            board=self._board_example,
+        )
+        free_white_pawn_distances_from_start_tile = self.scorer._get_free_pawn_distances_from_start_tile(
+            player_sign=PlayerSign.white,
+            board=self._board_example,
+            pawn_indices=white_pawn_indices,
+        )
+        free_black_pawn_distances_from_start_tile = self.scorer._get_free_pawn_distances_from_start_tile(
+            player_sign=PlayerSign.black,
+            board=self._board_example,
+            pawn_indices=black_pawn_indices,
+        )
+        self.assertListEqual([0, 2], free_white_pawn_distances_from_start_tile)
+        self.assertListEqual([3, 3], free_black_pawn_distances_from_start_tile)

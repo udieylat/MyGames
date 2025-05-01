@@ -100,7 +100,9 @@ class Scorer:
         ):
             return False
 
-        # TODO
+        # self._get_free_pawn_distances_from_start_tile(
+        #
+        # )
 
         return False
 
@@ -161,7 +163,7 @@ class Scorer:
         Return list of "free pawns" distances from start tile for input player.
         Every distance value represents a free pawn and how many tiles it's from the starting tile.
         Example:
-            - white has 2 free pawns, one at the starting row and one at row 3.
+            - player (white or black) has 2 free pawns, one at the starting row and one at row 3 (middle row).
             - Return value: [0, 2]
         """
         free_pawn_row_indices = [
