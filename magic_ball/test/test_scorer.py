@@ -42,19 +42,33 @@ class TestScorer(unittest.TestCase):
             player_sign=PlayerSign.black,
             board=board,
         )
-        free_white_pawns_indices = [
-            # TODO
-        ]
-        free_black_pawns_indices = [
-            # TODO
-        ]
+        free_white_pawns_indices = {
+            (col_i, row_i)
+            for col_i, row_i in white_pawn_indices
+            if self.scorer._is_free_pawn(
+                player_sign=PlayerSign.white,
+                board=board,
+                col_i=col_i,
+                row_i=row_i,
+            )
+        }
+        free_black_pawns_indices = {
+            (col_i, row_i)
+            for col_i, row_i in black_pawn_indices
+            if self.scorer._is_free_pawn(
+                player_sign=PlayerSign.black,
+                board=board,
+                col_i=col_i,
+                row_i=row_i,
+            )
+        }
         expected_free_white_pawns_indices = {
             (0, 0),
             (2, 2),
         }
         expected_free_black_pawns_indices = {
-            (1, 2),
-            (1, 4),
+            (2, 1),
+            (4, 1),
         }
         self.assertSetEqual(free_white_pawns_indices, expected_free_white_pawns_indices)
         self.assertSetEqual(free_black_pawns_indices, expected_free_black_pawns_indices)
