@@ -33,9 +33,9 @@ class Scorer:
         This means: positive score means player has the advantage and negative score means the opponent has advantage.
         """
         # Always choose a winning move.
-        if BoardUtils.is_player_win(
-            player_sign=self._player_sign,
+        if self._is_winning_move(
             board=board,
+            ball_position=ball_position,
         ):
             return self.WINNING_SCORE
         # Always avoid a losing move.
@@ -61,6 +61,27 @@ class Scorer:
         )
         return board_score_for_player - board_score_for_opponent
 
+    def _is_winning_move(
+        self,
+        board: BoardType,
+        ball_position: BallPosition,
+    ) -> bool:
+        # Game won by player - the move is the final winning move.
+        if BoardUtils.is_player_win(
+            player_sign=self._player_sign,
+            board=board,
+        ):
+            return True
+
+        # Winning move if the result board gives the player a free push to win.
+        if self._is_player_free_push_to_win(
+            board=board,
+            ball_position=ball_position,
+        ):
+            return True
+
+        return False
+
     def _is_losing_move(
         self,
         board: BoardType,
@@ -82,6 +103,20 @@ class Scorer:
 
         return False
 
+    def _is_player_free_push_to_win(
+        self,
+        board: BoardType,
+        ball_position: BallPosition,
+    ) -> bool:
+        """
+        If the ball position is at the player, and they have a free pawn then the opponent cannot stop their free pawn.
+        Therefore, if their free pawn distance is farther than the opponent's farthest free pawn,
+        the player is "free push to win" and the board is winning for the player.
+
+        Notice: this doesn't work if "pull" card is in play.
+        """
+        pass
+
     def _is_opponent_free_push_to_win(
         self,
         board: BoardType,
@@ -89,7 +124,7 @@ class Scorer:
     ) -> bool:
         """
         If the ball position is at the opponent, and they have a free pawn then the player cannot stop their free pawn.
-        Therefore, if their free pawn distance closer or equal to the player's farthest free pawn,
+        Therefore, if their free pawn distance is farther or equal to the player's farthest free pawn,
         the opponent is "free push to win" and the board is losing for the player.
 
         Notice: this doesn't work if "pull" card is in play.

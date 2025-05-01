@@ -3,6 +3,7 @@ import unittest
 
 from board import Board
 from cards.cards_config import CardsConfig
+from cards.compendium import Compendium
 from game_config import GameConfig
 from game_manager import GameManager
 from helper import Helper
@@ -139,6 +140,8 @@ class TestGameManager(unittest.TestCase):
         Naive score would suggest "charge" improves black's position.
         But, black is "free push to win" (has ball position).
         """
+        self.assertNotIn("pull", Compendium.get_cards_names(), msg="Logic is broken if 'pull' is in play")
+
         board = Board(
             board=[
                 ["W", "W", ".", "W", "W"],
