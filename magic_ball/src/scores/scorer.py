@@ -33,20 +33,19 @@ class Scorer:
         This means: positive score means player has the advantage and negative score means the opponent has advantage.
         """
         # Return winning/losing score is board is won by either side.
-        # For player win, increase score if number of moves to win is lower.
+        # For player win, decrease score if number of moves to win is higher.
         # For opponent win, increase score if number of opponent moves to win is higher.
         winning_score = self._winning_score(
             board=board,
             ball_position=ball_position,
         )
+        if winning_score is not None:
+            return winning_score
+
         losing_score = self._losing_score(
             board=board,
             ball_position=ball_position,
         )
-        assert None in [winning_score, losing_score], \
-            f"Cannot have both winning and losing scores: {winning_score}, {losing_score}"
-        if winning_score is not None:
-            return winning_score
         if losing_score is not None:
             return losing_score
 
@@ -86,7 +85,7 @@ class Scorer:
         board: BoardType,
         ball_position: BallPosition,
     ) -> int | None:
-        # No more moves, the board is wo by player.
+        # No more moves, the board is won by player.
         if BoardUtils.is_player_win(
             player_sign=self._player_sign,
             board=board,
