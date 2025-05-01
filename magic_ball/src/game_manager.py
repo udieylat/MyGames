@@ -101,20 +101,6 @@ class GameManager:
             self._print(f"** Invalid move: {e.description}")
             raise
 
-    def show_card_available_moves(
-        self,
-        card_index: int,
-    ):
-        available_moves = self._get_available_card_moves(
-            card_index=card_index,
-        )
-        if not available_moves:
-            self._print("No available moves.")
-            return
-        self._print("Available moves:")
-        for i, move in enumerate(available_moves):
-            self._print(f" {i}. {move.description}")
-
     def show_possible_opponent_cards(self):
         used_opponent_card_names = [
             card.name
@@ -148,7 +134,7 @@ class GameManager:
             return
 
         if move_index is None:
-            self.show_card_available_moves(
+            self._show_card_available_moves(
                 card_index=card_index,
             )
             return
@@ -307,6 +293,21 @@ class GameManager:
             suffix = " [D]" if card.is_defensive else ""
             print(f" {index_str} {card.name}{suffix}")
 
+
+    def _show_card_available_moves(
+        self,
+        card_index: int,
+    ):
+        available_moves = self._get_available_card_moves(
+            card_index=card_index,
+        )
+        if not available_moves:
+            self._print("No available moves.")
+            return
+        self._print("Available moves:")
+        for i, move in enumerate(available_moves):
+            self._print(f" {i}. {move.description}")
+
     def _complete_turn(self):
         self._player_turn = BoardUtils.inverse_player_sign(
             player_sign=self._player_turn,
@@ -367,7 +368,7 @@ class GameManager:
         self,
         card_index: int,
     ) -> list[Move]:
-        assert 0 <= card_index <= 2, f"invalid card index: {card_index}"
+        assert 0 <= card_index <= self._num_allowed_playable_cards() - 1, f"invalid card index: {card_index}"
         player = self._get_player()
         return player.cards[card_index].get_available_card_moves(
             player_sign=player.player_sign,
