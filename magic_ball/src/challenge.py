@@ -18,22 +18,20 @@ class Challenge:
     ):
         self._player_sign = player_sign
         self._opponent_config = opponent_config
-
-        if challenge_card_names is None:
-            challenge_card_names = self._randomize_challenge_cards()
-        else:
-            assert len(challenge_card_names) == DEFAULT_NUM_CARDS_PER_PLAYER, "Input challenge cards must be of size 3"
-
+        self._challenge_card_names = self._set_challenge_card_names(
+            challenge_card_names=challenge_card_names,
+        )
         if self._player_sign == PlayerSign.white:
             self._cards_config = CardsConfig(
-                white_card_names=challenge_card_names,
+                white_card_names=self._challenge_card_names,
             )
         else:
             self._cards_config = CardsConfig(
-                black_card_names=challenge_card_names,
+                black_card_names=self._challenge_card_names,
             )
         self._game_manager: GameManager | None = None
         self._level = 0
+        self.challenge_status()
 
     def start(self) -> GameManager:
         self._game_manager = GameManager.new(
@@ -59,13 +57,18 @@ class Challenge:
         print(f"Number of opponent cards: {self._get_num_opponent_cards()}")
         print(f"Playing as: {self._player_sign}")
         print("Challenge cards:")
-        card_names = (
-            self._cards_config.white_card_names
-            if self._player_sign == PlayerSign.white
-            else self._cards_config.black_card_names
-        )
-        for i, card_name in enumerate(card_names):
+        for i, card_name in enumerate(self._challenge_card_names):
             print(f" {i+1}. {card_name}")
+        print()
+
+    def _set_challenge_card_names(
+        self,
+        challenge_card_names: list[str] | None,
+    ) -> list[str]:
+        if challenge_card_names is None:
+            return self._randomize_challenge_cards()
+        assert len(challenge_card_names) == DEFAULT_NUM_CARDS_PER_PLAYER, "Input challenge cards must be of size 3"
+        return challenge_card_names
 
     def _to_game_config(self) -> GameConfig:
         cards_config = self._cards_config.model_copy()
