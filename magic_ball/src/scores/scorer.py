@@ -41,6 +41,7 @@ class Scorer:
         # Always avoid a losing move.
         if self._is_losing_move(
             board=board,
+            ball_position=ball_position,
         ):
             return self.LOSING_SCORE
 
@@ -63,15 +64,25 @@ class Scorer:
     def _is_losing_move(
         self,
         board: BoardType,
+        ball_position: BallPosition,
     ) -> bool:
+        opponent_player_sign = BoardUtils.inverse_player_sign(
+            player_sign=self._player_sign,
+        )
+
         # Losing move if the result board gives the opponent a single push to win.
         if BoardUtils.is_player_single_push_to_win(
-            player_sign=BoardUtils.inverse_player_sign(
-                player_sign=self._player_sign,
-            ),
+            player_sign=opponent_player_sign,
             board=board,
         ):
             return True
+
+        if not self._is_ball_at_player(
+            player_sign=opponent_player_sign,
+            ball_position=ball_position,
+        ):
+            return False
+
         return False
 
     def _score_board_for_player(
@@ -83,7 +94,6 @@ class Scorer:
     ) -> float:
 
         # TODO: no opponent unused cards is a huge advantage (only against a human player)
-        # TODO: how does the AI not play "pull" immediately if available?
 
         return (
             self._config.score_multipliers.score_per_unused_card * num_unused_player_cards
@@ -128,6 +138,13 @@ class Scorer:
         board: BoardType,
         pawn_indices: list[tuple[int, int]],
     ) -> list[int]:
+        """
+        Return list of "free pawns" distances from start tile for input player.
+        Every distance value represents a free pawn and how many tiles it's from the starting tile.
+        Example:
+            - white has 2 free pawns, one at the starting row and one at row 3.
+            - Return value: [0, 2]
+        """
         free_pawn_row_indices = [
             row_i
             for col_i, row_i in pawn_indices
