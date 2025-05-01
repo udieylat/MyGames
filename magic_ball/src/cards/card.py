@@ -44,8 +44,7 @@ class Card:
             card_index=card_index,
         )
         for move in available_moves:
-            assert not BoardUtils.is_player_win(
-                player_sign=player_sign,
+            assert not BoardUtils.is_any_player_win(
                 board=move.result_board,
             ), f"Logical error, following card move is a winning move: {move.description}"
         return available_moves

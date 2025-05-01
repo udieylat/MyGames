@@ -31,9 +31,9 @@ class Challenge:
             )
         self._game_manager: GameManager | None = None
         self._level = 0
-        self.challenge_status()
 
     def start(self) -> GameManager:
+        self.challenge_status()
         self._game_manager = GameManager.new(
             config=self._to_game_config(),
         )

@@ -1,5 +1,4 @@
 from board import Board
-from board_utils import BoardUtils
 from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
@@ -21,14 +20,19 @@ class Tank(Card):
             board=board,
         )
         tank_move_indices = [
-            (pawn_col_i, pawn_row_i, target_col_i, target_row_i, neighbor_target_col_1, neighbor_target_row_1)
+            (pawn_col_i, pawn_row_i, target_col_i, target_row_i, neighbor_target_col_i, neighbor_target_row_i)
             for pawn_col_i, pawn_row_i in pawn_indices
-            for target_col_i, target_row_i, neighbor_target_col_1, neighbor_target_row_1 in cls._get_tank_target_move_indices(
+            for target_col_i, target_row_i, neighbor_target_col_i, neighbor_target_row_i in cls._get_tank_target_move_indices(
                 pawn_col_i=pawn_col_i,
                 pawn_row_i=pawn_row_i,
             )
-            if board[target_row_i][target_col_i] != TileType.vacant
-            and board[neighbor_target_row_1][neighbor_target_col_1] == TileType.vacant
+            if board[target_row_i][target_col_i] != TileType.vacant  # Must push some non-vacant tile
+            and board[neighbor_target_row_i][neighbor_target_col_i] == TileType.vacant  # Target tile must be vacant
+            and not cls._is_a_winning_move(
+                pushed_tile=board[target_row_i][target_col_i],
+                target_row_i=neighbor_target_row_i,
+            )  # Cannot push any pawn to a winning tile
+
         ]
         return [
             Move(
@@ -61,6 +65,18 @@ class Tank(Card):
             for source_col_i, source_row_i, target_col_i, target_row_i, neighbor_target_col_1, neighbor_target_row_1
             in tank_move_indices
         ]
+
+    @classmethod
+    def _is_a_winning_move(
+        cls,
+        pushed_tile: str,
+        target_row_i: int,
+    ) -> bool:
+        match pushed_tile, target_row_i:
+            case (PlayerSign.white, 0) | (PlayerSign.black, 4):
+                return True
+            case _:
+                return False
 
     @classmethod
     def _get_tank_target_move_indices(

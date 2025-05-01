@@ -31,6 +31,19 @@ class BoardUtils:
         )
 
     @classmethod
+    def is_any_player_win(
+        cls,
+        board: BoardType,
+    ) -> bool:
+        return cls.is_player_win(
+            player_sign=PlayerSign.white,
+            board=board,
+        ) or cls.is_player_win(
+            player_sign=PlayerSign.black,
+            board=board,
+        )
+
+    @classmethod
     def is_player_single_push_to_win(
         cls,
         player_sign: PlayerSign,
