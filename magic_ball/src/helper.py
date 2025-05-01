@@ -49,6 +49,7 @@ class Helper:
         player_sign: PlayerSign,
         board: Board,
         cards: list[Card],
+        num_allowed_playable_cards: int,
     ) -> list[Move]:
         available_push_moves = cls._get_available_push_moves(
             player_sign=player_sign,
@@ -58,6 +59,7 @@ class Helper:
             player_sign=player_sign,
             board=board,
             cards=cards,
+            num_allowed_playable_cards=num_allowed_playable_cards,
         )
         return available_push_moves + available_card_moves
 
@@ -256,17 +258,20 @@ class Helper:
         white_cards: list[Card],
         black_cards: list[Card],
     ) -> bool:
-        white_available_push_moves = Helper.get_available_moves(
+        num_allowed_playable_cards = min(len(white_cards), len(black_cards))
+        white_available_moves = Helper.get_available_moves(
             player_sign=PlayerSign.white,
             board=board,
             cards=white_cards,
+            num_allowed_playable_cards=num_allowed_playable_cards,
         )
-        black_available_push_moves = Helper.get_available_moves(
+        black_available_moves = Helper.get_available_moves(
             player_sign=PlayerSign.black,
             board=board,
             cards=black_cards,
+            num_allowed_playable_cards=num_allowed_playable_cards,
         )
-        return not white_available_push_moves and not black_available_push_moves
+        return not white_available_moves and not black_available_moves
 
     @classmethod
     def _get_available_push_moves(
@@ -306,6 +311,7 @@ class Helper:
         player_sign: PlayerSign,
         board: Board,
         cards: list[Card],
+        num_allowed_playable_cards: int,
     ) -> list[Move]:
         num_used_cards = len([
             card

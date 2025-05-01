@@ -19,6 +19,7 @@ class RandomPlayer(Player):
             board=board,
             player_sign=self._player_sign,
             cards=self._cards,
+            num_allowed_playable_cards=3,  # TODO
         )
         if not available_moves:
             raise NoAvailableMoves()

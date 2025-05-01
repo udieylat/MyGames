@@ -181,6 +181,7 @@ class GameManager:
                 if self._player_turn == PlayerSign.white
                 else self._black_player.cards
             ),
+            num_allowed_playable_cards=self._num_allowed_playable_cards(),
         )
         if available_moves:
             self._print("Cannot pass turn, there are available moves.")
@@ -370,6 +371,9 @@ class GameManager:
             board=self._board,
             card_index=card_index,
         )
+
+    def _num_allowed_playable_cards(self) -> int:
+        return min(len(self._white_player.cards), len(self._black_player.cards))
 
     def _play_ai_player_turn_if_necessary(self):
         if not self._game_on:
