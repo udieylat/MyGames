@@ -241,7 +241,10 @@ class Scorer:
                 player_sign=player_sign,
                 ball_position=ball_position,
             )
-            + self._config.score_multipliers.penalty_score_per_used_card * num_used_cards
+            + self._used_cards_score(
+                num_used_cards=num_used_cards,
+                num_allowed_playable_cards=num_allowed_playable_cards,
+            )
             + self._random_tie_break_if_necessary()
         )
 
@@ -333,6 +336,20 @@ class Scorer:
                 ball_position=ball_position,
             )
             else 0
+        )
+
+    def _used_cards_score(
+        self,
+        num_used_cards: int,
+        num_allowed_playable_cards: int,
+    ) -> int:
+        return (
+            self._config.score_multipliers.penalty_score_per_used_card * num_used_cards
+            + (
+                self._config.score_multipliers.no_cards_play_available_penalty_score
+                if num_used_cards == num_allowed_playable_cards
+                else 0
+            )
         )
 
     @property
