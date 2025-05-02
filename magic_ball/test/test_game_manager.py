@@ -146,8 +146,8 @@ class TestGameManager(unittest.TestCase):
             ball_position=BallPosition.middle,
         )
         gm = self._black_ai_turn_vs_human(
-            black_card_names=["fire"],
             board=board,
+            black_card_names=["fire"],
         )
 
         # Assert "fire" was NOT played by black.
@@ -178,8 +178,8 @@ class TestGameManager(unittest.TestCase):
             ball_position=BallPosition.black,
         )
         gm = self._black_ai_turn_vs_human(
-            black_card_names=["charge"],
             board=board,
+            black_card_names=["charge"],
         )
 
         # Only one reasonable play here: C4.
@@ -191,18 +191,25 @@ class TestGameManager(unittest.TestCase):
     def test_fixed_position_black_must_sidestep(self):
         board = Board(
             board=[
-                ["W", "W", ".", "W", "W"],
-                [".", ".", ".", ".", "."],
-                [".", ".", ".", ".", "."],
-                [".", ".", ".", ".", "."],
-                [".", "B", "B", "B", "B"],
+                ['.', '.', '.', '.', '.'],
+                ['.', '.', '.', '#', 'W'],
+                ['W', '.', '.', '.', '.'],
+                ['.', 'B', 'B', '.', 'W'],
+                ['.', '.', '.', '.', 'B']
             ],
-            ball_position=BallPosition.black,
+            ball_position=BallPosition.middle,
         )
-        gm = self._black_ai_turn_vs_human(
-            black_card_names=["sidestep"],
+        gm = self._black_ai_turn_vs_human_with_config(
             board=board,
+            cards_config=CardsConfig(
+                num_black_cards=1,
+                num_white_cards=1,
+                black_card_names=["sidestep"],
+            ),
         )
+        # Only one reasonable play here: sidestep: B4->A4.
+        self.assertEqual("sidestep: B4->A4", gm._game_log[-1], msg=f"Unexpected play, game log: {gm._game_log}")
+        self.assertEqual(board.ball_position, BallPosition.white)
 
     @classmethod
     def _get_game_status(cls, gm: GameManager) -> GameStatus:
