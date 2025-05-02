@@ -38,7 +38,7 @@ class PlayerConfig(BaseModel):
             score_multipliers=ScoreMultipliers(
                 score_per_pawn=10,
                 score_per_free_pawn=100,
-                free_pawn_score_per_distance_from_start_tile=200,
+                free_pawn_score_per_distance_from_start_tile=400,
                 penalty_score_per_used_card=-150,
                 ball_position_score=100,
                 no_cards_play_available_penalty_score=-100,

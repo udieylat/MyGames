@@ -259,9 +259,10 @@ class Scorer:
 
         num_pawns_score = len(pawn_indices) * self._config.score_multipliers.score_per_pawn
         free_pawns_score = len(free_pawn_distances_from_start_tile) * self._config.score_multipliers.score_per_free_pawn
-        free_pawns_distance_score = sum(
-            free_pawn_distance_from_start_tile * self._config.score_multipliers.free_pawn_score_per_distance_from_start_tile
-            for free_pawn_distance_from_start_tile in free_pawn_distances_from_start_tile
+        free_pawns_distance_score = (
+            max(free_pawn_distances_from_start_tile) * self._config.score_multipliers.free_pawn_score_per_distance_from_start_tile
+            if free_pawn_distances_from_start_tile
+            else 0
         )
         return num_pawns_score + free_pawns_score + free_pawns_distance_score
 
