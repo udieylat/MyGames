@@ -5,6 +5,11 @@ from move import Move
 
 
 class Pull(Card):
+    """
+    Shelved.
+    Feels like it's anti-game, disabling the opponent from using all of their cards.
+    Also, AI always starts with this play if available.
+    """
 
     @property
     def is_defensive(self) -> bool:

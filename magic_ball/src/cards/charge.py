@@ -9,9 +9,9 @@ from move import Move
 
 class Charge(Card):
 
-    @property
-    def is_defensive(self) -> bool:
-        return True
+    # @property
+    # def is_defensive(self) -> bool:
+    #     return True
 
     @classmethod
     def _get_available_moves(
