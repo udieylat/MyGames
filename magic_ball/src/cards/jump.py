@@ -25,12 +25,12 @@ class Jump(Card):
             if player_sign == PlayerSign.white
             else -2
         )
-        move_indices: list[tuple[int, int, int]] = []
-        for col_i, source_row_i in pawn_indices:
-            target_row_i = source_row_i + direction
-            if target_row_i <= 0 or target_row_i >= 4 or board[target_row_i][col_i] != TileType.vacant:
-                continue
-            move_indices.append((col_i, source_row_i, target_row_i))
+        move_indices = [
+            (col_i, source_row_i, source_row_i + direction)
+            for col_i, source_row_i in pawn_indices
+            if 0 <= source_row_i + direction <= 4
+            and board[source_row_i + direction][col_i] == TileType.vacant
+        ]
 
         return [
             CardUtils.pawn_move(

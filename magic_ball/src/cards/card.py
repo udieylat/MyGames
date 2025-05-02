@@ -43,11 +43,13 @@ class Card:
             board=board,
             card_index=card_index,
         )
-        for move in available_moves:
-            assert not BoardUtils.is_any_player_win(
+        return [
+            move
+            for move in available_moves
+            if not BoardUtils.is_any_player_win(
                 board=move.result_board,
-            ), f"Logical error, following card move is a winning move: {move.description}"
-        return available_moves
+            )
+        ]
 
     @classmethod
     @abstractmethod
