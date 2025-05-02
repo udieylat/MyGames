@@ -57,6 +57,7 @@ class Scorer:
             board=board,
             ball_position=ball_position,
             num_used_cards=num_used_player_cards,
+            num_allowed_playable_cards=num_allowed_playable_cards,
         )
         board_score_for_opponent = self._score_board_for_player(
             player_sign=BoardUtils.inverse_player_sign(
@@ -65,6 +66,7 @@ class Scorer:
             board=board,
             ball_position=ball_position,
             num_used_cards=num_used_opponent_cards,
+            num_allowed_playable_cards=num_allowed_playable_cards,
         )
         # print(
         #     f"{num_used_player_cards}; {num_used_opponent_cards}: "
@@ -227,13 +229,11 @@ class Scorer:
         board: BoardType,
         ball_position: BallPosition,
         num_used_cards: int,
+        num_allowed_playable_cards: int,
     ) -> float:
 
-        # TODO: no opponent unused cards is a huge advantage (only against a human player)
-
         return (
-            self._config.score_multipliers.penalty_score_per_used_card * num_used_cards
-            + self._board_score(
+            self._board_score(
                 player_sign=player_sign,
                 board=board,
             )
@@ -241,6 +241,7 @@ class Scorer:
                 player_sign=player_sign,
                 ball_position=ball_position,
             )
+            + self._config.score_multipliers.penalty_score_per_used_card * num_used_cards
             + self._random_tie_break_if_necessary()
         )
 
