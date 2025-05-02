@@ -326,7 +326,7 @@ class Scorer:
         ball_position: BallPosition,
     ) -> int:
         return (
-            100  # self._config.score_multipliers.ball_position_score
+            self._config.score_multipliers.ball_position_score
             if self._is_ball_at_player(
                 player_sign=player_sign,
                 ball_position=ball_position,
