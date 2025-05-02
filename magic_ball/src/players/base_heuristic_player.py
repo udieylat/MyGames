@@ -57,7 +57,7 @@ class BaseHeuristicPlayer(Player):
                 self._scorer.score_board(
                     board=move.result_board,
                     ball_position=move.result_ball_position,
-                    num_used_player_cards=len(used_player_cards), #+ 1 if move.used_card_index is not None else 0,
+                    num_used_player_cards=len(used_player_cards) + 1 if move.used_card_index is not None else 0,
                     num_used_opponent_cards=len(used_opponent_cards),
                     num_allowed_playable_cards=num_allowed_playable_cards,
                 ),

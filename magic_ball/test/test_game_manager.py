@@ -90,6 +90,18 @@ class TestGameManager(unittest.TestCase):
         self.assertEqual(self._get_game_status(gm=gm), GameStatus.white_defensive_win)
 
     def test_fixed_game(self):
+        """
+        Expected log:
+         1. A2 ; A4
+         2. kamikaze: eliminate pawns A4 (opponent) and D1 (player) ; D4
+         3. A3 ; bishop: B5->A4
+         4. jump: B1->B3 ; sidestep: C5->B5
+         5. C2 ; D3
+         6. wall: D2 ; knife pawn: A3
+         7. C3 ; A3
+         8. C4 ; A2
+         9. C5
+        """
         filename = os.path.dirname(os.path.abspath(__file__))
         gm = GameManager.from_config_filename(f"{filename}/../config/fixed_game.json")
         gm.log()
