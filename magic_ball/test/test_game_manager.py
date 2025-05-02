@@ -188,6 +188,22 @@ class TestGameManager(unittest.TestCase):
         self.assertEqual(board[4][2], TileType.vacant)
         self.assertEqual(board.ball_position, BallPosition.black)
 
+    def test_fixed_position_black_must_sidestep(self):
+        board = Board(
+            board=[
+                ["W", "W", ".", "W", "W"],
+                [".", ".", ".", ".", "."],
+                [".", ".", ".", ".", "."],
+                [".", ".", ".", ".", "."],
+                [".", "B", "B", "B", "B"],
+            ],
+            ball_position=BallPosition.black,
+        )
+        gm = self._black_ai_turn_vs_human(
+            black_card_names=["sidestep"],
+            board=board,
+        )
+
     @classmethod
     def _get_game_status(cls, gm: GameManager) -> GameStatus:
         return Helper.get_game_status(
@@ -202,12 +218,23 @@ class TestGameManager(unittest.TestCase):
         board: Board,
         black_card_names: list[str],
     ) -> GameManager:
+        return cls._black_ai_turn_vs_human_with_config(
+            board=board,
+            cards_config=CardsConfig(
+                black_card_names=black_card_names,
+            ),
+        )
+
+    @classmethod
+    def _black_ai_turn_vs_human_with_config(
+        cls,
+        board: Board,
+        cards_config: CardsConfig,
+    ) -> GameManager:
         return GameManager(
             config=GameConfig(
                 black_player=PlayerConfig.default_ai_opponent(),
-                cards_config=CardsConfig(
-                    black_card_names=black_card_names,
-                ),
+                cards_config=cards_config,
             ),
             white_player=PlayerFactory.generate_player(
                 player_config=PlayerConfig.human(),

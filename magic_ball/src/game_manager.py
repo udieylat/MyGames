@@ -93,7 +93,7 @@ class GameManager:
             self._play_move(
                 move=Helper.generate_push_move(
                     player_sign=self._player_turn,
-                    target_tile=target_tile,
+                    target_tile=target_tile.upper(),
                     board=self._board,
                 ),
             )
