@@ -19,6 +19,8 @@ class Knight(Card):
             player_sign=player_sign,
             board=board,
         )
+        min_allowed_row = 0 if player_sign == PlayerSign.white else 1
+        max_allowed_row = 3 if player_sign == PlayerSign.white else 4
         direction_offsets = [
             (1, 2),
             (2, 1),
@@ -34,7 +36,7 @@ class Knight(Card):
             for source_col_i, source_row_i in pawn_indices
             for col_i_offset, row_i_offset in direction_offsets
             if 0 <= source_col_i + col_i_offset <= 4
-            and 0 <= source_row_i + row_i_offset <= 4
+            and min_allowed_row <= source_row_i + row_i_offset <= max_allowed_row
             and board[source_row_i + row_i_offset][source_col_i + col_i_offset] == TileType.vacant
         ]
 
