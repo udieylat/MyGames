@@ -93,21 +93,33 @@ class TestGameManager(unittest.TestCase):
         """
         Expected log:
          1. A2 ; A4
-         2. kamikaze: eliminate pawns A4 (opponent) and D1 (player) ; D4
-         3. A3 ; bishop: B5->A4
-         4. jump: B1->B3 ; sidestep: C5->B5
-         5. C2 ; D3
-         6. wall: D2 ; knife pawn: A3
-         7. C3 ; A3
-         8. C4 ; A2
-         9. C5
+         2. B2 ; A3
+         3. knight: B2->A4 ; knife pawn: A4
+         4. C2 ; B4
+         5. D2 ; B3
+         6. wall: B2 ; C4
+         7. E2 ; C3
+         8. D3 ; D4
+         9. E3 ; E4
+         10. pass ; bishop: C3->D2
+         11. kamikaze: eliminate pawns D2 (opponent) and C2 (player) ; sidestep: B3->C3
+         12. pass ; C2
+         13. pass ; C1
+
+        Final board position:
+            5 . . . . .
+            4 . . . B B
+            3 B . . W W
+            2 W # . . .
+            1 . . B . .
+              A B C D E
         """
         filename = os.path.dirname(os.path.abspath(__file__))
         gm = GameManager.from_config_filename(f"{filename}/../config/fixed_game.json")
         gm.log()
         game_summary = gm.export_summary()
-        self.assertEqual(game_summary.winner, "white")
-        self.assertEqual(game_summary.num_white_moves, 8)
+        self.assertEqual(game_summary.winner, "black")
+        self.assertEqual(game_summary.num_white_moves, 13)
         self.assertEqual(game_summary.final_ball_position, "middle")
 
     def test_fixed_position_fire_loses(self):
