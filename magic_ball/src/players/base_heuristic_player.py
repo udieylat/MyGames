@@ -57,7 +57,7 @@ class BaseHeuristicPlayer(Player):
                 self._scorer.score_board(
                     board=move.result_board,
                     ball_position=move.result_ball_position,
-                    num_used_player_cards=len(used_player_cards),
+                    num_used_player_cards=len(used_player_cards), #+ 1 if move.used_card_index is not None else 0,
                     num_used_opponent_cards=len(used_opponent_cards),
                     num_allowed_playable_cards=num_allowed_playable_cards,
                 ),
@@ -65,6 +65,17 @@ class BaseHeuristicPlayer(Player):
             )
             for move in available_moves
         ]
+
+        # TEMP
+        best_score, best_move = max(
+            scores_and_moves,
+            key=lambda scores_and_move: scores_and_move[0],
+        )
+        print(f"{best_move.description}: {best_score}")
+        if best_move.used_card_index is not None:
+            for score, move in scores_and_moves:
+                print(f"\t{move.description}: {score}")
+
         return max(
             scores_and_moves,
             key=lambda scores_and_move: scores_and_move[0],

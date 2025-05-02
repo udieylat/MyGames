@@ -92,6 +92,7 @@ class TestGameManager(unittest.TestCase):
     def test_fixed_game(self):
         filename = os.path.dirname(os.path.abspath(__file__))
         gm = GameManager.from_config_filename(f"{filename}/../config/fixed_game.json")
+        gm.log()
         game_summary = gm.export_summary()
         self.assertEqual(game_summary.winner, "white")
         self.assertEqual(game_summary.num_white_moves, 8)
