@@ -66,17 +66,15 @@ class BaseHeuristicPlayer(Player):
             for move in available_moves
         ]
 
-        # TEMP
         best_score, best_move = max(
             scores_and_moves,
             key=lambda scores_and_move: scores_and_move[0],
         )
-        print(f"{best_move.description}: {best_score}")
-        if best_move.used_card_index is not None:
-            for score, move in scores_and_moves:
-                print(f"\t{move.description}: {score}")
 
-        return max(
-            scores_and_moves,
-            key=lambda scores_and_move: scores_and_move[0],
-        )[1]
+        # Debug logs:
+        # print(f"{best_move.description}: {best_score}")
+        # if best_move.used_card_index is not None:
+        #     for score, move in scores_and_moves:
+        #         print(f"\t{move.description}: {score}")
+
+        return best_move

@@ -68,11 +68,6 @@ class Scorer:
             num_used_cards=num_used_opponent_cards,
             num_allowed_playable_cards=num_allowed_playable_cards,
         )
-        # print(
-        #     f"{num_used_player_cards}; {num_used_opponent_cards}: "
-        #     f"{board_score_for_player} - {board_score_for_opponent} = "
-        #     f"{board_score_for_player - board_score_for_opponent}"
-        # )
         return board_score_for_player - board_score_for_opponent
 
     def _winning_score(
