@@ -24,8 +24,8 @@ class Scorer:
         self,
         board: BoardType,
         ball_position: BallPosition,
-        num_unused_player_cards: int,
-        num_unused_opponent_cards: int,
+        num_unused_player_cards: int,  # TODO: num_used_cards
+        num_unused_opponent_cards: int,  # TODO: num_used_opponent_cards
     ) -> float:
         """
         Maximal score is best.
@@ -55,7 +55,7 @@ class Scorer:
             player_sign=self._player_sign,
             board=board,
             ball_position=ball_position,
-            num_unused_player_cards=num_unused_player_cards,
+            num_unused_cards=num_unused_player_cards,
         )
         board_score_for_opponent = self._score_board_for_player(
             player_sign=BoardUtils.inverse_player_sign(
@@ -63,7 +63,7 @@ class Scorer:
             ),
             board=board,
             ball_position=ball_position,
-            num_unused_player_cards=num_unused_opponent_cards,
+            num_unused_cards=num_unused_opponent_cards,
         )
         return board_score_for_player - board_score_for_opponent
 
@@ -220,13 +220,13 @@ class Scorer:
         player_sign: PlayerSign,
         board: BoardType,
         ball_position: BallPosition,
-        num_unused_player_cards: int,
+        num_unused_cards: int,
     ) -> float:
 
         # TODO: no opponent unused cards is a huge advantage (only against a human player)
 
         return (
-            self._config.score_multipliers.score_per_unused_card * num_unused_player_cards
+            self._config.score_multipliers.score_per_unused_card * num_unused_cards
             + self._board_score(
                 player_sign=player_sign,
                 board=board,

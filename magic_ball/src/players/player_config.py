@@ -15,8 +15,9 @@ class ScoreMultipliers(BaseModel):
     score_per_pawn: int
     score_per_free_pawn: int
     free_pawn_score_per_distance_from_start_tile: int
-    score_per_unused_card: int
-    ball_position_score: int
+    score_per_unused_card: int  # TODO: penalty_score_per_used_card
+    ball_position_score: int  # TODO: deprecate this
+    # TODO: no_cards_play_available_penalty_score
 
 
 class PlayerConfig(BaseModel):
