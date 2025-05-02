@@ -6,7 +6,7 @@ from models import PlayerSign, TileType
 from move import Move
 
 
-class Bishop(Card):
+class Knight(Card):
 
     @classmethod
     def _get_available_moves(
@@ -19,29 +19,24 @@ class Bishop(Card):
             player_sign=player_sign,
             board=board,
         )
-        min_allowed_row = 0 if player_sign == PlayerSign.white else 1
-        max_allowed_row = 3 if player_sign == PlayerSign.white else 4
         direction_offsets = [
-            (1, 1),
-            (1, -1),
-            (-1, 1),
-            (-1, -1),
+            (1, 2),
+            (2, 1),
+            (2, -1),
+            (1, -2),
+            (-1, -2),
+            (-2, -1),
+            (-2, 1),
+            (-1, 2),
         ]
-        move_indices: list[tuple[int, int, int, int]] = []
-        for source_col_i, source_row_i in pawn_indices:
-            for col_i_offset, row_i_offset in direction_offsets:
-                target_col_i = source_col_i
-                target_row_i = source_row_i
-                while True:
-                    target_col_i += col_i_offset
-                    target_row_i += row_i_offset
-                    if (
-                        not 0 <= target_col_i <= 4
-                        or not min_allowed_row <= target_row_i <= max_allowed_row
-                        or board[target_row_i][target_col_i] != TileType.vacant
-                    ):
-                        break
-                    move_indices.append((source_col_i, source_row_i, target_col_i, target_row_i))
+        move_indices = [
+            (source_col_i, source_row_i, source_col_i + col_i_offset, source_row_i + row_i_offset)
+            for source_col_i, source_row_i in pawn_indices
+            for col_i_offset, row_i_offset in direction_offsets
+            if 0 <= source_col_i + col_i_offset <= 4
+            and 0 <= source_row_i + row_i_offset <= 4
+            and board[source_row_i + row_i_offset][source_col_i + col_i_offset] == TileType.vacant
+        ]
 
         return [
             CardUtils.pawn_move(

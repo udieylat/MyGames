@@ -8,6 +8,7 @@ from cards.fire import Fire
 from cards.jump import Jump
 from cards.kamikaze import Kamikaze
 from cards.knife import Knife
+from cards.knight import Knight
 from cards.peace import Peace
 # from cards.pull import Pull
 from cards.catapult import Catapult
@@ -36,6 +37,7 @@ class Compendium:
             Spawn(),
             Dagger(),
             Peace(),
+            Knight(),
         ]
 
     @classmethod

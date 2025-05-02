@@ -3,6 +3,7 @@ import unittest
 from parameterized import parameterized
 
 from board import Board
+from cards.knight import Knight
 from models import PlayerSign
 
 
