@@ -46,12 +46,7 @@ class Knight(Card):
                 target_col_i=target_col_i,
                 target_row_i=target_row_i,
                 board=board,
-                description=cls._describe_pawn_move(
-                    source_col_i=source_col_i,
-                    source_row_i=source_row_i,
-                    target_col_i=target_col_i,
-                    target_row_i=target_row_i,
-                ),
+                card_name=str(cls.name),
                 card_index=card_index,
             )
             for source_col_i, source_row_i, target_col_i, target_row_i in move_indices

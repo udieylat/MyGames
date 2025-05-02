@@ -79,8 +79,10 @@ class Card:
         target_col_i: int,
         target_row_i: int,
     ) -> str:
-        return (
-            f"{cls.name}: "
-            f"{BoardUtils.indices_to_tile(col_i=source_col_i, row_i=source_row_i)}->"
-            f"{BoardUtils.indices_to_tile(col_i=target_col_i, row_i=target_row_i)}"
+        return BoardUtils.describe_pawn_move(
+            card_name=str(cls.name),
+            source_col_i=source_col_i,
+            source_row_i=source_row_i,
+            target_col_i=target_col_i,
+            target_row_i=target_row_i,
         )

@@ -134,3 +134,18 @@ class BoardUtils:
             for col_i, row_i in all_neighbor_tiles_indices
             if 0 <= col_i <= 4 and 0 <= row_i <= 4
         ]
+
+    @classmethod
+    def describe_pawn_move(
+        cls,
+        card_name: str,
+        source_col_i: int,
+        source_row_i: int,
+        target_col_i: int,
+        target_row_i: int,
+    ) -> str:
+        return (
+            f"{card_name}: "
+            f"{BoardUtils.indices_to_tile(col_i=source_col_i, row_i=source_row_i)}->"
+            f"{BoardUtils.indices_to_tile(col_i=target_col_i, row_i=target_row_i)}"
+        )

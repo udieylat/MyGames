@@ -1,4 +1,5 @@
 from board import Board
+from board_utils import BoardUtils
 from helper import Helper
 from models import PlayerSign, BallPosition
 from move import Move
@@ -14,7 +15,7 @@ class CardUtils:
         target_col_i: int,
         target_row_i: int,
         board: Board,
-        description: str,
+        card_name: str,
         card_index: int,
     ) -> Move:
         result_board = Helper.move_pawn(
@@ -24,6 +25,13 @@ class CardUtils:
             target_col_i=target_col_i,
             target_row_i=target_row_i,
             board=board.copy_board(),
+        )
+        description = BoardUtils.describe_pawn_move(
+            card_name=card_name,
+            source_col_i=source_col_i,
+            source_row_i=source_row_i,
+            target_col_i=target_col_i,
+            target_row_i=target_row_i,
         )
         return Move(
             player_sign=player_sign,
