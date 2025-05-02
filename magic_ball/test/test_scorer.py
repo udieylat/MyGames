@@ -28,8 +28,9 @@ class TestScorer(unittest.TestCase):
         score = self.scorer.score_board(
             board=Board.new().copy_board(),
             ball_position=BallPosition.middle,
-            num_unused_player_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
-            num_unused_opponent_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
+            num_used_player_cards=0,
+            num_used_opponent_cards=0,
+            num_allowed_playable_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
         )
         self.assertEqual(0, score)
 
@@ -165,8 +166,9 @@ class TestScorer(unittest.TestCase):
         score_distant_free_pawn = self.scorer.score_board(
             board=board,
             ball_position=BallPosition.white,
-            num_unused_player_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
-            num_unused_opponent_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
+            num_used_player_cards=0,
+            num_used_opponent_cards=0,
+            num_allowed_playable_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
         )
 
         board = [
@@ -179,7 +181,8 @@ class TestScorer(unittest.TestCase):
         score_close_free_pawn = self.scorer.score_board(
             board=board,
             ball_position=BallPosition.white,
-            num_unused_player_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
-            num_unused_opponent_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
+            num_used_player_cards=0,
+            num_used_opponent_cards=0,
+            num_allowed_playable_cards=DEFAULT_NUM_CARDS_PER_PLAYER,
         )
         self.assertGreater(score_close_free_pawn, score_distant_free_pawn)

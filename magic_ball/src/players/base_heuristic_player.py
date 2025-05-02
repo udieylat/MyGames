@@ -41,15 +41,15 @@ class BaseHeuristicPlayer(Player):
         if not available_moves:
             raise NoAvailableMoves()
 
-        unused_player_cards = [
+        used_player_cards = [
             card
             for card in player_cards
-            if not card.already_used
+            if card.already_used
         ]
-        unused_opponent_cards = [
+        used_opponent_cards = [
             card
             for card in opponent_cards
-            if not card.already_used
+            if card.already_used
         ]
 
         scores_and_moves = [
@@ -57,8 +57,9 @@ class BaseHeuristicPlayer(Player):
                 self._scorer.score_board(
                     board=move.result_board,
                     ball_position=move.result_ball_position,
-                    num_unused_player_cards=len(unused_player_cards),
-                    num_unused_opponent_cards=len(unused_opponent_cards),
+                    num_used_player_cards=len(used_player_cards),
+                    num_used_opponent_cards=len(used_opponent_cards),
+                    num_allowed_playable_cards=num_allowed_playable_cards,
                 ),
                 move,
             )

@@ -15,8 +15,7 @@ class ScoreMultipliers(BaseModel):
     score_per_pawn: int
     score_per_free_pawn: int
     free_pawn_score_per_distance_from_start_tile: int
-    score_per_unused_card: int  # TODO: penalty_score_per_used_card
-    ball_position_score: int  # TODO: deprecate this
+    penalty_score_per_used_card: int
     # TODO: no_cards_play_available_penalty_score
 
 
@@ -39,8 +38,7 @@ class PlayerConfig(BaseModel):
                 score_per_pawn=10,
                 score_per_free_pawn=100,
                 free_pawn_score_per_distance_from_start_tile=200,
-                score_per_unused_card=50,
-                ball_position_score=100,
+                penalty_score_per_used_card=-150,
             ),
             random_tie_break=random_tie_break,
         )
