@@ -7,7 +7,7 @@ from models import PlayerSign, TileType
 from move import Move
 
 
-class Scare(Card):
+class Catapult(Card):
 
     @property
     def is_defensive(self) -> bool:

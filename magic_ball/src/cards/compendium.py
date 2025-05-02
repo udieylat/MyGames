@@ -10,7 +10,7 @@ from cards.kamikaze import Kamikaze
 from cards.knife import Knife
 from cards.peace import Peace
 # from cards.pull import Pull
-from cards.scare import Scare
+from cards.catapult import Catapult
 from cards.side_step import SideStep
 from cards.spawn import Spawn
 from cards.tank import Tank
@@ -27,7 +27,7 @@ class Compendium:
             Bishop(),
             # Pull(),
             # Negate(),
-            Scare(),
+            Catapult(),
             Fire(),
             SideStep(),
             Jump(),
