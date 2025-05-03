@@ -59,11 +59,13 @@ class Challenge:
 
     def simulate(
         self,
-        level: int,
+        level: int | None = None,
         num_games: int = 1000,
     ):
         simulator = GameSimulator(
-            config=self._to_simulator_game_config(),
+            config=self._to_simulator_game_config(
+                level=level,
+            ),
         )
         simulation_summary = simulator.run(
             num_games=num_games,
@@ -71,7 +73,9 @@ class Challenge:
         win_percentage = simulation_summary.win_percentage(
             player_sign=self._player_sign,
         )
-        print(f"Simulated win percentage over {num_games} games: {win_percentage:.2f}%")
+        print(f"Challenge simulation results over {num_games} games:")
+        print(f" Level: {level} ({self._get_num_opponent_cards(level=level)} cards for opponent)")
+        print(f" Win percentage for {self._player_sign}: {win_percentage:.2f}%")
 
     def challenge_status(self):
         print(f"Level: {self._level}")
