@@ -5,12 +5,12 @@ from cards.card import Card
 from cards.charge import Charge
 from cards.dagger import Dagger
 from cards.fire import Fire
+from cards.forklift import Forklift
 from cards.jump import Jump
 from cards.kamikaze import Kamikaze
 from cards.knife import Knife
 from cards.knight import Knight
 from cards.peace import Peace
-# from cards.pull import Pull
 from cards.catapult import Catapult
 from cards.side_step import SideStep
 from cards.spawn import Spawn
@@ -26,8 +26,6 @@ class Compendium:
             Knife(),
             Charge(),
             Bishop(),
-            # Pull(),
-            # Negate(),
             Catapult(),
             Fire(),
             SideStep(),
@@ -38,6 +36,7 @@ class Compendium:
             Dagger(),
             Peace(),
             Knight(),
+            Forklift(),
         ]
 
     @classmethod
