@@ -62,6 +62,8 @@ class Challenge:
         level: int | None = None,
         num_games: int = 1000,
     ):
+        if level is None:
+            level = self._level
         simulator = GameSimulator(
             config=self._to_simulator_game_config(
                 level=level,
@@ -74,12 +76,13 @@ class Challenge:
             player_sign=self._player_sign,
         )
         print(f"Challenge simulation results over {num_games} games:")
-        print(f" Level: {level} ({self._get_num_opponent_cards(level=level)} cards for opponent)")
+        print(f" Level: {level or 0} ({self._get_num_opponent_cards(level=level)} cards for opponent)")
         print(f" Win percentage for {self._player_sign}: {win_percentage:.2f}%")
+        print(f" Simulation runtime: {simulation_summary.runtime_sec:.2f} seconds")
 
     def challenge_status(self):
         print(f"Level: {self._level}")
-        print(f"Number of opponent cards: {self._get_num_opponent_cards()}")
+        print(f"Number of opponent cards: {self._get_num_opponent_cards(level=self._level)}")
         print(f"Playing as: {self._player_sign}")
         print("Challenge cards:")
         for i, card_name in enumerate(self._challenge_card_names):
@@ -102,11 +105,11 @@ class Challenge:
             white_player = PlayerConfig.human()
             black_player = self._opponent_config
             cards_config.num_white_cards = DEFAULT_NUM_CARDS_PER_PLAYER
-            cards_config.num_black_cards = self._get_num_opponent_cards()
+            cards_config.num_black_cards = self._get_num_opponent_cards(level=self._level)
         else:
             white_player = self._opponent_config
             black_player = PlayerConfig.human()
-            cards_config.num_white_cards = self._get_num_opponent_cards()
+            cards_config.num_white_cards = self._get_num_opponent_cards(level=self._level)
             cards_config.num_black_cards = DEFAULT_NUM_CARDS_PER_PLAYER
 
         return GameConfig(
@@ -117,7 +120,7 @@ class Challenge:
 
     def _to_simulator_game_config(
         self,
-        level: int = 0,
+        level: int,
     ) -> GameConfig:
         cards_config = self._cards_config.model_copy()
         white_player = self._opponent_config
@@ -134,12 +137,11 @@ class Challenge:
             cards_config=cards_config,
         )
 
+    @classmethod
     def _get_num_opponent_cards(
-        self,
-        level: int | None = None,
+        cls,
+        level: int,
     ) -> int:
-        if level is None:
-            level = self._level
         match level:
             case 0:
                 return DEFAULT_NUM_CARDS_PER_PLAYER
