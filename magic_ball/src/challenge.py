@@ -31,6 +31,7 @@ class Challenge:
             )
         self._game_manager: GameManager | None = None
         self._level = 0
+        self._num_restarts = 0
 
     def start(self) -> GameManager:
         self.challenge_status()
@@ -42,11 +43,14 @@ class Challenge:
     def next_level(self) -> GameManager | None:
         if not self._game_is_won_by_human():
             print(f"Game is not won. Stay in level {self._level} and restart.")
+            self._num_restarts += 1
             return self.start()
 
         self._level += 1
         if self._level == 4:
             print("YOU WON THE CHALLENGE!!!")
+            print()
+            print(f"Number of restarts: {self._num_restarts} ;)")
             return None
 
         print(f"LEVEL UP: {self._level}")
@@ -59,6 +63,7 @@ class Challenge:
         print("Challenge cards:")
         for i, card_name in enumerate(self._challenge_card_names):
             print(f" {i+1}. {card_name}")
+        print(f"Number of restarts: {self._num_restarts}")
         print()
 
     def _set_challenge_card_names(

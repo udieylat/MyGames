@@ -75,10 +75,12 @@ class Peace(Card):
                     player_sign=player_sign,
                     ball_position=board.ball_position,
                 ),
-                description=(
-                    f"{cls.name}: eliminate pawns "
-                    f"{BoardUtils.indices_to_tile(col_i=opponent_pawn_col_i, row_i=opponent_pawn_row_i)} (opponent) "
-                    f"and {BoardUtils.indices_to_tile(col_i=player_pawn_col_i, row_i=player_pawn_row_i)} (player)"
+                description=BoardUtils.describe_pawns_elimination_move(
+                    card_name=str(cls.name),
+                    player_pawn_col_i=player_pawn_col_i,
+                    player_pawn_row_i=player_pawn_row_i,
+                    opponent_pawn_col_i=opponent_pawn_col_i,
+                    opponent_pawn_row_i=opponent_pawn_row_i,
                 ),
                 used_card_index=card_index,
             )

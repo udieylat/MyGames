@@ -161,3 +161,18 @@ class BoardUtils:
             f"{BoardUtils.indices_to_tile(col_i=source_col_i, row_i=source_row_i)}->"
             f"{BoardUtils.indices_to_tile(col_i=target_col_i, row_i=target_row_i)}"
         )
+
+    @classmethod
+    def describe_pawns_elimination_move(
+        cls,
+        card_name: str,
+        player_pawn_col_i: int,
+        player_pawn_row_i: int,
+        opponent_pawn_col_i: int,
+        opponent_pawn_row_i: int,
+    ) -> str:
+        return (
+            f"{card_name}: "
+            f"{BoardUtils.indices_to_tile(col_i=player_pawn_col_i, row_i=player_pawn_row_i)} xx "
+            f"{BoardUtils.indices_to_tile(col_i=opponent_pawn_col_i, row_i=opponent_pawn_row_i)}"
+        )

@@ -44,7 +44,7 @@ class Knife(Card):
                     player_sign=player_sign,
                     ball_position=board.ball_position,
                 ),
-                description=f"{cls.name} pawn: {BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i)}",
+                description=f"{cls.name}: {BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i)}",
                 used_card_index=card_index,
             )
             for col_i, row_i in neighbor_opponent_indices
