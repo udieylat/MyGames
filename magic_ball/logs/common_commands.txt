@@ -1,0 +1,3 @@
+from src.game_manager import GameManager; gm = GameManager.from_config_filename("config/human_in_white_vs_ai.json")
+
+from src.challenge import Challenge; challenge = Challenge(); gm = challenge.start()
