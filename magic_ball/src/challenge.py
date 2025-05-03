@@ -80,6 +80,21 @@ class Challenge:
         print(f" Win percentage for {self._player_sign}: {win_percentage:.2f}%")
         print(f" Simulation runtime: {simulation_summary.runtime_sec:.2f} seconds")
 
+    def simulate_win(
+        self,
+        level: int | None = None,
+    ) -> GameManager:
+        if level is None:
+            level = self._level
+        simulator = GameSimulator(
+            config=self._to_simulator_game_config(
+                level=level,
+            ),
+        )
+        return simulator.find_first(
+            winner_player_sign=self._player_sign,
+        )
+
     def challenge_status(self):
         print(f"Level: {self._level}")
         print(f"Number of opponent cards: {self._get_num_opponent_cards(level=self._level)}")

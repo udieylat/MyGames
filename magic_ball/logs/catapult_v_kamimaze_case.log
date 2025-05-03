@@ -1,0 +1,44 @@
+white play: E3
+black play: catapult: E3->E1
+
+5 B B . . .
+4 . . B . .
+3 W . . . .
+2 . . . . .
+1 . W W . W
+  A B C D E
+
+Ball position: middle
+
+ X charge
+ X forklift
+ X dagger
+
+Player turn: white
+
+---
+
+Then game ends like:
+
+white play: E5
+
+White wins!
+
+White cards:
+ X charge
+ X forklift
+ X dagger
+
+Black cards:
+ X sidestep
+ X catapult
+ 2. jump
+ X fire
+ 4. kamikaze
+
+---
+
+A good AI would wait for an available kamikaze play.
+
+Good AI would simulate a push-game to know that a catapult play is losing.
+During simulation, a good AI would know that a kamikaze play would get a better score.

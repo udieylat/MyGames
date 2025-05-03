@@ -5,6 +5,7 @@ import time
 
 from game_config import GameConfig
 from game_manager import GameManager
+from models import PlayerSign
 from simulation_summary import SimulationSummary
 
 
@@ -59,3 +60,19 @@ class GameSimulator:
 
         summary.runtime_sec = time.time() - start_ts
         return summary
+
+    def find_first(
+        self,
+        winner_player_sign: PlayerSign,
+        max_num_games: int = 1000,
+    ) -> GameManager | None:
+        for _ in range(max_num_games):
+            gm = GameManager.new(
+                config=self._config,
+            )
+            match winner_player_sign, gm.export_summary().winner:
+                case (PlayerSign.white, "white") | (PlayerSign.black, "black"):
+                    return gm
+
+        print(f"Couldn't find a winning game for {winner_player_sign} after {max_num_games} simulations.")
+        return None

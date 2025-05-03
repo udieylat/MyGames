@@ -102,7 +102,7 @@ class GameManager:
             if card.already_used
         ]
         if len(used_opponent_card_names) == self._num_allowed_playable_cards():
-            self._print(f"Opponent already played all allowed cards: {used_opponent_card_names}")
+            self._print(f"Opponent already played all of their allowed cards: {used_opponent_card_names}")
             return
 
         possible_opponent_card_names = [
@@ -117,6 +117,7 @@ class GameManager:
         )
         for i, card_name in enumerate(possible_opponent_card_names):
             self._print(f" {i+1}. {card_name}")
+        self._print(f"Opponent number of cards: {len(self._get_opponent().cards)}")
 
     def play_card(
         self,
@@ -331,6 +332,9 @@ class GameManager:
                 print("\nBlack wins! (defensive)")
             case GameStatus.ongoing:
                 return
+
+        # Final board position.
+        self._board.display()
 
         # Display all cards at end of game.
         print()
