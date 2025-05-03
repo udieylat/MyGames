@@ -5,6 +5,7 @@ from cards.cards_randomizer import CardsRandomizer
 from constants import DEFAULT_NUM_CARDS_PER_PLAYER
 from game_config import GameConfig
 from game_manager import GameManager
+from game_simulator import GameSimulator
 from models import PlayerSign, GameStatus
 from players.player_config import PlayerConfig
 
@@ -56,6 +57,21 @@ class Challenge:
         print(f"LEVEL UP: {self._level}")
         return self.start()
 
+    def simulate(
+        self,
+        num_games: int = 1000,
+    ):
+        simulator = GameSimulator(
+            config=self._to_simulator_game_config(),
+        )
+        simulation_summary = simulator.run(
+            num_games=num_games,
+        )
+        win_percentage = simulation_summary.win_percentage(
+            player_sign=self._player_sign,
+        )
+        print(f"Simulated win percentage over {num_games} games: {win_percentage:.2f}%")
+
     def challenge_status(self):
         print(f"Level: {self._level}")
         print(f"Number of opponent cards: {self._get_num_opponent_cards()}")
@@ -88,6 +104,18 @@ class Challenge:
             cards_config.num_white_cards = self._get_num_opponent_cards()
             cards_config.num_black_cards = DEFAULT_NUM_CARDS_PER_PLAYER
 
+        return GameConfig(
+            white_player=white_player,
+            black_player=black_player,
+            cards_config=cards_config,
+        )
+
+    def _to_simulator_game_config(self) -> GameConfig:
+        cards_config = self._cards_config.model_copy()
+        white_player = self._opponent_config
+        black_player = self._opponent_config
+        cards_config.num_white_cards = DEFAULT_NUM_CARDS_PER_PLAYER
+        cards_config.num_black_cards = DEFAULT_NUM_CARDS_PER_PLAYER
         return GameConfig(
             white_player=white_player,
             black_player=black_player,
