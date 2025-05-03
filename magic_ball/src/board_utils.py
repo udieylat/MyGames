@@ -100,6 +100,18 @@ class BoardUtils:
         return "ABCDE"[col_i] + "12345"[row_i]
 
     @classmethod
+    def tile_to_player_sign(
+        cls,
+        tile: str,
+    ) -> PlayerSign:
+        match tile:
+            case TileType.white:
+                return PlayerSign.white
+            case TileType.black:
+                return PlayerSign.black
+        raise RuntimeError(f"Not a pawn tile: {tile}")
+
+    @classmethod
     def get_neighbor_tiles_indices(
         cls,
         col_i: int,

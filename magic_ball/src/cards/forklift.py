@@ -20,28 +20,40 @@ class Forklift(Card):
             player_sign=player_sign,
             board=board,
         )
-        direction_offsets = [
-            (0, 1),
-            (1, 1),
-            (1, 0),
-            (1, -1),
-            (0, -1),
-            (-1, -1),
-            (-1, 0),
-            (-1, 1),
-        ]
-        # TODO!
-        move_indices = [
-            (source_col_i, source_row_i, target_col_i, target_row_i)
-            for col_i, source_row_i in opponent_pawn_indices
-            if board[opponent_start_row_i][col_i] == TileType.vacant
-        ]
+        move_indices: list[tuple[int, int, int, int, PlayerSign]] = []
+        for col_i, row_i in pawn_indices:
+            all_neighbor_tiles_indices = BoardUtils.get_neighbor_tiles_indices(
+                col_i=col_i,
+                row_i=row_i,
+            ) + BoardUtils.get_diagonal_neighbor_tiles_indices(
+                col_i=col_i,
+                row_i=row_i,
+            )
+
+            source_indices = [
+                (source_col_i, source_row_i)
+                for source_col_i, source_row_i in all_neighbor_tiles_indices
+                if board[source_row_i][source_col_i] not in [TileType.vacant, TileType.wall]
+            ]
+            target_indices = [
+                (target_col_i, target_row_i)
+                for target_col_i, target_row_i in all_neighbor_tiles_indices
+                if board[target_row_i][target_col_i] == TileType.vacant
+            ]
+            move_indices += [
+                (
+                    source_col_i, source_row_i, target_col_i, target_row_i,
+                    BoardUtils.tile_to_player_sign(tile=board[source_row_i][source_col_i]),
+                )
+                for source_col_i, source_row_i in source_indices
+                for target_col_i, target_row_i in target_indices
+            ]
 
         return [
             Move(
-                player_sign=player_sign,  # TODO!
+                player_sign=player_sign,
                 result_board=Helper.move_pawn(
-                    player_sign=player_sign,  # TODO!
+                    player_sign=source_pawn_player_sign,
                     source_col_i=source_col_i,
                     source_row_i=source_row_i,
                     target_col_i=target_col_i,
@@ -60,5 +72,5 @@ class Forklift(Card):
                 ),
                 used_card_index=card_index,
             )
-            for source_col_i, source_row_i, target_col_i, target_row_i in move_indices
+            for source_col_i, source_row_i, target_col_i, target_row_i, source_pawn_player_sign in move_indices
         ]
