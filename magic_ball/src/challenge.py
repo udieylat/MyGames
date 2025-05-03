@@ -59,6 +59,7 @@ class Challenge:
 
     def simulate(
         self,
+        level: int,
         num_games: int = 1000,
     ):
         simulator = GameSimulator(
@@ -110,20 +111,32 @@ class Challenge:
             cards_config=cards_config,
         )
 
-    def _to_simulator_game_config(self) -> GameConfig:
+    def _to_simulator_game_config(
+        self,
+        level: int = 0,
+    ) -> GameConfig:
         cards_config = self._cards_config.model_copy()
         white_player = self._opponent_config
         black_player = self._opponent_config
-        cards_config.num_white_cards = DEFAULT_NUM_CARDS_PER_PLAYER
-        cards_config.num_black_cards = DEFAULT_NUM_CARDS_PER_PLAYER
+        if self._player_sign == PlayerSign.white:
+            cards_config.num_white_cards = DEFAULT_NUM_CARDS_PER_PLAYER
+            cards_config.num_black_cards = self._get_num_opponent_cards(level=level)
+        else:
+            cards_config.num_white_cards = self._get_num_opponent_cards(level=level)
+            cards_config.num_black_cards = DEFAULT_NUM_CARDS_PER_PLAYER
         return GameConfig(
             white_player=white_player,
             black_player=black_player,
             cards_config=cards_config,
         )
 
-    def _get_num_opponent_cards(self) -> int:
-        match self._level:
+    def _get_num_opponent_cards(
+        self,
+        level: int | None = None,
+    ) -> int:
+        if level is None:
+            level = self._level
+        match level:
             case 0:
                 return DEFAULT_NUM_CARDS_PER_PLAYER
             case 1:
