@@ -16,6 +16,7 @@ from cards.side_step import SideStep
 from cards.spawn import Spawn
 from cards.tank import Tank
 from cards.wall import Wall
+from constants import DEFAULT_NUM_CARDS_PER_PLAYER
 
 
 class Compendium:
@@ -49,7 +50,7 @@ class Compendium:
     @classmethod
     def get_num_decks_options(
         cls,
-        num_cards: int,
+        num_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER,
         num_cards_in_pull: int | None = None,
     ) -> int:
         if num_cards_in_pull is None:
