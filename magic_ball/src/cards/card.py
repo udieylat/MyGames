@@ -43,6 +43,9 @@ class Card:
             board=board,
             card_index=card_index,
         )
+        available_moves = self._filter_duplicate_description_moves(
+            moves=available_moves,
+        )
         return [
             move
             for move in available_moves
@@ -60,6 +63,20 @@ class Card:
         card_index: int,
     ) -> list[Move]:
         pass
+
+    @classmethod
+    def _filter_duplicate_description_moves(
+        cls,
+        moves: list[Move],
+    ) -> list[Move]:
+        move_descriptions = set()
+        non_duplicate_description_moves = []
+        for move in moves:
+            if move.description in move_descriptions:
+                continue
+            move_descriptions.add(move.description)
+            non_duplicate_description_moves.append(move)
+        return non_duplicate_description_moves
 
     @classmethod
     def _ball_position_allowed(
