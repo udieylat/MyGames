@@ -1,6 +1,8 @@
 import os
 import unittest
 
+from parameterized import parameterized
+
 from board import Board
 from cards.cards_config import CardsConfig
 from cards.compendium import Compendium
@@ -188,7 +190,17 @@ class TestGameManager(unittest.TestCase):
         self.assertEqual(board[4][2], TileType.vacant)
         self.assertEqual(board.ball_position, BallPosition.black)
 
-    def test_fixed_position_black_must_sidestep(self):
+    @parameterized.expand(
+        [
+            (400, "sidestep: B4->A4"),
+            (200, "B3"),
+        ],
+    )
+    def test_fixed_position_black_must_sidestep(
+        self,
+        free_pawn_score_per_distance_from_start_tile: int,
+        expected_move_description: str,
+    ):
         board = Board(
             board=[
                 ['.', '.', '.', '.', '.'],
@@ -199,17 +211,32 @@ class TestGameManager(unittest.TestCase):
             ],
             ball_position=BallPosition.middle,
         )
-        gm = self._black_ai_turn_vs_human_with_config(
-            board=board,
-            cards_config=CardsConfig(
-                num_black_cards=1,
-                num_white_cards=1,
-                black_card_names=["sidestep"],
-            ),
+
+        # Set black player config.
+        black_player_config = PlayerConfig.default_ai_opponent()
+        black_player_config.score_multipliers.free_pawn_score_per_distance_from_start_tile = (
+            free_pawn_score_per_distance_from_start_tile
         )
+        black_player_config.random_tie_break = False
+
+        gm = GameManager(
+            config=GameConfig(
+                black_player=black_player_config,
+                cards_config=CardsConfig(
+                    num_black_cards=1,
+                    num_white_cards=1,
+                    black_card_names=["sidestep"],
+                ),
+            ),
+            board=board,
+            player_turn=PlayerSign.black,
+        )
+
         # Only one reasonable play here: sidestep: B4->A4.
-        self.assertEqual("sidestep: B4->A4", gm._game_log[-1], msg=f"Unexpected play, game log: {gm._game_log}")
-        self.assertEqual(board.ball_position, BallPosition.white)
+        # Test expected results:
+        #  For high free pawn distance score, play good move.
+        #  For lower (once default) score, play push move (avoid cards if assuming it's not critical).
+        self.assertEqual(expected_move_description, gm._game_log[-1], msg=f"Unexpected play, game log: {gm._game_log}")
 
     @classmethod
     def _get_game_status(cls, gm: GameManager) -> GameStatus:
@@ -225,31 +252,12 @@ class TestGameManager(unittest.TestCase):
         board: Board,
         black_card_names: list[str],
     ) -> GameManager:
-        return cls._black_ai_turn_vs_human_with_config(
-            board=board,
-            cards_config=CardsConfig(
-                black_card_names=black_card_names,
-            ),
-        )
-
-    @classmethod
-    def _black_ai_turn_vs_human_with_config(
-        cls,
-        board: Board,
-        cards_config: CardsConfig,
-    ) -> GameManager:
         return GameManager(
             config=GameConfig(
                 black_player=PlayerConfig.default_ai_opponent(),
-                cards_config=cards_config,
-            ),
-            white_player=PlayerFactory.generate_player(
-                player_config=PlayerConfig.human(),
-                player_sign=PlayerSign.white,
-            ),
-            black_player=PlayerFactory.generate_player(
-                player_config=PlayerConfig.default_ai_opponent(),
-                player_sign=PlayerSign.black,
+                cards_config=CardsConfig(
+                    black_card_names=black_card_names,
+                ),
             ),
             board=board,
             player_turn=PlayerSign.black,

@@ -26,14 +26,6 @@ class GameManager:
     ) -> GameManager:
         return GameManager(
             config=config,
-            white_player=PlayerFactory.generate_player(
-                player_config=config.white_player,
-                player_sign=PlayerSign.white,
-            ),
-            black_player=PlayerFactory.generate_player(
-                player_config=config.black_player,
-                player_sign=PlayerSign.black,
-            ),
         )
 
     @classmethod
@@ -49,22 +41,24 @@ class GameManager:
     def __init__(
         self,
         config: GameConfig,
-        white_player: Player,
-        black_player: Player,
         board: Board | None = None,
         player_turn: PlayerSign = PlayerSign.white,
     ):
-        assert white_player.player_sign == PlayerSign.white
-        assert black_player.player_sign == PlayerSign.black
         self._config = config
-        self._white_player = white_player
-        self._black_player = black_player
         self._board = board or Board.new()
+        self._player_turn = player_turn
 
+        self._white_player = PlayerFactory.generate_player(
+            player_config=config.white_player,
+            player_sign=PlayerSign.white,
+        )
+        self._black_player = PlayerFactory.generate_player(
+            player_config=config.black_player,
+            player_sign=PlayerSign.black,
+        )
         self._draw_cards(
             cards_config=self._config.cards_config,
         )
-        self._player_turn = player_turn
 
         self._game_status: GameStatus = GameStatus.ongoing
         self._game_log: list[str] = []
