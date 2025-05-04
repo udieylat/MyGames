@@ -1,0 +1,44 @@
+white play: catapult: A2->A5
+black play: A4
+
+5 . . . B .
+4 B B . W B
+3 . . W . .
+2 . W . . W
+1 . . . . .
+  A B C D E
+
+Ball position: middle
+
+ 0. wall
+ X charge
+ X catapult
+
+Player turn: white
+
+---
+
+Next turn:
+
+white play: C4
+black play: fire in row: 4
+
+5 . . . B .
+4 . . . . .
+3 . . . . .
+2 . W . . W
+1 . . . . .
+  A B C D E
+
+Ball position: white
+
+ 0. wall
+ X charge
+ X catapult
+
+Player turn: white
+
+---
+
+A good AI would know that this play loses (no more cards left to play by any player),
+and an earlier "fire" play on row 3 (instead of A4 above) doesn't necessarily lose (draws in this case).

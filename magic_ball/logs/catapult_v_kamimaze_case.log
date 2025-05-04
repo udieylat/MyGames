@@ -38,7 +38,7 @@ Black cards:
 
 ---
 
-A good AI would wait for an available kamikaze play.
+A good AI would wait for an available kamikaze play (instead of playing "catapult" as last card).
 
 Good AI would simulate a push-game to know that a catapult play is losing.
 During simulation, a good AI would know that a kamikaze play would get a better score.
