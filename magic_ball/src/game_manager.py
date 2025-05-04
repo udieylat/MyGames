@@ -175,10 +175,7 @@ class GameManager:
             self._complete_turn()
 
     def log(self):
-        for i, (white_move, black_move) in enumerate(zip(self._game_log[::2], self._game_log[1::2])):
-            print(f" {i+1}. {white_move} ; {black_move}")
-        if len(self._game_log) % 2 == 1:
-            print(f" {int(len(self._game_log)/2) + 1}. {self._game_log[-1]}")
+        self._print_game_log()
         self._board.display()
         self._print_game_over_if_necessary(force=True)
 
@@ -315,6 +312,12 @@ class GameManager:
         self._print_game_over_if_necessary()
         self._play_ai_player_turn_if_necessary()
 
+    def _print_game_log(self):
+        for i, (white_move, black_move) in enumerate(zip(self._game_log[::2], self._game_log[1::2])):
+            print(f" {i+1}. {white_move} ; {black_move}")
+        if len(self._game_log) % 2 == 1:
+            print(f" {int(len(self._game_log)/2) + 1}. {self._game_log[-1]}")
+
     def _print_game_over_if_necessary(self, force: bool = False):
         if not self._verbose and not force:
             return
@@ -335,6 +338,7 @@ class GameManager:
 
         # Final board position.
         self._board.display()
+        self._print_game_log()
 
         # Display all cards at end of game.
         print()
