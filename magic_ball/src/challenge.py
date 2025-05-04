@@ -59,8 +59,8 @@ class Challenge:
 
     def simulate(
         self,
-        level: int | None = None,
         num_games: int = 1000,
+        level: int | None = None,
     ):
         if level is None:
             level = self._level

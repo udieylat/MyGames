@@ -175,9 +175,11 @@ class GameManager:
             self._complete_turn()
 
     def log(self):
-        self._print_game_log()
-        self._board.display()
-        self._print_game_over_if_necessary(force=True)
+        if self._game_status == GameStatus.ongoing:
+            self._print_game_log()
+            self._board.display()
+        else:
+            self._print_game_over_if_necessary(force=True)
 
     def export_summary(self) -> GameSummary:
         return GameSummary(
@@ -337,8 +339,8 @@ class GameManager:
                 return
 
         # Final board position.
-        self._board.display()
         self._print_game_log()
+        self._board.display()
 
         # Display all cards at end of game.
         print()
