@@ -1,53 +1,107 @@
 class GameBoard {
     constructor() {
-        this.board = this.initializeBoard();
+        this.gameState = null;
+        this.selectedCard = null;
         this.selectedTile = null;
-        this.currentTurn = 'white'; // white goes first
-        this.gameStatus = 'ongoing';
+        this.validMoves = [];
         this.init();
     }
 
-    initializeBoard() {
-        // Create 5x5 board
-        const board = [];
-        for (let row = 0; row < 5; row++) {
-            board[row] = [];
-            for (let col = 0; col < 5; col++) {
-                let piece = null;
-                
-                // White pawns on bottom row (row 4)
-                if (row === 4) {
-                    piece = 'white';
-                }
-                // Black pawns on top row (row 0)
-                else if (row === 0) {
-                    piece = 'black';
-                }
-                
-                board[row][col] = {
-                    piece: piece,
-                    row: row,
-                    col: col,
-                    hasMoved: false // Track if pawn has moved
-                };
-            }
-        }
-        return board;
+    async init() {
+        await this.startNewGame();
+        this.addEventListeners();
     }
 
-    init() {
+    async startNewGame() {
+        try {
+            const response = await fetch('/api/game/new', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                this.gameState = data.game_state;
+                this.renderGame();
+            } else {
+                console.error('Failed to start new game:', data.error);
+            }
+        } catch (error) {
+            console.error('Error starting new game:', error);
+        }
+    }
+
+    async getGameState() {
+        try {
+            const response = await fetch('/api/game/state');
+            const data = await response.json();
+            if (data.success) {
+                this.gameState = data;
+                return data;
+            }
+        } catch (error) {
+            console.error('Error getting game state:', error);
+        }
+        return null;
+    }
+
+    async makeMove(moveData) {
+        try {
+            const response = await fetch('/api/game/move', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(moveData)
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                this.gameState = data.game_state;
+                this.renderGame();
+                return true;
+            } else {
+                console.error('Move failed:', data.error);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error making move:', error);
+            return false;
+        }
+    }
+
+    async getValidMoves() {
+        try {
+            const response = await fetch('/api/game/valid-moves');
+            const data = await response.json();
+            if (data.success) {
+                this.validMoves = data.valid_moves;
+                return data.valid_moves;
+            }
+        } catch (error) {
+            console.error('Error getting valid moves:', error);
+        }
+        return [];
+    }
+
+    renderGame() {
         this.renderBoard();
-        this.addEventListeners();
+        this.renderCards();
         this.updateGameInfo();
+        this.updateMagicBall();
     }
 
     renderBoard() {
         const boardElement = document.getElementById('gameBoard');
         boardElement.innerHTML = '';
 
+        if (!this.gameState || !this.gameState.board) return;
+
         for (let row = 0; row < 5; row++) {
             for (let col = 0; col < 5; col++) {
-                const tile = this.board[row][col];
+                const tile = this.gameState.board[row][col];
                 const tileElement = this.createTileElement(tile, row, col);
                 boardElement.appendChild(tileElement);
             }
@@ -60,9 +114,9 @@ class GameBoard {
         tileElement.dataset.row = row;
         tileElement.dataset.col = col;
 
-        if (tile.piece) {
+        if (tile) {
             const pawnElement = document.createElement('div');
-            pawnElement.className = `pawn ${tile.piece}`;
+            pawnElement.className = `pawn ${tile}`;
             pawnElement.textContent = '♟';
             tileElement.appendChild(pawnElement);
         }
@@ -71,8 +125,107 @@ class GameBoard {
     }
 
     getTileColor(row, col) {
-        // Chess-like alternating pattern
         return (row + col) % 2 === 0 ? 'white' : 'black';
+    }
+
+    renderCards() {
+        if (!this.gameState) return;
+
+        // Render white cards
+        const whiteCardsList = document.getElementById('whiteCardsList');
+        whiteCardsList.innerHTML = '';
+        
+        if (this.gameState.white_cards) {
+            this.gameState.white_cards.forEach((cardName, index) => {
+                const cardElement = this.createCardElement(cardName, index, 'white');
+                whiteCardsList.appendChild(cardElement);
+            });
+        }
+
+        // Render black cards
+        const blackCardsList = document.getElementById('blackCardsList');
+        blackCardsList.innerHTML = '';
+        
+        if (this.gameState.black_cards) {
+            this.gameState.black_cards.forEach((cardName, index) => {
+                const cardElement = this.createCardElement(cardName, index, 'black');
+                blackCardsList.appendChild(cardElement);
+            });
+        }
+    }
+
+    createCardElement(cardName, index, player) {
+        const cardElement = document.createElement('button');
+        cardElement.className = 'card';
+        cardElement.textContent = cardName;
+        cardElement.dataset.cardIndex = index;
+        cardElement.dataset.player = player;
+        
+        cardElement.addEventListener('click', () => this.selectCard(cardElement, cardName, index, player));
+        
+        return cardElement;
+    }
+
+    selectCard(cardElement, cardName, index, player) {
+        // Clear previous card selection
+        document.querySelectorAll('.card.selected').forEach(el => {
+            el.classList.remove('selected');
+        });
+
+        // Select this card
+        cardElement.classList.add('selected');
+        this.selectedCard = { name: cardName, index: index, player: player };
+
+        // Get valid moves for this card
+        this.getValidMovesForCard(index);
+    }
+
+    async getValidMovesForCard(cardIndex) {
+        try {
+            const response = await fetch('/api/game/cards');
+            const data = await response.json();
+            if (data.success) {
+                const card = data.cards.find(c => c.index === cardIndex);
+                if (card) {
+                    console.log(`Card ${card.name}: ${card.description}`);
+                }
+            }
+        } catch (error) {
+            console.error('Error getting card moves:', error);
+        }
+    }
+
+    updateMagicBall() {
+        if (!this.gameState || !this.gameState.ball_position) return;
+
+        const magicBall = document.getElementById('magicBall');
+        const position = this.gameState.ball_position;
+        
+        // Update magic ball appearance based on position
+        magicBall.className = `magic-ball ${position}`;
+        
+        // Add position indicator
+        let positionText = '';
+        switch (position) {
+            case 'white':
+                positionText = 'W';
+                break;
+            case 'black':
+                positionText = 'B';
+                break;
+            case 'middle':
+                positionText = 'M';
+                break;
+        }
+        
+        // Update or create position indicator
+        let indicator = magicBall.querySelector('.position-indicator');
+        if (!indicator) {
+            indicator = document.createElement('div');
+            indicator.className = 'position-indicator';
+            magicBall.appendChild(indicator);
+        }
+        indicator.textContent = positionText;
     }
 
     addEventListeners() {
@@ -85,194 +238,102 @@ class GameBoard {
         });
     }
 
-    handleTileClick(tileElement) {
+    async handleTileClick(tileElement) {
         const row = parseInt(tileElement.dataset.row);
         const col = parseInt(tileElement.dataset.col);
-        const tile = this.board[row][col];
-
-        // Clear previous selections and valid move indicators
+        
+        // Clear previous highlights
         this.clearHighlights();
 
-        // If clicking on a pawn of the current player's color
-        if (tile.piece === this.currentTurn) {
-            this.selectPawn(tileElement, tile);
+        // If a card is selected, try to play it
+        if (this.selectedCard) {
+            await this.playCardMove(row, col);
+        } else {
+            // Try to make a push move
+            await this.makePushMove(row, col);
         }
-        // If clicking on a valid move destination
-        else if (this.selectedTile && this.isValidMove(this.selectedTile, row, col)) {
-            this.movePawn(this.selectedTile, row, col);
-        }
-        // If clicking on an empty tile or opponent's piece, deselect
-        else {
-            this.selectedTile = null;
-        }
-
-        this.updateGameInfo();
     }
 
-    selectPawn(tileElement, tile) {
-        this.selectedTile = tile;
-        tileElement.classList.add('selected');
+    async playCardMove(row, col) {
+        if (!this.selectedCard) return;
+
+        // Convert coordinates to tile notation
+        const tile = this.coordinatesToTile(row, col);
         
-        // Highlight valid moves
-        this.highlightValidMoves(tile);
+        // For now, we'll use a simple card move
+        // In a full implementation, you'd need to get the specific move index
+        const moveData = {
+            type: 'card',
+            card_index: this.selectedCard.index,
+            move_index: 0  // This would need to be determined based on available moves
+        };
+
+        const success = await this.makeMove(moveData);
+        if (success) {
+            this.selectedCard = null;
+        }
     }
 
-    highlightValidMoves(selectedTile) {
-        const validMoves = this.getValidMoves(selectedTile);
+    async makePushMove(row, col) {
+        const tile = this.coordinatesToTile(row, col);
         
-        validMoves.forEach(move => {
-            const tileElement = document.querySelector(`[data-row="${move.row}"][data-col="${move.col}"]`);
-            if (tileElement) {
-                tileElement.classList.add('valid-move');
-            }
-        });
+        const moveData = {
+            type: 'push',
+            target_tile: tile
+        };
+
+        await this.makeMove(moveData);
+    }
+
+    coordinatesToTile(row, col) {
+        const letters = ['A', 'B', 'C', 'D', 'E'];
+        const numbers = ['5', '4', '3', '2', '1'];
+        return letters[col] + numbers[row];
     }
 
     clearHighlights() {
-        // Remove all highlights
-        document.querySelectorAll('.tile.selected, .tile.valid-move, .pawn.selected').forEach(el => {
+        document.querySelectorAll('.tile.selected, .tile.valid-move, .card.selected').forEach(el => {
             el.classList.remove('selected', 'valid-move');
         });
     }
 
-    getValidMoves(tile) {
-        const validMoves = [];
-        
-        if (!tile.piece || tile.piece !== this.currentTurn) {
-            return validMoves;
-        }
-
-        const direction = tile.piece === 'white' ? -1 : 1; // White moves up, black moves down
-        const newRow = tile.row + direction;
-
-        // Check if the move is within bounds
-        if (newRow >= 0 && newRow < 5) {
-            const targetTile = this.board[newRow][tile.col];
-            
-            // Can only move to empty tiles (no capturing)
-            if (targetTile.piece === null) {
-                validMoves.push({
-                    row: newRow,
-                    col: tile.col
-                });
-            }
-        }
-
-        return validMoves;
-    }
-
-    isValidMove(fromTile, toRow, toCol) {
-        const validMoves = this.getValidMoves(fromTile);
-        return validMoves.some(move => move.row === toRow && move.col === toCol);
-    }
-
-    movePawn(fromTile, toRow, toCol) {
-        // Update the board
-        this.board[toRow][toCol].piece = fromTile.piece;
-        this.board[toRow][toCol].hasMoved = true;
-        this.board[fromTile.row][fromTile.col].piece = null;
-        this.board[fromTile.row][fromTile.col].hasMoved = false;
-
-        // Re-render the board
-        this.renderBoard();
-        
-        // Switch turns
-        this.currentTurn = this.currentTurn === 'white' ? 'black' : 'white';
-        
-        // Clear selection
-        this.selectedTile = null;
-        
-        // Check for win conditions
-        this.checkWinConditions();
-    }
-
-    hasAnyValidMoves(player) {
-        for (let row = 0; row < 5; row++) {
-            for (let col = 0; col < 5; col++) {
-                const tile = this.board[row][col];
-                if (tile.piece === player) {
-                    const validMoves = this.getValidMoves(tile);
-                    if (validMoves.length > 0) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    checkWinConditions() {
-        // Check if any pawn has reached the opposite side
-        let whiteWon = false;
-        let blackWon = false;
-
-        // Check if any white pawn reached the top row
-        for (let col = 0; col < 5; col++) {
-            if (this.board[0][col].piece === 'white') {
-                whiteWon = true;
-                break;
-            }
-        }
-
-        // Check if any black pawn reached the bottom row
-        for (let col = 0; col < 5; col++) {
-            if (this.board[4][col].piece === 'black') {
-                blackWon = true;
-                break;
-            }
-        }
-
-        if (whiteWon) {
-            this.gameStatus = 'white_win';
-            this.updateGameInfo();
-        } else if (blackWon) {
-            this.gameStatus = 'black_win';
-            this.updateGameInfo();
-        } else {
-            // Check for draw - if current player has no valid moves
-            if (!this.hasAnyValidMoves(this.currentTurn)) {
-                this.gameStatus = 'draw';
-                this.updateGameInfo();
-            }
-        }
-    }
-
     updateGameInfo() {
+        if (!this.gameState) return;
+
         const turnIndicator = document.getElementById('turnIndicator');
         const gameStatus = document.getElementById('gameStatus');
         const moveInfo = document.getElementById('moveInfo');
         const menuButtonContainer = document.getElementById('menuButtonContainer');
 
-        if (this.gameStatus === 'ongoing') {
-            turnIndicator.textContent = `${this.currentTurn.charAt(0).toUpperCase() + this.currentTurn.slice(1)}'s Turn`;
-            turnIndicator.className = `turn-indicator ${this.currentTurn}`;
+        const currentPlayer = this.gameState.current_player;
+        const gameStatusValue = this.gameState.game_status;
+
+        if (gameStatusValue === 'ongoing') {
+            turnIndicator.textContent = `${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s Turn`;
+            turnIndicator.className = `turn-indicator ${currentPlayer}`;
             menuButtonContainer.style.display = 'none';
             
-            if (this.selectedTile) {
-                const colLetter = String.fromCharCode(65 + this.selectedTile.col);
-                const rowNumber = 5 - this.selectedTile.row;
-                gameStatus.textContent = `Selected: ${colLetter}${rowNumber} (${this.selectedTile.piece})`;
-                moveInfo.textContent = `${this.currentTurn.charAt(0).toUpperCase() + this.currentTurn.slice(1)} pawns can move one step forward`;
-            } else {
-                gameStatus.textContent = `Click on a ${this.currentTurn} pawn to select it`;
-                moveInfo.textContent = `${this.currentTurn.charAt(0).toUpperCase() + this.currentTurn.slice(1)} pawns can move one step forward`;
+            gameStatus.textContent = `Current player: ${currentPlayer}`;
+            moveInfo.textContent = 'Select a card or make a push move';
+        } else {
+            // Game is over
+            let resultText = '';
+            let statusText = '';
+            
+            if (gameStatusValue === 'white_win') {
+                resultText = 'White Wins!';
+                statusText = 'White has won the game!';
+            } else if (gameStatusValue === 'black_win') {
+                resultText = 'Black Wins!';
+                statusText = 'Black has won the game!';
+            } else if (gameStatusValue === 'draw') {
+                resultText = 'Game is a Draw!';
+                statusText = 'The game ended in a draw!';
             }
-        } else if (this.gameStatus === 'white_win') {
-            turnIndicator.textContent = 'White Wins!';
-            turnIndicator.className = 'turn-indicator white';
-            gameStatus.textContent = 'White pawn reached the top row!';
-            moveInfo.textContent = 'Game Over';
-            menuButtonContainer.style.display = 'block';
-        } else if (this.gameStatus === 'black_win') {
-            turnIndicator.textContent = 'Black Wins!';
-            turnIndicator.className = 'turn-indicator black';
-            gameStatus.textContent = 'Black pawn reached the bottom row!';
-            moveInfo.textContent = 'Game Over';
-            menuButtonContainer.style.display = 'block';
-        } else if (this.gameStatus === 'draw') {
-            turnIndicator.textContent = 'Game is a Draw!';
+            
+            turnIndicator.textContent = resultText;
             turnIndicator.className = 'turn-indicator draw';
-            gameStatus.textContent = 'No valid moves available';
+            gameStatus.textContent = statusText;
             moveInfo.textContent = 'Game Over';
             menuButtonContainer.style.display = 'block';
         }

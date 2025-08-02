@@ -68,6 +68,18 @@ class GameManager:
         self._display()
         return ""
 
+    # Properties for the app.py
+
+    @property
+    def board(self) -> Board:
+        return self._board
+
+    @property
+    def player_turn(self) -> PlayerSign:
+        return self._player_turn
+
+    # General methods
+
     @property
     def game_config(self) -> GameConfig:
         return self._config
