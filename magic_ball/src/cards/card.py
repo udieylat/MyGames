@@ -16,7 +16,6 @@ class Card:
         return cls.__name__.lower()
 
     @classmethod
-    @abstractmethod
     def description(cls) -> str:
         pass
 

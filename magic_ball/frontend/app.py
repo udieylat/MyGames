@@ -239,7 +239,7 @@ def get_game_state_endpoint():
                 white_cards.append({
                     'index': i,
                     'name': card.name,
-                    'description': 'description': card.description(),
+                    'description': card.description(),
                 })
         
         black_cards = []
@@ -248,7 +248,7 @@ def get_game_state_endpoint():
                 black_cards.append({
                     'index': i,
                     'name': card.name,
-                    'description': 'description': card.description(),
+                    'description': card.description(),
                 })
         
         return jsonify({
@@ -453,7 +453,7 @@ def get_player_cards():
                 cards.append({
                     'index': i,
                     'name': card.name,
-                    'description': 'description': card.description(),
+                    'description': card.description(),
                 })
         
         return jsonify({
@@ -500,7 +500,7 @@ def get_card_moves(card_index):
         return jsonify({
             'success': True,
             'card_name': card.name,
-            'card_description': 'description': card.description(),
+            'description': card.description(),
             'moves': moves
         })
     except Exception as e:
