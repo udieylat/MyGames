@@ -241,10 +241,12 @@ class GameBoard {
         const turnIndicator = document.getElementById('turnIndicator');
         const gameStatus = document.getElementById('gameStatus');
         const moveInfo = document.getElementById('moveInfo');
+        const menuButtonContainer = document.getElementById('menuButtonContainer');
 
         if (this.gameStatus === 'ongoing') {
             turnIndicator.textContent = `${this.currentTurn.charAt(0).toUpperCase() + this.currentTurn.slice(1)}'s Turn`;
             turnIndicator.className = `turn-indicator ${this.currentTurn}`;
+            menuButtonContainer.style.display = 'none';
             
             if (this.selectedTile) {
                 const colLetter = String.fromCharCode(65 + this.selectedTile.col);
@@ -260,18 +262,26 @@ class GameBoard {
             turnIndicator.className = 'turn-indicator white';
             gameStatus.textContent = 'White pawn reached the top row!';
             moveInfo.textContent = 'Game Over';
+            menuButtonContainer.style.display = 'block';
         } else if (this.gameStatus === 'black_win') {
             turnIndicator.textContent = 'Black Wins!';
             turnIndicator.className = 'turn-indicator black';
             gameStatus.textContent = 'Black pawn reached the bottom row!';
             moveInfo.textContent = 'Game Over';
+            menuButtonContainer.style.display = 'block';
         } else if (this.gameStatus === 'draw') {
             turnIndicator.textContent = 'Game is a Draw!';
             turnIndicator.className = 'turn-indicator draw';
             gameStatus.textContent = 'No valid moves available';
             moveInfo.textContent = 'Game Over';
+            menuButtonContainer.style.display = 'block';
         }
     }
+}
+
+// Global function to go back to menu
+function backToMenu() {
+    window.location.href = 'index.html';
 }
 
 // Initialize the game when the page loads
