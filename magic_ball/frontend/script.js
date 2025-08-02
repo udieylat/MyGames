@@ -78,6 +78,9 @@ class GameBoard {
 
     async makeMove(moveData) {
         try {
+            console.log('=== FRONTEND: PLAYER MOVE ===');
+            console.log('Move data:', moveData);
+            
             const response = await fetch('/api/game/move', {
                 method: 'POST',
                 headers: {
@@ -91,8 +94,9 @@ class GameBoard {
                 this.gameState = data.game_state;
                 
                 // Add move to history
-                this.addMoveToHistory(moveData, data.message);
+                this.addMoveToHistory(moveData, data.message);  // TODO: change this to move description
                 
+                console.log('Move successful, new game state:', this.gameState);
                 this.renderGame();
                 
                 // If it's an AI game and human just moved, make AI move after delay
@@ -102,6 +106,7 @@ class GameBoard {
                     }, 1000); // 1 second delay
                 }
                 
+                console.log('=== END FRONTEND: PLAYER MOVE ===');
                 return true;
             } else {
                 console.error('Move failed:', data.error);
@@ -115,7 +120,9 @@ class GameBoard {
 
     async makeAIMove() {
         try {
+            console.log('=== FRONTEND: AI MOVE ===');
             console.log('Making AI move...');
+            
             const response = await fetch('/api/game/ai-move', {
                 method: 'POST',
                 headers: {
@@ -131,7 +138,10 @@ class GameBoard {
                 // Add AI move to history with detailed description
                 this.addMoveToHistory({ type: 'ai' }, data.move_description);
                 
+                console.log('AI move successful, new game state:', this.gameState);
                 this.renderGame();
+                
+                console.log('=== END FRONTEND: AI MOVE ===');
                 return true;
             } else {
                 console.error('AI move failed:', data.error);
@@ -163,16 +173,20 @@ class GameBoard {
         const moveNumber = Math.floor(this.moveHistory.length / 2) + 1;
         let player = 'Unknown';
         
-        if (moveData.type === 'ai') {
-            player = 'AI';
-            // Use the description provided by the backend
-            this.moveHistory.push({
-                number: moveNumber,
-                player: player,
-                description: description,
-                timestamp: new Date().toLocaleTimeString()
-            });
-        } else {
+        console.log('=== ADDING MOVE TO HISTORY ===');
+        console.log('Move data:', moveData);
+        console.log('Description:', description);
+        
+        // if (moveData.type === 'ai') {
+        //     player = 'AI';
+        //     // Use the description provided by the backend
+        //     this.moveHistory.push({
+        //         number: moveNumber,
+        //         player: player,
+        //         description: description,
+        //         timestamp: new Date().toLocaleTimeString()
+        //     });
+        // } else {
             player = this.gameState.current_player === 'white' ? 'White' : 'Black';
             
             let moveDescription = '';
@@ -191,7 +205,10 @@ class GameBoard {
                 description: moveDescription,
                 timestamp: new Date().toLocaleTimeString()
             });
-        }
+        // }
+        
+        console.log('Move history updated:', this.moveHistory);
+        console.log('=== END ADDING MOVE TO HISTORY ===');
         
         this.renderMoveHistory();
     }
@@ -511,6 +528,7 @@ class GameBoard {
         
         const moveData = {
             type: 'push',
+            source_tile: sourceTile,
             target_tile: targetTile
         };
 
