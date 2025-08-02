@@ -189,7 +189,7 @@ class GameBoard {
         // } else {
             player = this.gameState.current_player === 'white' ? 'White' : 'Black';
             
-            let moveDescription = '';
+            let moveDescription = description;
             if (moveData.type === 'push') {
                 moveDescription = `${player} pushes to ${moveData.target_tile}`;
             } else if (moveData.type === 'card') {

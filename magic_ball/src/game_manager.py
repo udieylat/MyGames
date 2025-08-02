@@ -91,18 +91,20 @@ class GameManager:
     def push(
         self,
         target_tile: str,
-    ):
+    ) -> Move | None:
         if not self._game_on:
             self._print("Game is already over.")
-            return
+            return None
         try:
-            self._play_move(
-                move=Helper.generate_push_move(
-                    player_sign=self._player_turn,
-                    target_tile=target_tile.upper(),
-                    board=self._board,
-                ),
+            move = Helper.generate_push_move(
+                player_sign=self._player_turn,
+                target_tile=target_tile.upper(),
+                board=self._board,
             )
+            self._play_move(
+                move=move,
+            )
+            return move
         except InvalidMove as e:
             self._print(f"** Invalid move: {e.description}")
             raise
@@ -135,16 +137,16 @@ class GameManager:
         self,
         card_index: int,
         move_index: int | None = None,
-    ):
+    ) -> Move | None:
         if not self._game_on:
             self._print("Game is already over.")
-            return
+            return None
 
         if move_index is None:
             self._show_card_available_moves(
                 card_index=card_index,
             )
-            return
+            return None
 
         available_moves = self._get_available_card_moves(
             card_index=card_index,
@@ -157,9 +159,11 @@ class GameManager:
             )
 
         try:
+            move = available_moves[move_index]
             self._play_move(
-                move=available_moves[move_index],
+                move=move,
             )
+            return move
         except InvalidMove as e:
             self._print(f"** Invalid move: {e.description}")
             raise
