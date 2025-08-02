@@ -324,7 +324,8 @@ class GameManager:
             black_cards=self._black_player.cards,
         )
         self._print_game_over_if_necessary()
-        self._play_ai_player_turn_if_necessary()
+        # TODO: temporarily comment this out (for FE). Maybe need to comment back in for simulations.
+        # self._play_ai_player_turn_if_necessary()
 
     def _print_game_log(self):
         for i, (white_move, black_move) in enumerate(zip(self._game_log[::2], self._game_log[1::2])):

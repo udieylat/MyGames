@@ -10,6 +10,7 @@ import json
 import time
 from pathlib import Path
 
+
 # Add the src directory to the Python path
 sys.path.append(str(Path(__file__).parent.parent / 'src'))
 
@@ -22,6 +23,7 @@ from models import PlayerSign, GameStatus, TileType
 from board_utils import BoardUtils
 from cards.compendium import Compendium
 from players.player_config import PlayerConfig, PlayerType, ScoreMultipliers
+from players.player import NoAvailableMoves
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for development
@@ -342,28 +344,23 @@ def make_ai_move():
         
         # Get AI player
         ai_player = game_manager._black_player if ai_side == 'black' else game_manager._white_player
-        # game_manager._get_player()
         
         # Get AI move
-        ai_move = ai_player.get_move(game_manager._board, game_manager._player_turn)
-        
-        move_description = ''
-        if ai_move is None:
+        try:
+            ai_move = ai_player.find_move(
+                board=game_manager.board,
+                player_cards=game_manager._get_player().cards,
+                opponent_cards=game_manager._get_opponent().cards,
+            )
+            game_manager._play_move(
+                move=ai_move,
+            )
+            move_description = ai_move.description
+        except NoAvailableMoves:
             # AI passes turn
             game_manager.pass_turn()
             move_description = 'AI passes turn'
             # TODO: this should be a game-over draw scenario.
-        else:
-            # Execute AI move
-            if hasattr(ai_move, 'card_index') and hasattr(ai_move, 'move_index'):
-                # Card move
-                card = ai_player.cards[ai_move.card_index]
-                move_description = f'AI plays {card.name}'
-                game_manager.play_card(ai_move.card_index, ai_move.move_index)
-            else:
-                # Push move
-                move_description = f'AI pushes to {ai_move.target_tile}'
-                game_manager.push(ai_move.target_tile)
         
         return jsonify({
             'success': True,
