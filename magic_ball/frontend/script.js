@@ -125,6 +125,7 @@ class GameBoard {
             
             const data = await response.json();
             if (data.success) {
+                console.log('Successful AI move:', data.move_description);
                 this.gameState = data.game_state;
                 
                 // Add AI move to history with detailed description

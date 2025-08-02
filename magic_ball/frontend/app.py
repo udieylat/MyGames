@@ -128,7 +128,7 @@ def get_game_state():
     try:
         # Get board state
         board = game_manager._board._board
-        ball_position = game_manager._board.ball_position.value
+        ball_position = game_manager._board.ball_position
         
         print(f"Board data: {board}")
         print(f"Ball position: {ball_position}")
@@ -209,7 +209,7 @@ def get_game_state_endpoint():
     try:
         # Get board state
         board = game_manager._board._board
-        ball_position = game_manager._board.ball_position.value
+        ball_position = game_manager._board.ball_position
         
         # Convert board to frontend format
         board_state = []
@@ -327,7 +327,8 @@ def make_ai_move():
             'success': False,
             'error': 'Not an AI game'
         }), 400
-    
+
+    assert isinstance(game_manager, GameManager)
     try:
         # Check if it's AI's turn
         current_player = game_manager._player_turn.value
@@ -341,6 +342,7 @@ def make_ai_move():
         
         # Get AI player
         ai_player = game_manager._black_player if ai_side == 'black' else game_manager._white_player
+        # game_manager._get_player()
         
         # Get AI move
         ai_move = ai_player.get_move(game_manager._board, game_manager._player_turn)
@@ -350,6 +352,7 @@ def make_ai_move():
             # AI passes turn
             game_manager.pass_turn()
             move_description = 'AI passes turn'
+            # TODO: this should be a game-over draw scenario.
         else:
             # Execute AI move
             if hasattr(ai_move, 'card_index') and hasattr(ai_move, 'move_index'):
