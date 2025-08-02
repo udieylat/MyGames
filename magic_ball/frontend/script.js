@@ -173,10 +173,6 @@ class GameBoard {
         const moveNumber = Math.floor(this.moveHistory.length / 2) + 1;
         let player = 'Unknown';
         
-        console.log('=== ADDING MOVE TO HISTORY ===');
-        console.log('Move data:', moveData);
-        console.log('Description:', description);
-        
         // It's the opposite since the move was already completed so it's the next player's turn.
         player = this.gameState.current_player === 'black' ? 'White' : 'Black';
         
@@ -188,7 +184,6 @@ class GameBoard {
         });
         
         console.log('Move history updated:', this.moveHistory);
-        console.log('=== END ADDING MOVE TO HISTORY ===');
         
         this.renderMoveHistory();
     }
@@ -400,6 +395,8 @@ class GameBoard {
         // Position the ball vertically based on its position (keep horizontal position on left)
         let topPosition = '50%'; // Default middle position
         
+        console.log("Ball position", position)
+
         switch (position) {
             case 'white':
                 topPosition = '80%'; // Closer to white side (bottom)
@@ -414,6 +411,8 @@ class GameBoard {
         
         magicBall.style.top = topPosition;
         
+        console.log("Ball position", position, topPosition, magicBall)
+
         // Add visual effect based on ball position
         this.updateBallEffects(position);
     }
