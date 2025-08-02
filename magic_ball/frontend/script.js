@@ -14,6 +14,7 @@ class GameBoard {
 
     async startNewGame() {
         try {
+            console.log('Starting new game...');
             const response = await fetch('/api/game/new', {
                 method: 'POST',
                 headers: {
@@ -22,8 +23,11 @@ class GameBoard {
             });
             
             const data = await response.json();
+            console.log('New game response:', data);
+            
             if (data.success) {
                 this.gameState = data.game_state;
+                console.log('Game state:', this.gameState);
                 this.renderGame();
             } else {
                 console.error('Failed to start new game:', data.error);
@@ -37,6 +41,7 @@ class GameBoard {
         try {
             const response = await fetch('/api/game/state');
             const data = await response.json();
+            console.log('Get game state response:', data);
             if (data.success) {
                 this.gameState = data;
                 return data;
@@ -87,6 +92,7 @@ class GameBoard {
     }
 
     renderGame() {
+        console.log('Rendering game with state:', this.gameState);
         this.renderBoard();
         this.renderCards();
         this.updateGameInfo();
@@ -97,7 +103,12 @@ class GameBoard {
         const boardElement = document.getElementById('gameBoard');
         boardElement.innerHTML = '';
 
-        if (!this.gameState || !this.gameState.board) return;
+        if (!this.gameState || !this.gameState.board) {
+            console.error('No game state or board data available');
+            return;
+        }
+
+        console.log('Rendering board with data:', this.gameState.board);
 
         for (let row = 0; row < 5; row++) {
             for (let col = 0; col < 5; col++) {

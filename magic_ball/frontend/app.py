@@ -17,7 +17,7 @@ import json
 
 from game_manager import GameManager
 from game_config import GameConfig
-from models import PlayerSign, GameStatus
+from models import PlayerSign, GameStatus, TileType
 from board_utils import BoardUtils
 
 app = Flask(__name__)
@@ -50,19 +50,87 @@ def new_game():
         # Create new game manager
         game_manager = GameManager.new(config=config)
         
+        print(f"Game manager created: {game_manager}")
+        print(f"Board: {game_manager._board._board}")
+        print(f"Ball position: {game_manager._board.ball_position}")
+        
         return jsonify({
             'success': True,
             'message': 'New game started',
             'game_state': get_game_state()
         })
     except Exception as e:
+        print(f"Error creating new game: {e}")
         return jsonify({
             'success': False,
             'error': str(e)
         }), 500
 
-@app.route('/api/game/state', methods=['GET'])
 def get_game_state():
+    """Get current game state"""
+    global game_manager
+    
+    if not game_manager:
+        return {
+            'success': False,
+            'error': 'No active game'
+        }
+    
+    try:
+        # Get board state
+        board = game_manager._board._board
+        ball_position = game_manager._board.ball_position.value
+        
+        print(f"Board data: {board}")
+        print(f"Ball position: {ball_position}")
+        
+        # Convert board to frontend format
+        board_state = []
+        for row in board:
+            board_row = []
+            for tile in row:
+                # Convert TileType enum to string value
+                tile_value = tile.value if hasattr(tile, 'value') else str(tile)
+                if tile_value == 'W':
+                    board_row.append('white')
+                elif tile_value == 'B':
+                    board_row.append('black')
+                else:
+                    board_row.append(None)
+            board_state.append(board_row)
+        
+        print(f"Converted board state: {board_state}")
+        
+        # Get current player
+        current_player = game_manager._player_turn.value
+        
+        # Get game status
+        game_status = game_manager.game_status.value
+        
+        # Get player cards
+        white_cards = [card.name for card in game_manager._white_player.cards if not card.already_used]
+        black_cards = [card.name for card in game_manager._black_player.cards if not card.already_used]
+        
+        return {
+            'success': True,
+            'board': board_state,
+            'ball_position': ball_position,
+            'current_player': current_player,
+            'game_status': game_status,
+            'white_cards': white_cards,
+            'black_cards': black_cards,
+            'white_cards_count': len(white_cards),
+            'black_cards_count': len(black_cards)
+        }
+    except Exception as e:
+        print(f"Error getting game state: {e}")
+        return {
+            'success': False,
+            'error': str(e)
+        }
+
+@app.route('/api/game/state', methods=['GET'])
+def get_game_state_endpoint():
     """Get current game state"""
     global game_manager
     
@@ -74,32 +142,33 @@ def get_game_state():
     
     try:
         # Get board state
-        assert isinstance(game_manager, GameManager)
-        board = game_manager.board
-        ball_position = game_manager.board.ball_position.value
+        board = game_manager._board._board
+        ball_position = game_manager._board.ball_position.value
         
         # Convert board to frontend format
         board_state = []
         for row in board:
             board_row = []
             for tile in row:
-                if tile == 'W':
+                # Convert TileType enum to string value
+                tile_value = tile.value if hasattr(tile, 'value') else str(tile)
+                if tile_value == 'W':
                     board_row.append('white')
-                elif tile == 'B':
+                elif tile_value == 'B':
                     board_row.append('black')
                 else:
                     board_row.append(None)
             board_state.append(board_row)
         
         # Get current player
-        current_player = game_manager.player_turn.value
+        current_player = game_manager._player_turn.value
         
         # Get game status
         game_status = game_manager.game_status.value
         
         # Get player cards
-        white_cards = [card.name for card in game_manager._white_player.cards if not card.used]
-        black_cards = [card.name for card in game_manager._black_player.cards if not card.used]
+        white_cards = [card.name for card in game_manager._white_player.cards if not card.already_used]
+        black_cards = [card.name for card in game_manager._black_player.cards if not card.already_used]
         
         return jsonify({
             'success': True,
@@ -128,8 +197,7 @@ def make_move():
             'success': False,
             'error': 'No active game'
         }), 404
-
-    assert isinstance(game_manager, GameManager)
+    
     try:
         data = request.get_json()
         move_type = data.get('type')
@@ -199,7 +267,7 @@ def get_valid_moves():
         
         # Check for card moves
         for i, card in enumerate(current_player.cards):
-            if not card.used:
+            if not card.already_used:
                 card_moves = game_manager._get_available_card_moves(i)
                 for j, move in enumerate(card_moves):
                     available_moves.append({
@@ -235,7 +303,7 @@ def get_player_cards():
         cards = []
         
         for i, card in enumerate(current_player.cards):
-            if not card.used:
+            if not card.already_used:
                 cards.append({
                     'index': i,
                     'name': card.name,
