@@ -10,6 +10,10 @@ from move import Move
 class Forklift(Card):
 
     @classmethod
+    def description(cls) -> str:
+        return "Moves multiple pawns at once"
+
+    @classmethod
     def _get_available_moves(
         cls,
         player_sign: PlayerSign,

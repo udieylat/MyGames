@@ -10,6 +10,10 @@ from move import Move
 class Knife(Card):
 
     @classmethod
+    def description(cls) -> str:
+        return "Eliminates a single pawn"
+
+    @classmethod
     def _get_available_moves(
         cls,
         player_sign: PlayerSign,

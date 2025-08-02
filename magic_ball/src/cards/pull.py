@@ -16,6 +16,10 @@ class Pull(Card):
         return True
 
     @classmethod
+    def description(cls) -> str:
+        return "Pulls an opponent's pawn towards you"
+
+    @classmethod
     def _ball_position_allowed(
         cls,
         player_sign: PlayerSign,

@@ -9,6 +9,10 @@ from move import Move
 class Tank(Card):
 
     @classmethod
+    def description(cls) -> str:
+        return "Creates an indestructible pawn"
+
+    @classmethod
     def _get_available_moves(
         cls,
         player_sign: PlayerSign,

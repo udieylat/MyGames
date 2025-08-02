@@ -9,6 +9,10 @@ from move import Move
 
 class Catapult(Card):
 
+    @classmethod
+    def description(cls) -> str:
+        return "Launches a pawn to the opposite side"
+
     # @property
     # def is_defensive(self) -> bool:`
     #     return True

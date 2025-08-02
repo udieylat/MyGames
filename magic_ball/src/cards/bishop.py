@@ -9,6 +9,10 @@ from move import Move
 class Bishop(Card):
 
     @classmethod
+    def description(cls) -> str:
+        return "Moves a pawn diagonally"
+
+    @classmethod
     def _get_available_moves(
         cls,
         player_sign: PlayerSign,

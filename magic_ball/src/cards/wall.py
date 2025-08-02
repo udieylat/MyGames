@@ -9,6 +9,10 @@ from move import Move
 
 class Wall(Card):
 
+    @classmethod
+    def description(cls) -> str:
+        return "Creates a barrier"
+
     # @property
     # def is_defensive(self) -> bool:
     #     return True

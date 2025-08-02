@@ -15,6 +15,11 @@ class Card:
     def name(cls) -> str:
         return cls.__name__.lower()
 
+    @classmethod
+    @abstractmethod
+    def description(cls) -> str:
+        pass
+
     @property
     def already_used(self) -> bool:
         return self._already_used

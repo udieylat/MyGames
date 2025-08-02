@@ -10,6 +10,10 @@ from move import Move
 class Jump(Card):
 
     @classmethod
+    def description(cls) -> str:
+        return "Moves a pawn to any empty tile"
+
+    @classmethod
     def _get_available_moves(
         cls,
         player_sign: PlayerSign,

@@ -10,6 +10,10 @@ from move import Move
 class Dagger(Card):
 
     @classmethod
+    def description(cls) -> str:
+        return "Eliminates pawns in a line"
+
+    @classmethod
     def _get_available_moves(
         cls,
         player_sign: PlayerSign,

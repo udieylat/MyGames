@@ -9,6 +9,10 @@ from move import Move
 class Knight(Card):
 
     @classmethod
+    def description(cls) -> str:
+        return "Moves a pawn in L-shape pattern"
+
+    @classmethod
     def _get_available_moves(
         cls,
         player_sign: PlayerSign,

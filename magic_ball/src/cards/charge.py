@@ -9,6 +9,10 @@ from move import Move
 
 class Charge(Card):
 
+    @classmethod
+    def description(cls) -> str:
+        return "Moves a pawn forward by 2 tiles"
+
     # @property
     # def is_defensive(self) -> bool:
     #     return True

@@ -163,7 +163,7 @@ def get_game_state():
                 white_cards.append({
                     'index': i,
                     'name': card.name,
-                    'description': get_card_description(card.name)
+                    'description': card.description(),
                 })
         
         black_cards = []
@@ -172,7 +172,7 @@ def get_game_state():
                 black_cards.append({
                     'index': i,
                     'name': card.name,
-                    'description': get_card_description(card.name)
+                    'description': card.description(),
                 })
         
         return {
@@ -194,27 +194,6 @@ def get_game_state():
             'success': False,
             'error': str(e)
         }
-
-def get_card_description(card_name):
-    """Get description for a card"""
-    descriptions = {
-        'fire': 'Eliminates all pawns in a row',
-        'charge': 'Moves a pawn forward by 2 tiles',
-        'jump': 'Moves a pawn to any empty tile',
-        'knife': 'Eliminates a single pawn',
-        'knight': 'Moves a pawn in L-shape pattern',
-        'bishop': 'Moves a pawn diagonally',
-        'catapult': 'Launches a pawn to the opposite side',
-        'side_step': 'Moves a pawn sideways',
-        'tank': 'Creates an indestructible pawn',
-        'kamikaze': 'Eliminates pawns in a cross pattern',
-        'spawn': 'Creates a new pawn',
-        'dagger': 'Eliminates pawns in a line',
-        'peace': 'Prevents opponent from moving',
-        'wall': 'Creates a barrier',
-        'forklift': 'Moves multiple pawns at once'
-    }
-    return descriptions.get(card_name, 'Unknown card effect')
 
 @app.route('/api/game/state', methods=['GET'])
 def get_game_state_endpoint():
@@ -260,7 +239,7 @@ def get_game_state_endpoint():
                 white_cards.append({
                     'index': i,
                     'name': card.name,
-                    'description': get_card_description(card.name)
+                    'description': 'description': card.description(),
                 })
         
         black_cards = []
@@ -269,7 +248,7 @@ def get_game_state_endpoint():
                 black_cards.append({
                     'index': i,
                     'name': card.name,
-                    'description': get_card_description(card.name)
+                    'description': 'description': card.description(),
                 })
         
         return jsonify({
@@ -474,7 +453,7 @@ def get_player_cards():
                 cards.append({
                     'index': i,
                     'name': card.name,
-                    'description': get_card_description(card.name)
+                    'description': 'description': card.description(),
                 })
         
         return jsonify({
@@ -521,7 +500,7 @@ def get_card_moves(card_index):
         return jsonify({
             'success': True,
             'card_name': card.name,
-            'card_description': get_card_description(card.name),
+            'card_description': 'description': card.description(),
             'moves': moves
         })
     except Exception as e:

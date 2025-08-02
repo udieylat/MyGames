@@ -9,6 +9,10 @@ from move import Move
 class Fire(Card):
 
     @classmethod
+    def description(cls) -> str:
+        return "Eliminates all pawns in a row"
+
+    @classmethod
     def _get_available_moves(
         cls,
         player_sign: PlayerSign,

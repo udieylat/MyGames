@@ -10,6 +10,10 @@ from move import Move
 class Peace(Card):
 
     @classmethod
+    def description(cls) -> str:
+        return "Prevents opponent from moving"
+
+    @classmethod
     def _get_available_moves(
         cls,
         player_sign: PlayerSign,
