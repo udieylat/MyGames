@@ -19,7 +19,8 @@ class GameBoard {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
-                }
+                },
+                body: JSON.stringify({})
             });
             
             const data = await response.json();
@@ -110,9 +111,12 @@ class GameBoard {
 
         console.log('Rendering board with data:', this.gameState.board);
 
+        // Flip the board so white pawns are on bottom and black on top
         for (let row = 0; row < 5; row++) {
             for (let col = 0; col < 5; col++) {
-                const tile = this.gameState.board[row][col];
+                // Flip the row index: row 0 becomes row 4, row 4 becomes row 0
+                const flippedRow = 4 - row;
+                const tile = this.gameState.board[flippedRow][col];
                 const tileElement = this.createTileElement(tile, row, col);
                 boardElement.appendChild(tileElement);
             }
@@ -319,7 +323,26 @@ class GameBoard {
         const currentPlayer = this.gameState.current_player;
         const gameStatusValue = this.gameState.game_status;
 
-        if (gameStatusValue === 'ongoing') {
+        // Convert integer game status to string for comparison
+        let gameStatusString = '';
+        switch (gameStatusValue) {
+            case 1:
+                gameStatusString = 'ongoing';
+                break;
+            case 2:
+                gameStatusString = 'white_win';
+                break;
+            case 3:
+                gameStatusString = 'black_win';
+                break;
+            case 4:
+                gameStatusString = 'draw';
+                break;
+            default:
+                gameStatusString = 'ongoing';
+        }
+
+        if (gameStatusString === 'ongoing') {
             turnIndicator.textContent = `${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s Turn`;
             turnIndicator.className = `turn-indicator ${currentPlayer}`;
             menuButtonContainer.style.display = 'none';
@@ -331,13 +354,13 @@ class GameBoard {
             let resultText = '';
             let statusText = '';
             
-            if (gameStatusValue === 'white_win') {
+            if (gameStatusString === 'white_win') {
                 resultText = 'White Wins!';
                 statusText = 'White has won the game!';
-            } else if (gameStatusValue === 'black_win') {
+            } else if (gameStatusString === 'black_win') {
                 resultText = 'Black Wins!';
                 statusText = 'Black has won the game!';
-            } else if (gameStatusValue === 'draw') {
+            } else if (gameStatusString === 'draw') {
                 resultText = 'Game is a Draw!';
                 statusText = 'The game ended in a draw!';
             }
