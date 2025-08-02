@@ -393,25 +393,21 @@ class GameBoard {
         magicBall.className = `magic-ball ${position}`;
         
         // Position the ball vertically based on its position (keep horizontal position on left)
-        let topPosition = '50%'; // Default middle position
+        let topPosition = '0px'; // Default middle position
         
-        console.log("Ball position", position)
-
         switch (position) {
             case 'white':
-                topPosition = '80%'; // Closer to white side (bottom)
+                topPosition = '180px'; // Closer to white side (bottom)
                 break;
             case 'black':
-                topPosition = '20%'; // Closer to black side (top)
+                topPosition = '-180px'; // Closer to black side (top)
                 break;
             case 'middle':
-                topPosition = '50%'; // Middle position
+                topPosition = '0px'; // Middle position
                 break;
         }
         
         magicBall.style.top = topPosition;
-        
-        console.log("Ball position", position, topPosition, magicBall)
 
         // Add visual effect based on ball position
         this.updateBallEffects(position);
