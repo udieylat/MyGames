@@ -94,7 +94,7 @@ class GameBoard {
                 this.gameState = data.game_state;
                 
                 // Add move to history
-                this.addMoveToHistory(moveData, data.message);  // TODO: change this to move description
+                this.addMoveToHistory(moveData, data.move_description);
                 
                 console.log('Move successful, new game state:', this.gameState);
                 this.renderGame();
@@ -177,35 +177,15 @@ class GameBoard {
         console.log('Move data:', moveData);
         console.log('Description:', description);
         
-        // if (moveData.type === 'ai') {
-        //     player = 'AI';
-        //     // Use the description provided by the backend
-        //     this.moveHistory.push({
-        //         number: moveNumber,
-        //         player: player,
-        //         description: description,
-        //         timestamp: new Date().toLocaleTimeString()
-        //     });
-        // } else {
-            player = this.gameState.current_player === 'white' ? 'White' : 'Black';
-            
-            let moveDescription = description;
-            if (moveData.type === 'push') {
-                moveDescription = `${player} pushes to ${moveData.target_tile}`;
-            } else if (moveData.type === 'card') {
-                const cardName = this.getCardNameByIndex(moveData.card_index);
-                moveDescription = `${player} plays ${cardName}`;
-            } else if (moveData.type === 'pass') {
-                moveDescription = `${player} passes turn`;
-            }
-            
-            this.moveHistory.push({
-                number: moveNumber,
-                player: player,
-                description: moveDescription,
-                timestamp: new Date().toLocaleTimeString()
-            });
-        // }
+        // It's the opposite since the move was already completed so it's the next player's turn.
+        player = this.gameState.current_player === 'black' ? 'White' : 'Black';
+        
+        this.moveHistory.push({
+            number: moveNumber,
+            player: player,
+            description: description,
+            timestamp: new Date().toLocaleTimeString()
+        });
         
         console.log('Move history updated:', this.moveHistory);
         console.log('=== END ADDING MOVE TO HISTORY ===');

@@ -292,13 +292,13 @@ def make_move():
         
         if move_type == 'push':
             target_tile = data.get('target_tile')
-            game_manager.push(target_tile)
+            move = game_manager.push(target_tile)
         elif move_type == 'card':
             card_index = data.get('card_index')
             move_index = data.get('move_index')
-            game_manager.play_card(card_index, move_index)
-        elif move_type == 'pass':
-            game_manager.pass_turn()
+            move = game_manager.play_card(card_index, move_index)
+        # elif move_type == 'pass':
+        #     game_manager.pass_turn()
         else:
             return jsonify({
                 'success': False,
@@ -307,7 +307,7 @@ def make_move():
         
         return jsonify({
             'success': True,
-            'message': 'Move made successfully',
+            'move_description': move.description,
             'game_state': get_game_state()
         })
     except Exception as e:
