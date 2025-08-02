@@ -366,21 +366,27 @@ def make_ai_move():
         # Get AI move
         ai_move = ai_player.get_move(game_manager._board, game_manager._player_turn)
         
+        move_description = ''
         if ai_move is None:
             # AI passes turn
             game_manager.pass_turn()
+            move_description = 'AI passes turn'
         else:
             # Execute AI move
             if hasattr(ai_move, 'card_index') and hasattr(ai_move, 'move_index'):
                 # Card move
+                card = ai_player.cards[ai_move.card_index]
+                move_description = f'AI plays {card.name}'
                 game_manager.play_card(ai_move.card_index, ai_move.move_index)
             else:
                 # Push move
+                move_description = f'AI pushes to {ai_move.target_tile}'
                 game_manager.push(ai_move.target_tile)
         
         return jsonify({
             'success': True,
             'message': 'AI move made successfully',
+            'move_description': move_description,
             'game_state': get_game_state()
         })
     except Exception as e:

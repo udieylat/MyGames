@@ -127,8 +127,8 @@ class GameBoard {
             if (data.success) {
                 this.gameState = data.game_state;
                 
-                // Add AI move to history
-                this.addMoveToHistory({ type: 'ai' }, 'AI made a move');
+                // Add AI move to history with detailed description
+                this.addMoveToHistory({ type: 'ai' }, data.move_description);
                 
                 this.renderGame();
                 return true;
@@ -164,28 +164,33 @@ class GameBoard {
         
         if (moveData.type === 'ai') {
             player = 'AI';
+            // Use the description provided by the backend
+            this.moveHistory.push({
+                number: moveNumber,
+                player: player,
+                description: description,
+                timestamp: new Date().toLocaleTimeString()
+            });
         } else {
             player = this.gameState.current_player === 'white' ? 'White' : 'Black';
+            
+            let moveDescription = '';
+            if (moveData.type === 'push') {
+                moveDescription = `${player} pushes to ${moveData.target_tile}`;
+            } else if (moveData.type === 'card') {
+                const cardName = this.getCardNameByIndex(moveData.card_index);
+                moveDescription = `${player} plays ${cardName}`;
+            } else if (moveData.type === 'pass') {
+                moveDescription = `${player} passes turn`;
+            }
+            
+            this.moveHistory.push({
+                number: moveNumber,
+                player: player,
+                description: moveDescription,
+                timestamp: new Date().toLocaleTimeString()
+            });
         }
-        
-        let moveDescription = '';
-        if (moveData.type === 'push') {
-            moveDescription = `${player} pushes to ${moveData.target_tile}`;
-        } else if (moveData.type === 'card') {
-            const cardName = this.getCardNameByIndex(moveData.card_index);
-            moveDescription = `${player} plays ${cardName}`;
-        } else if (moveData.type === 'pass') {
-            moveDescription = `${player} passes turn`;
-        } else if (moveData.type === 'ai') {
-            moveDescription = `${player} made a move`;
-        }
-        
-        this.moveHistory.push({
-            number: moveNumber,
-            player: player,
-            description: moveDescription,
-            timestamp: new Date().toLocaleTimeString()
-        });
         
         this.renderMoveHistory();
     }
@@ -313,10 +318,23 @@ class GameBoard {
     createCardElement(card, index, player) {
         const cardElement = document.createElement('button');
         cardElement.className = 'card';
-        cardElement.textContent = card.name;
-        cardElement.title = card.description; // Show description on hover
+        
+        // Check if this is an AI card in an AI game
+        const isAICard = this.gameType === 'human_vs_ai' && player !== this.humanPlayerSide;
+        const isUsed = card.already_used;
+        
+        // Show card name or "???" for AI cards
+        const displayName = (isAICard && !isUsed) ? '???' : card.name;
+        
+        cardElement.textContent = displayName;
+        cardElement.title = card.description; // Keep existing hover tooltip
         cardElement.dataset.cardIndex = index;
         cardElement.dataset.player = player;
+        
+        // Add used class if card is already used
+        if (isUsed) {
+            cardElement.classList.add('used');
+        }
         
         cardElement.addEventListener('click', () => this.selectCard(cardElement, card, index, player));
         
@@ -381,28 +399,22 @@ class GameBoard {
         // Update magic ball appearance based on position
         magicBall.className = `magic-ball ${position}`;
         
-        // Add position indicator
-        let positionText = '';
+        // Position the ball vertically based on its position (keep horizontal position on left)
+        let topPosition = '50%'; // Default middle position
+        
         switch (position) {
             case 'white':
-                positionText = 'W';
+                topPosition = '80%'; // Closer to white side (bottom)
                 break;
             case 'black':
-                positionText = 'B';
+                topPosition = '20%'; // Closer to black side (top)
                 break;
             case 'middle':
-                positionText = 'M';
+                topPosition = '50%'; // Middle position
                 break;
         }
         
-        // Update or create position indicator
-        let indicator = magicBall.querySelector('.position-indicator');
-        if (!indicator) {
-            indicator = document.createElement('div');
-            indicator.className = 'position-indicator';
-            magicBall.appendChild(indicator);
-        }
-        indicator.textContent = positionText;
+        magicBall.style.top = topPosition;
         
         // Add visual effect based on ball position
         this.updateBallEffects(position);
