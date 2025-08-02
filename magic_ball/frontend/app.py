@@ -97,7 +97,10 @@ def new_game():
             }), 400
         
         # Create new game manager
-        game_manager = GameManager.new(config=config)
+        game_manager = GameManager.new(
+            config=config,
+            webpage_mode=True,
+        )
         
         print(f"Game manager created: {game_manager}")
         print(f"Game type: {game_type}")

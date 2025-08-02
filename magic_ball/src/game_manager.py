@@ -23,9 +23,11 @@ class GameManager:
     def new(
         cls,
         config: GameConfig = GameConfig(),
+        webpage_mode: bool = False,
     ) -> GameManager:
         return GameManager(
             config=config,
+            webpage_mode=webpage_mode,
         )
 
     @classmethod
@@ -43,10 +45,12 @@ class GameManager:
         config: GameConfig,
         board: Board | None = None,
         player_turn: PlayerSign = PlayerSign.white,
+        webpage_mode: bool = False,
     ):
         self._config = config
         self._board = board or Board.new()
         self._player_turn = player_turn
+        self._webpage_mode = webpage_mode
 
         self._white_player = PlayerFactory.generate_player(
             player_config=config.white_player,
@@ -328,8 +332,7 @@ class GameManager:
             black_cards=self._black_player.cards,
         )
         self._print_game_over_if_necessary()
-        # TODO: temporarily comment this out (for FE). Maybe need to comment back in for simulations.
-        # self._play_ai_player_turn_if_necessary()
+        self._play_ai_player_turn_if_necessary()
 
     def _print_game_log(self):
         for i, (white_move, black_move) in enumerate(zip(self._game_log[::2], self._game_log[1::2])):
@@ -401,7 +404,7 @@ class GameManager:
         return min(len(self._white_player.cards), len(self._black_player.cards))
 
     def _play_ai_player_turn_if_necessary(self):
-        if not self._game_on:
+        if not self._game_on or self._webpage_mode:
             return
 
         player = self._get_player()
