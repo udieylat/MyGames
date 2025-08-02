@@ -186,6 +186,21 @@ class GameBoard {
         this.checkWinConditions();
     }
 
+    hasAnyValidMoves(player) {
+        for (let row = 0; row < 5; row++) {
+            for (let col = 0; col < 5; col++) {
+                const tile = this.board[row][col];
+                if (tile.piece === player) {
+                    const validMoves = this.getValidMoves(tile);
+                    if (validMoves.length > 0) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     checkWinConditions() {
         // Check if any pawn has reached the opposite side
         let whiteWon = false;
@@ -213,6 +228,12 @@ class GameBoard {
         } else if (blackWon) {
             this.gameStatus = 'black_win';
             this.updateGameInfo();
+        } else {
+            // Check for draw - if current player has no valid moves
+            if (!this.hasAnyValidMoves(this.currentTurn)) {
+                this.gameStatus = 'draw';
+                this.updateGameInfo();
+            }
         }
     }
 
@@ -243,6 +264,11 @@ class GameBoard {
             turnIndicator.textContent = 'Black Wins!';
             turnIndicator.className = 'turn-indicator black';
             gameStatus.textContent = 'Black pawn reached the bottom row!';
+            moveInfo.textContent = 'Game Over';
+        } else if (this.gameStatus === 'draw') {
+            turnIndicator.textContent = 'Game is a Draw!';
+            turnIndicator.className = 'turn-indicator draw';
+            gameStatus.textContent = 'No valid moves available';
             moveInfo.textContent = 'Game Over';
         }
     }
