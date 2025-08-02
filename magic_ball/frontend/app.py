@@ -73,15 +73,12 @@ def get_game_state():
             'success': False,
             'error': 'No active game'
         }
-    
+
     try:
         # Get board state
-        board = game_manager._board._board
-        ball_position = game_manager._board.ball_position.value
-        
-        print(f"Board data: {board}")
-        print(f"Ball position: {ball_position}")
-        
+        board = game_manager.board._board
+        ball_position = game_manager.board.ball_position.value
+
         # Convert board to frontend format
         board_state = []
         for row in board:
@@ -96,11 +93,9 @@ def get_game_state():
                 else:
                     board_row.append(None)
             board_state.append(board_row)
-        
-        print(f"Converted board state: {board_state}")
-        
+
         # Get current player
-        current_player = game_manager._player_turn.value
+        current_player = game_manager.player_turn.value
         
         # Get game status
         game_status = game_manager.game_status.value

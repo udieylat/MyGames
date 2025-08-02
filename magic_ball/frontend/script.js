@@ -4,6 +4,7 @@ class GameBoard {
         this.selectedCard = null;
         this.selectedTile = null;
         this.validMoves = [];
+        this.moveHistory = [];
         this.init();
     }
 
@@ -66,6 +67,10 @@ class GameBoard {
             const data = await response.json();
             if (data.success) {
                 this.gameState = data.game_state;
+                
+                // Add move to history
+                this.addMoveToHistory(moveData, data.message);
+                
                 this.renderGame();
                 return true;
             } else {
@@ -76,6 +81,51 @@ class GameBoard {
             console.error('Error making move:', error);
             return false;
         }
+    }
+
+    addMoveToHistory(moveData, description) {
+        const moveNumber = Math.floor(this.moveHistory.length / 2) + 1;
+        const player = this.gameState.current_player === 'white' ? 'White' : 'Black';
+        
+        let moveDescription = '';
+        if (moveData.type === 'push') {
+            moveDescription = `${player} pushes to ${moveData.target_tile}`;
+        } else if (moveData.type === 'card') {
+            moveDescription = `${player} plays card (${moveData.card_index})`;
+        } else if (moveData.type === 'pass') {
+            moveDescription = `${player} passes turn`;
+        }
+        
+        this.moveHistory.push({
+            number: moveNumber,
+            player: player,
+            description: moveDescription,
+            backendDescription: description
+        });
+        
+        this.renderMoveHistory();
+    }
+
+    renderMoveHistory() {
+        const movesList = document.getElementById('movesList');
+        movesList.innerHTML = '';
+        
+        this.moveHistory.forEach((move, index) => {
+            const moveEntry = document.createElement('div');
+            moveEntry.className = 'move-entry';
+            
+            const moveNumber = document.createElement('span');
+            moveNumber.className = 'move-number';
+            moveNumber.textContent = `${move.number}.`;
+            
+            const moveDescription = document.createElement('span');
+            moveDescription.className = 'move-description';
+            moveDescription.textContent = move.description;
+            
+            moveEntry.appendChild(moveNumber);
+            moveEntry.appendChild(moveDescription);
+            movesList.appendChild(moveEntry);
+        });
     }
 
     async getValidMoves() {
@@ -260,12 +310,74 @@ class GameBoard {
         // Clear previous highlights
         this.clearHighlights();
 
-        // If a card is selected, try to play it
-        if (this.selectedCard) {
+        // Check if this is a pawn of the current player
+        const flippedRow = 4 - row;
+        const tile = this.gameState.board[flippedRow][col];
+        const currentPlayer = this.gameState.current_player;
+        
+        if (tile === currentPlayer) {
+            // Select this pawn
+            this.selectPawn(tileElement, row, col);
+        } else if (this.selectedTile) {
+            // Try to move the selected pawn to this tile
+            await this.movePawnToTile(row, col);
+        } else if (this.selectedCard) {
+            // Try to play the selected card
             await this.playCardMove(row, col);
         } else {
             // Try to make a push move
             await this.makePushMove(row, col);
+        }
+    }
+
+    selectPawn(tileElement, row, col) {
+        // Clear previous selections
+        document.querySelectorAll('.tile.selected, .pawn.selected').forEach(el => {
+            el.classList.remove('selected');
+        });
+
+        // Select this pawn
+        tileElement.classList.add('selected');
+        this.selectedTile = { row: row, col: col };
+
+        // Highlight valid moves for this pawn
+        this.highlightValidMovesForPawn(row, col);
+    }
+
+    highlightValidMovesForPawn(row, col) {
+        // For now, highlight the tile in front of the pawn
+        const currentPlayer = this.gameState.current_player;
+        const direction = currentPlayer === 'white' ? -1 : 1; // White moves up, black moves down
+        const targetRow = row + direction;
+
+        if (targetRow >= 0 && targetRow < 5) {
+            const targetTile = document.querySelector(`[data-row="${targetRow}"][data-col="${col}"]`);
+            if (targetTile) {
+                // Check if the target tile is empty
+                const flippedTargetRow = 4 - targetRow;
+                const tileContent = this.gameState.board[flippedTargetRow][col];
+                
+                if (!tileContent) {
+                    targetTile.classList.add('valid-move');
+                }
+            }
+        }
+    }
+
+    async movePawnToTile(targetRow, targetCol) {
+        if (!this.selectedTile) return;
+
+        const sourceTile = this.coordinatesToTile(this.selectedTile.row, this.selectedTile.col);
+        const targetTile = this.coordinatesToTile(targetRow, targetCol);
+        
+        const moveData = {
+            type: 'push',
+            target_tile: targetTile
+        };
+
+        const success = await this.makeMove(moveData);
+        if (success) {
+            this.selectedTile = null;
         }
     }
 
@@ -307,7 +419,7 @@ class GameBoard {
     }
 
     clearHighlights() {
-        document.querySelectorAll('.tile.selected, .tile.valid-move, .card.selected').forEach(el => {
+        document.querySelectorAll('.tile.selected, .tile.valid-move, .card.selected, .pawn.selected').forEach(el => {
             el.classList.remove('selected', 'valid-move');
         });
     }
