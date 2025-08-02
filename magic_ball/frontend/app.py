@@ -42,8 +42,6 @@ def new_game():
     global game_manager
     
     try:
-        data = request.get_json() or {}
-        
         # Create game config
         config = GameConfig()
         
