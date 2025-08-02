@@ -199,22 +199,36 @@ class GameBoard {
         const movesList = document.getElementById('movesList');
         movesList.innerHTML = '';
         
-        this.moveHistory.forEach((move, index) => {
+        const totalMoves = this.moveHistory.length;
+        const isOdd = totalMoves % 2 === 1;
+        const pairsToShow = isOdd ? Math.floor(totalMoves / 2) + 1 : totalMoves / 2;
+        
+        for (let i = 0; i < pairsToShow; i++) {
             const moveEntry = document.createElement('div');
             moveEntry.className = 'move-entry';
             
             const moveNumber = document.createElement('span');
             moveNumber.className = 'move-number';
-            moveNumber.textContent = `${move.number}.`;
+            moveNumber.textContent = `${i + 1}.`;
             
-            const moveDescription = document.createElement('span');
-            moveDescription.className = 'move-description';
-            moveDescription.textContent = move.description;
+            const whiteMove = document.createElement('span');
+            whiteMove.className = 'move-description white-move';
+            whiteMove.textContent = this.moveHistory[i * 2]?.description || '';
+            
+            const separator = document.createElement('span');
+            separator.className = 'move-separator';
+            separator.textContent = ' | ';
+            
+            const blackMove = document.createElement('span');
+            blackMove.className = 'move-description black-move';
+            blackMove.textContent = this.moveHistory[i * 2 + 1]?.description || '';
             
             moveEntry.appendChild(moveNumber);
-            moveEntry.appendChild(moveDescription);
+            moveEntry.appendChild(whiteMove);
+            moveEntry.appendChild(separator);
+            moveEntry.appendChild(blackMove);
             movesList.appendChild(moveEntry);
-        });
+        }
     }
 
     async getValidMoves() {
