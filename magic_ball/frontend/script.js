@@ -5,6 +5,9 @@ class GameBoard {
         this.selectedTile = null;
         this.validMoves = [];
         this.moveHistory = [];
+        this.cardMoves = [];
+        this.gameType = null;
+        this.humanPlayerSide = null;
         this.init();
     }
 
@@ -16,12 +19,20 @@ class GameBoard {
     async startNewGame() {
         try {
             console.log('Starting new game...');
+            
+            // Get game type and player side from session storage
+            this.gameType = sessionStorage.getItem('gameType') || 'human_vs_human';
+            this.humanPlayerSide = sessionStorage.getItem('playerSide') || 'white';
+            
             const response = await fetch('/api/game/new', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({})
+                body: JSON.stringify({
+                    game_type: this.gameType,
+                    human_player_side: this.humanPlayerSide
+                })
             });
             
             const data = await response.json();
@@ -29,8 +40,17 @@ class GameBoard {
             
             if (data.success) {
                 this.gameState = data.game_state;
+                this.gameType = data.game_state.game_type;
+                this.humanPlayerSide = data.game_state.human_player_side;
                 console.log('Game state:', this.gameState);
+                console.log('Game type:', this.gameType);
+                console.log('Human player side:', this.humanPlayerSide);
                 this.renderGame();
+                
+                // If it's an AI game and AI goes first, make AI move
+                if (this.gameType === 'human_vs_ai' && this.humanPlayerSide === 'black') {
+                    await this.makeAIMove();
+                }
             } else {
                 console.error('Failed to start new game:', data.error);
             }
@@ -46,6 +66,8 @@ class GameBoard {
             console.log('Get game state response:', data);
             if (data.success) {
                 this.gameState = data;
+                this.gameType = data.game_type;
+                this.humanPlayerSide = data.human_player_side;
                 return data;
             }
         } catch (error) {
@@ -72,6 +94,14 @@ class GameBoard {
                 this.addMoveToHistory(moveData, data.message);
                 
                 this.renderGame();
+                
+                // If it's an AI game and human just moved, make AI move after delay
+                if (this.gameType === 'human_vs_ai' && this.isAITurn()) {
+                    setTimeout(async () => {
+                        await this.makeAIMove();
+                    }, 1000); // 1 second delay
+                }
+                
                 return true;
             } else {
                 console.error('Move failed:', data.error);
@@ -83,27 +113,88 @@ class GameBoard {
         }
     }
 
+    async makeAIMove() {
+        try {
+            console.log('Making AI move...');
+            const response = await fetch('/api/game/ai-move', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            const data = await response.json();
+            if (data.success) {
+                this.gameState = data.game_state;
+                
+                // Add AI move to history
+                this.addMoveToHistory({ type: 'ai' }, 'AI made a move');
+                
+                this.renderGame();
+                return true;
+            } else {
+                console.error('AI move failed:', data.error);
+                return false;
+            }
+        } catch (error) {
+            console.error('Error making AI move:', error);
+            return false;
+        }
+    }
+
+    isAITurn() {
+        if (this.gameType !== 'human_vs_ai') return false;
+        
+        const currentPlayer = this.gameState.current_player;
+        const aiSide = this.humanPlayerSide === 'white' ? 'black' : 'white';
+        
+        return currentPlayer === aiSide;
+    }
+
+    isHumanTurn() {
+        if (this.gameType !== 'human_vs_ai') return true;
+        
+        const currentPlayer = this.gameState.current_player;
+        return currentPlayer === this.humanPlayerSide;
+    }
+
     addMoveToHistory(moveData, description) {
         const moveNumber = Math.floor(this.moveHistory.length / 2) + 1;
-        const player = this.gameState.current_player === 'white' ? 'White' : 'Black';
+        let player = 'Unknown';
+        
+        if (moveData.type === 'ai') {
+            player = 'AI';
+        } else {
+            player = this.gameState.current_player === 'white' ? 'White' : 'Black';
+        }
         
         let moveDescription = '';
         if (moveData.type === 'push') {
             moveDescription = `${player} pushes to ${moveData.target_tile}`;
         } else if (moveData.type === 'card') {
-            moveDescription = `${player} plays card (${moveData.card_index})`;
+            const cardName = this.getCardNameByIndex(moveData.card_index);
+            moveDescription = `${player} plays ${cardName}`;
         } else if (moveData.type === 'pass') {
             moveDescription = `${player} passes turn`;
+        } else if (moveData.type === 'ai') {
+            moveDescription = `${player} made a move`;
         }
         
         this.moveHistory.push({
             number: moveNumber,
             player: player,
             description: moveDescription,
-            backendDescription: description
+            timestamp: new Date().toLocaleTimeString()
         });
         
         this.renderMoveHistory();
+    }
+
+    getCardNameByIndex(cardIndex) {
+        const currentPlayer = this.gameState.current_player;
+        const cards = currentPlayer === 'white' ? this.gameState.white_cards : this.gameState.black_cards;
+        const card = cards.find(c => c.index === cardIndex);
+        return card ? card.name : 'Unknown Card';
     }
 
     renderMoveHistory() {
@@ -201,8 +292,8 @@ class GameBoard {
         whiteCardsList.innerHTML = '';
         
         if (this.gameState.white_cards) {
-            this.gameState.white_cards.forEach((cardName, index) => {
-                const cardElement = this.createCardElement(cardName, index, 'white');
+            this.gameState.white_cards.forEach((card, index) => {
+                const cardElement = this.createCardElement(card, index, 'white');
                 whiteCardsList.appendChild(cardElement);
             });
         }
@@ -212,26 +303,33 @@ class GameBoard {
         blackCardsList.innerHTML = '';
         
         if (this.gameState.black_cards) {
-            this.gameState.black_cards.forEach((cardName, index) => {
-                const cardElement = this.createCardElement(cardName, index, 'black');
+            this.gameState.black_cards.forEach((card, index) => {
+                const cardElement = this.createCardElement(card, index, 'black');
                 blackCardsList.appendChild(cardElement);
             });
         }
     }
 
-    createCardElement(cardName, index, player) {
+    createCardElement(card, index, player) {
         const cardElement = document.createElement('button');
         cardElement.className = 'card';
-        cardElement.textContent = cardName;
+        cardElement.textContent = card.name;
+        cardElement.title = card.description; // Show description on hover
         cardElement.dataset.cardIndex = index;
         cardElement.dataset.player = player;
         
-        cardElement.addEventListener('click', () => this.selectCard(cardElement, cardName, index, player));
+        cardElement.addEventListener('click', () => this.selectCard(cardElement, card, index, player));
         
         return cardElement;
     }
 
-    selectCard(cardElement, cardName, index, player) {
+    async selectCard(cardElement, card, index, player) {
+        // If it's an AI game and not human's turn, ignore card selection
+        if (this.gameType === 'human_vs_ai' && !this.isHumanTurn()) {
+            console.log('Not human turn, ignoring card selection');
+            return;
+        }
+        
         // Clear previous card selection
         document.querySelectorAll('.card.selected').forEach(el => {
             el.classList.remove('selected');
@@ -239,25 +337,39 @@ class GameBoard {
 
         // Select this card
         cardElement.classList.add('selected');
-        this.selectedCard = { name: cardName, index: index, player: player };
+        this.selectedCard = { name: card.name, index: index, player: player };
 
         // Get valid moves for this card
-        this.getValidMovesForCard(index);
+        await this.getCardMoves(index);
     }
 
-    async getValidMovesForCard(cardIndex) {
+    async getCardMoves(cardIndex) {
         try {
-            const response = await fetch('/api/game/cards');
+            const response = await fetch(`/api/game/card-moves/${cardIndex}`);
             const data = await response.json();
             if (data.success) {
-                const card = data.cards.find(c => c.index === cardIndex);
-                if (card) {
-                    console.log(`Card ${card.name}: ${card.description}`);
-                }
+                this.cardMoves = data.moves;
+                console.log(`Card ${data.card_name}: ${data.card_description}`);
+                console.log('Available moves:', this.cardMoves);
+                
+                // Highlight valid moves on the board
+                this.highlightCardMoves();
             }
         } catch (error) {
             console.error('Error getting card moves:', error);
         }
+    }
+
+    highlightCardMoves() {
+        // Clear previous highlights
+        this.clearHighlights();
+        
+        // Highlight tiles based on card moves
+        this.cardMoves.forEach(move => {
+            console.log('Highlighting move:', move.description);
+            // This is a simplified version - in a full implementation,
+            // you'd parse the move description to determine which tiles to highlight
+        });
     }
 
     updateMagicBall() {
@@ -291,6 +403,20 @@ class GameBoard {
             magicBall.appendChild(indicator);
         }
         indicator.textContent = positionText;
+        
+        // Add visual effect based on ball position
+        this.updateBallEffects(position);
+    }
+
+    updateBallEffects(position) {
+        // Add visual effects based on magic ball position
+        const board = document.getElementById('gameBoard');
+        
+        // Remove previous effects
+        board.classList.remove('ball-white', 'ball-black', 'ball-middle');
+        
+        // Add current effect
+        board.classList.add(`ball-${position}`);
     }
 
     addEventListeners() {
@@ -304,6 +430,12 @@ class GameBoard {
     }
 
     async handleTileClick(tileElement) {
+        // If it's an AI game and not human's turn, ignore clicks
+        if (this.gameType === 'human_vs_ai' && !this.isHumanTurn()) {
+            console.log('Not human turn, ignoring click');
+            return;
+        }
+        
         const row = parseInt(tileElement.dataset.row);
         const col = parseInt(tileElement.dataset.col);
         
@@ -319,14 +451,8 @@ class GameBoard {
             // Select this pawn
             this.selectPawn(tileElement, row, col);
         } else if (this.selectedTile) {
-            // Try to move the selected pawn to this tile
+            // Try to move to this tile
             await this.movePawnToTile(row, col);
-        } else if (this.selectedCard) {
-            // Try to play the selected card
-            await this.playCardMove(row, col);
-        } else {
-            // Try to make a push move
-            await this.makePushMove(row, col);
         }
     }
 
@@ -382,22 +508,21 @@ class GameBoard {
     }
 
     async playCardMove(row, col) {
-        if (!this.selectedCard) return;
+        if (!this.selectedCard || this.cardMoves.length === 0) return;
 
-        // Convert coordinates to tile notation
-        const tile = this.coordinatesToTile(row, col);
+        // For now, use the first available move
+        const moveIndex = 0;
         
-        // For now, we'll use a simple card move
-        // In a full implementation, you'd need to get the specific move index
         const moveData = {
             type: 'card',
             card_index: this.selectedCard.index,
-            move_index: 0  // This would need to be determined based on available moves
+            move_index: moveIndex
         };
 
         const success = await this.makeMove(moveData);
         if (success) {
             this.selectedCard = null;
+            this.cardMoves = [];
         }
     }
 
@@ -455,12 +580,43 @@ class GameBoard {
         }
 
         if (gameStatusString === 'ongoing') {
-            turnIndicator.textContent = `${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s Turn`;
-            turnIndicator.className = `turn-indicator ${currentPlayer}`;
+            // Hide turn indicator for AI games
+            if (this.gameType === 'human_vs_ai') {
+                turnIndicator.style.display = 'none';
+            } else {
+                turnIndicator.style.display = 'block';
+                turnIndicator.textContent = `${currentPlayer.charAt(0).toUpperCase() + currentPlayer.slice(1)}'s Turn`;
+                turnIndicator.className = `turn-indicator ${currentPlayer}`;
+            }
+            
             menuButtonContainer.style.display = 'none';
             
-            gameStatus.textContent = `Current player: ${currentPlayer}`;
-            moveInfo.textContent = 'Select a card or make a push move';
+            // Show magic ball position effect
+            const ballPosition = this.gameState.ball_position;
+            let statusText = '';
+            let moveText = '';
+            
+            if (this.gameType === 'human_vs_ai') {
+                if (this.isHumanTurn()) {
+                    statusText = 'Your turn';
+                    moveText = 'Select a card or make a push move';
+                } else {
+                    statusText = 'AI is thinking...';
+                    moveText = 'Please wait for AI to make its move';
+                }
+            } else {
+                statusText = `Current player: ${currentPlayer}`;
+                moveText = 'Select a card or make a push move';
+            }
+            
+            if (ballPosition === 'white' && currentPlayer === 'black') {
+                moveText = 'Ball favors White - Black has limited moves';
+            } else if (ballPosition === 'black' && currentPlayer === 'white') {
+                moveText = 'Ball favors Black - White has limited moves';
+            }
+            
+            gameStatus.textContent = statusText;
+            moveInfo.textContent = moveText;
         } else {
             // Game is over
             let resultText = '';
@@ -477,6 +633,7 @@ class GameBoard {
                 statusText = 'The game ended in a draw!';
             }
             
+            turnIndicator.style.display = 'block';
             turnIndicator.textContent = resultText;
             turnIndicator.className = 'turn-indicator draw';
             gameStatus.textContent = statusText;

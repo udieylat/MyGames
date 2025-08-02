@@ -11,7 +11,24 @@
         <h1 class="menu-title">Magic Ball</h1>
         
         <div class="menu-buttons">
-            <button class="menu-button" onclick="startNewGame()">New Game</button>
+            <button class="menu-button" onclick="startNewGame()">Play vs Human</button>
+            <button class="menu-button" onclick="showAIOptions()">Play vs AI</button>
+        </div>
+        
+        <div class="ai-options" id="aiOptions" style="display: none;">
+            <h3>Choose your side:</h3>
+            <div class="player-selection">
+                <label>
+                    <input type="radio" name="playerSide" value="white" checked>
+                    Play as White (first player)
+                </label>
+                <label>
+                    <input type="radio" name="playerSide" value="black">
+                    Play as Black (second player)
+                </label>
+            </div>
+            <button class="menu-button" onclick="startAIGame()">Start AI Game</button>
+            <button class="menu-button secondary" onclick="hideAIOptions()">Cancel</button>
         </div>
     </div>
     

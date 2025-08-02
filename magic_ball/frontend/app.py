@@ -6,6 +6,8 @@ Integrates with the existing Python game engine.
 
 import sys
 import os
+import json
+import time
 from pathlib import Path
 
 # Add the src directory to the Python path
@@ -13,18 +15,21 @@ sys.path.append(str(Path(__file__).parent.parent / 'src'))
 
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-import json
 
 from game_manager import GameManager
 from game_config import GameConfig
 from models import PlayerSign, GameStatus, TileType
 from board_utils import BoardUtils
+from cards.compendium import Compendium
+from players.player_config import PlayerConfig, PlayerType, ScoreMultipliers
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for development
 
 # Global game instance
 game_manager = None
+game_type = None  # 'human_vs_human' or 'human_vs_ai'
+human_player_side = None  # 'white' or 'black'
 
 @app.route('/')
 def index():
@@ -36,19 +41,65 @@ def serve_static(filename):
     """Serve static files"""
     return send_from_directory('.', filename)
 
+def load_config_from_file(config_name):
+    """Load game configuration from JSON file"""
+    config_path = Path(__file__).parent.parent / 'config' / f'{config_name}.json'
+    
+    if not config_path.exists():
+        raise FileNotFoundError(f"Configuration file {config_name}.json not found")
+    
+    with open(config_path, 'r') as f:
+        config_data = json.load(f)
+    
+    # Create player configs
+    white_config = PlayerConfig(
+        type=PlayerType(config_data['white_player']['type']),
+        score_multipliers=ScoreMultipliers(**config_data['white_player'].get('score_multipliers', {})) if 'score_multipliers' in config_data['white_player'] else None
+    )
+    
+    black_config = PlayerConfig(
+        type=PlayerType(config_data['black_player']['type']),
+        score_multipliers=ScoreMultipliers(**config_data['black_player'].get('score_multipliers', {})) if 'score_multipliers' in config_data['black_player'] else None
+    )
+    
+    return GameConfig(white_player=white_config, black_player=black_config)
+
 @app.route('/api/game/new', methods=['POST'])
 def new_game():
     """Start a new game"""
-    global game_manager
+    global game_manager, game_type, human_player_side
     
     try:
-        # Create game config
-        config = GameConfig()
+        data = request.get_json() or {}
+        game_type = data.get('game_type', 'human_vs_human')
+        human_player_side = data.get('human_player_side', 'white')
+        
+        # Create game config based on game type
+        if game_type == 'human_vs_human':
+            config = GameConfig()  # Default human vs human
+        elif game_type == 'human_vs_ai':
+            if human_player_side == 'white':
+                config = load_config_from_file('human_in_white_vs_ai')
+            else:  # human_player_side == 'black'
+                # Swap white and black configs
+                base_config = load_config_from_file('human_in_white_vs_ai')
+                config = GameConfig(
+                    white_player=base_config.black_player,
+                    black_player=base_config.white_player,
+                    cards_config=base_config.cards_config
+                )
+        else:
+            return jsonify({
+                'success': False,
+                'error': 'Invalid game type'
+            }), 400
         
         # Create new game manager
         game_manager = GameManager.new(config=config)
         
         print(f"Game manager created: {game_manager}")
+        print(f"Game type: {game_type}")
+        print(f"Human player side: {human_player_side}")
         print(f"Board: {game_manager._board._board}")
         print(f"Ball position: {game_manager._board.ball_position}")
         
@@ -73,12 +124,15 @@ def get_game_state():
             'success': False,
             'error': 'No active game'
         }
-
+    
     try:
         # Get board state
-        board = game_manager.board._board
-        ball_position = game_manager.board.ball_position.value
-
+        board = game_manager._board._board
+        ball_position = game_manager._board.ball_position.value
+        
+        print(f"Board data: {board}")
+        print(f"Ball position: {ball_position}")
+        
         # Convert board to frontend format
         board_state = []
         for row in board:
@@ -93,16 +147,33 @@ def get_game_state():
                 else:
                     board_row.append(None)
             board_state.append(board_row)
-
+        
+        print(f"Converted board state: {board_state}")
+        
         # Get current player
-        current_player = game_manager.player_turn.value
+        current_player = game_manager._player_turn.value
         
         # Get game status
         game_status = game_manager.game_status.value
         
-        # Get player cards
-        white_cards = [card.name for card in game_manager._white_player.cards if not card.already_used]
-        black_cards = [card.name for card in game_manager._black_player.cards if not card.already_used]
+        # Get player cards with more details
+        white_cards = []
+        for i, card in enumerate(game_manager._white_player.cards):
+            if not card.already_used:
+                white_cards.append({
+                    'index': i,
+                    'name': card.name,
+                    'description': get_card_description(card.name)
+                })
+        
+        black_cards = []
+        for i, card in enumerate(game_manager._black_player.cards):
+            if not card.already_used:
+                black_cards.append({
+                    'index': i,
+                    'name': card.name,
+                    'description': get_card_description(card.name)
+                })
         
         return {
             'success': True,
@@ -113,7 +184,9 @@ def get_game_state():
             'white_cards': white_cards,
             'black_cards': black_cards,
             'white_cards_count': len(white_cards),
-            'black_cards_count': len(black_cards)
+            'black_cards_count': len(black_cards),
+            'game_type': game_type,
+            'human_player_side': human_player_side
         }
     except Exception as e:
         print(f"Error getting game state: {e}")
@@ -121,6 +194,27 @@ def get_game_state():
             'success': False,
             'error': str(e)
         }
+
+def get_card_description(card_name):
+    """Get description for a card"""
+    descriptions = {
+        'fire': 'Eliminates all pawns in a row',
+        'charge': 'Moves a pawn forward by 2 tiles',
+        'jump': 'Moves a pawn to any empty tile',
+        'knife': 'Eliminates a single pawn',
+        'knight': 'Moves a pawn in L-shape pattern',
+        'bishop': 'Moves a pawn diagonally',
+        'catapult': 'Launches a pawn to the opposite side',
+        'side_step': 'Moves a pawn sideways',
+        'tank': 'Creates an indestructible pawn',
+        'kamikaze': 'Eliminates pawns in a cross pattern',
+        'spawn': 'Creates a new pawn',
+        'dagger': 'Eliminates pawns in a line',
+        'peace': 'Prevents opponent from moving',
+        'wall': 'Creates a barrier',
+        'forklift': 'Moves multiple pawns at once'
+    }
+    return descriptions.get(card_name, 'Unknown card effect')
 
 @app.route('/api/game/state', methods=['GET'])
 def get_game_state_endpoint():
@@ -159,9 +253,24 @@ def get_game_state_endpoint():
         # Get game status
         game_status = game_manager.game_status.value
         
-        # Get player cards
-        white_cards = [card.name for card in game_manager._white_player.cards if not card.already_used]
-        black_cards = [card.name for card in game_manager._black_player.cards if not card.already_used]
+        # Get player cards with more details
+        white_cards = []
+        for i, card in enumerate(game_manager._white_player.cards):
+            if not card.already_used:
+                white_cards.append({
+                    'index': i,
+                    'name': card.name,
+                    'description': get_card_description(card.name)
+                })
+        
+        black_cards = []
+        for i, card in enumerate(game_manager._black_player.cards):
+            if not card.already_used:
+                black_cards.append({
+                    'index': i,
+                    'name': card.name,
+                    'description': get_card_description(card.name)
+                })
         
         return jsonify({
             'success': True,
@@ -172,7 +281,9 @@ def get_game_state_endpoint():
             'white_cards': white_cards,
             'black_cards': black_cards,
             'white_cards_count': len(white_cards),
-            'black_cards_count': len(black_cards)
+            'black_cards_count': len(black_cards),
+            'game_type': game_type,
+            'human_player_side': human_player_side
         })
     except Exception as e:
         return jsonify({
@@ -213,6 +324,63 @@ def make_move():
         return jsonify({
             'success': True,
             'message': 'Move made successfully',
+            'game_state': get_game_state()
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/game/ai-move', methods=['POST'])
+def make_ai_move():
+    """Make an AI move in the game"""
+    global game_manager, game_type, human_player_side
+    
+    if not game_manager:
+        return jsonify({
+            'success': False,
+            'error': 'No active game'
+        }), 404
+    
+    if game_type != 'human_vs_ai':
+        return jsonify({
+            'success': False,
+            'error': 'Not an AI game'
+        }), 400
+    
+    try:
+        # Check if it's AI's turn
+        current_player = game_manager._player_turn.value
+        ai_side = 'black' if human_player_side == 'white' else 'white'
+        
+        if current_player != ai_side:
+            return jsonify({
+                'success': False,
+                'error': 'Not AI turn'
+            }), 400
+        
+        # Get AI player
+        ai_player = game_manager._black_player if ai_side == 'black' else game_manager._white_player
+        
+        # Get AI move
+        ai_move = ai_player.get_move(game_manager._board, game_manager._player_turn)
+        
+        if ai_move is None:
+            # AI passes turn
+            game_manager.pass_turn()
+        else:
+            # Execute AI move
+            if hasattr(ai_move, 'card_index') and hasattr(ai_move, 'move_index'):
+                # Card move
+                game_manager.play_card(ai_move.card_index, ai_move.move_index)
+            else:
+                # Push move
+                game_manager.push(ai_move.target_tile)
+        
+        return jsonify({
+            'success': True,
+            'message': 'AI move made successfully',
             'game_state': get_game_state()
         })
     except Exception as e:
@@ -300,12 +468,55 @@ def get_player_cards():
                 cards.append({
                     'index': i,
                     'name': card.name,
-                    'description': card.description
+                    'description': get_card_description(card.name)
                 })
         
         return jsonify({
             'success': True,
             'cards': cards
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/game/card-moves/<int:card_index>', methods=['GET'])
+def get_card_moves(card_index):
+    """Get available moves for a specific card"""
+    global game_manager
+    
+    if not game_manager:
+        return jsonify({
+            'success': False,
+            'error': 'No active game'
+        }), 404
+    
+    try:
+        current_player = game_manager._get_player()
+        card = current_player.cards[card_index]
+        
+        if card.already_used:
+            return jsonify({
+                'success': False,
+                'error': 'Card already used'
+            }), 400
+        
+        card_moves = game_manager._get_available_card_moves(card_index)
+        moves = []
+        
+        for i, move in enumerate(card_moves):
+            moves.append({
+                'index': i,
+                'description': move.description,
+                'card_name': card.name
+            })
+        
+        return jsonify({
+            'success': True,
+            'card_name': card.name,
+            'card_description': get_card_description(card.name),
+            'moves': moves
         })
     except Exception as e:
         return jsonify({
