@@ -14,4 +14,5 @@ class Move:
 
 @dataclass
 class CardMove(Move):
-    pass
+    tile_marker_1: str | None = None
+    tile_marker_2: str | None = None

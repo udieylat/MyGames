@@ -3,7 +3,7 @@ from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
 from models import PlayerSign, TileType
-from move import Move
+from move import Move, CardMove
 
 
 class Fire(Card):
@@ -18,7 +18,7 @@ class Fire(Card):
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         allowed_rows = (
             [0, 1, 2]
             if player_sign == PlayerSign.white
@@ -45,7 +45,7 @@ class Fire(Card):
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> Move:
+    ) -> CardMove:
         result_board = board.copy_board()
         for col_i in range(5):
             result_board = Helper.eliminate_pawn(
@@ -54,7 +54,7 @@ class Fire(Card):
                 board=result_board,
                 safe=True,  # Don't break if the tile is vacant
             )
-        return Move(
+        return CardMove(
             player_sign=player_sign,
             result_board=result_board,
             result_ball_position=CardUtils.push_ball(

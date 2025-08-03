@@ -4,7 +4,7 @@ from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
 from models import PlayerSign, TileType
-from move import Move
+from move import Move, CardMove
 
 
 class Spawn(Card):
@@ -19,7 +19,7 @@ class Spawn(Card):
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         allowed_rows = (
             [0, 1, 2]
             if player_sign == PlayerSign.white
@@ -32,7 +32,7 @@ class Spawn(Card):
             if board[row_i][col_i] == TileType.vacant
         ]
         return [
-            Move(
+            CardMove(
                 player_sign=player_sign,
                 result_board=Helper.set_pawn_tile(
                     player_sign=player_sign,

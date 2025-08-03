@@ -4,7 +4,7 @@ from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
 from models import PlayerSign, TileType
-from move import Move
+from move import Move, CardMove
 
 
 class Catapult(Card):
@@ -23,7 +23,7 @@ class Catapult(Card):
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         opponent_pawn_indices = Helper.get_pawn_indices(
             player_sign=BoardUtils.inverse_player_sign(
                 player_sign=player_sign,
@@ -42,7 +42,7 @@ class Catapult(Card):
         ]
 
         return [
-            Move(
+            CardMove(
                 player_sign=player_sign,
                 result_board=Helper.move_pawn(
                     player_sign=BoardUtils.inverse_player_sign(

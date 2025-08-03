@@ -4,7 +4,7 @@ from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
 from models import PlayerSign, TileType
-from move import Move
+from move import Move, CardMove
 
 
 class SideStep(Card):
@@ -19,7 +19,7 @@ class SideStep(Card):
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         pawn_indices = Helper.get_pawn_indices(
             player_sign=player_sign,
             board=board,

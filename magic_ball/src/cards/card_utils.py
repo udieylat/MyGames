@@ -2,7 +2,7 @@ from board import Board
 from board_utils import BoardUtils
 from helper import Helper
 from models import PlayerSign, BallPosition
-from move import Move
+from move import Move, CardMove
 
 
 class CardUtils:
@@ -17,7 +17,7 @@ class CardUtils:
         board: Board,
         card_name: str,
         card_index: int,
-    ) -> Move:
+    ) -> CardMove:
         result_board = Helper.move_pawn(
             player_sign=player_sign,
             source_col_i=source_col_i,
@@ -33,7 +33,7 @@ class CardUtils:
             target_col_i=target_col_i,
             target_row_i=target_row_i,
         )
-        return Move(
+        return CardMove(
             player_sign=player_sign,
             result_board=result_board,
             result_ball_position=cls.push_ball(
@@ -42,6 +42,8 @@ class CardUtils:
             ),
             description=description,
             used_card_index=card_index,
+            tile_marker_1=BoardUtils.indices_to_tile(col_i=source_col_i, row_i=source_row_i),
+            tile_marker_2=BoardUtils.indices_to_tile(col_i=target_col_i, row_i=target_row_i),
         )
 
     @classmethod

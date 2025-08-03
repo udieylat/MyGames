@@ -3,7 +3,7 @@ from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
 from models import PlayerSign, TileType
-from move import Move
+from move import Move, CardMove
 
 
 class Tank(Card):
@@ -18,7 +18,7 @@ class Tank(Card):
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         pawn_indices = Helper.get_pawn_indices(
             player_sign=player_sign,
             board=board,
@@ -34,7 +34,7 @@ class Tank(Card):
             and board[neighbor_target_row_i][neighbor_target_col_i] == TileType.vacant  # Target tile must be vacant
         ]
         return [
-            Move(
+            CardMove(
                 player_sign=player_sign,
                 result_board=Helper.move_tile(
                     source_col_i=source_col_i,

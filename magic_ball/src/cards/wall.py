@@ -4,7 +4,7 @@ from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
 from models import PlayerSign, TileType
-from move import Move
+from move import Move, CardMove
 
 
 class Wall(Card):
@@ -23,7 +23,7 @@ class Wall(Card):
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         pawn_indices = Helper.get_pawn_indices(
             player_sign=player_sign,
             board=board,
@@ -38,7 +38,7 @@ class Wall(Card):
             if board[row_i][col_i] == TileType.vacant
         ]
         return [
-            Move(
+            CardMove(
                 player_sign=player_sign,
                 result_board=Helper.set_tile(
                     tile_type=TileType.wall,
