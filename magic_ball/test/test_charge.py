@@ -22,7 +22,7 @@ class TestCharge(unittest.TestCase):
         self.assertEqual(10, len(available_moves))
 
     @parameterized.expand(PlayerSign.__members__.keys())
-    def test_num_available_card_moves(self, player_sign: PlayerSign):
+    def test_no_available_card_moves(self, player_sign: PlayerSign):
         available_moves = self.charge.get_available_card_moves(
             player_sign=player_sign,
             board=Board(
