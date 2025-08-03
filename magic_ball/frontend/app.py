@@ -438,13 +438,13 @@ def get_card_moves(card_index):
             moves.append({
                 'index': i,
                 'description': move.description,
-                'card_name': card.name
+                # TODO: give more input to frontend about the card moves
             })
         
         return jsonify({
             'success': True,
             'card_name': card.name,
-            'description': card.description(),
+            'card_description': card.description(),
             'moves': moves
         })
     except Exception as e:

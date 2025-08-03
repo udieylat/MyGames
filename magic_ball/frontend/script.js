@@ -356,6 +356,8 @@ class GameBoard {
 
         // Get valid moves for this card
         await this.getCardMoves(index);
+
+        // TODO: Highlight the selected card
     }
 
     async getCardMoves(cardIndex) {
@@ -364,7 +366,7 @@ class GameBoard {
             const data = await response.json();
             if (data.success) {
                 this.cardMoves = data.moves;
-                console.log(`Card ${data.card_name}: ${data.card_description}`);
+                console.log(`Selected card ${data.card_name}: ${data.card_description}`);
                 console.log('Available moves:', this.cardMoves);
                 
                 // Highlight valid moves on the board
@@ -382,6 +384,7 @@ class GameBoard {
         // Highlight tiles based on card moves
         this.cardMoves.forEach(move => {
             console.log('Highlighting move:', move.description);
+            // TODO!!!!
             // This is a simplified version - in a full implementation,
             // you'd parse the move description to determine which tiles to highlight
         });
