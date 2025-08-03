@@ -345,6 +345,22 @@ class GameBoard {
                 blackCardsList.appendChild(cardElement);
             });
         }
+        
+        // Update disabled state for all cards after rendering
+        this.updateAllCardsDisabledState();
+    }
+    
+    updateAllCardsDisabledState() {
+        const whiteCards = document.querySelectorAll('#whiteCardsList .card');
+        const blackCards = document.querySelectorAll('#blackCardsList .card');
+        
+        whiteCards.forEach(cardElement => {
+            this.updateCardDisabledState(cardElement, 'white');
+        });
+        
+        blackCards.forEach(cardElement => {
+            this.updateCardDisabledState(cardElement, 'black');
+        });
     }
 
     createCardElement(card, index, player) {
@@ -368,9 +384,28 @@ class GameBoard {
             cardElement.classList.add('used');
         }
         
+        // Disable cards based on ball position
+        this.updateCardDisabledState(cardElement, player);
+        
         cardElement.addEventListener('click', () => this.selectCard(cardElement, card, index, player));
         
         return cardElement;
+    }
+    
+    updateCardDisabledState(cardElement, player) {
+        if (!this.gameState || !this.gameState.ball_position) return;
+        
+        const ballPosition = this.gameState.ball_position;
+        const isDisabled = (ballPosition === 'black' && player === 'white') || 
+                          (ballPosition === 'white' && player === 'black');
+        
+        if (isDisabled) {
+            cardElement.dataset.disabled = 'true';
+            cardElement.style.cursor = 'not-allowed';
+        } else {
+            cardElement.dataset.disabled = 'false';
+            cardElement.style.cursor = 'pointer';
+        }
     }
 
     async selectCard(cardElement, card, index, player) {
@@ -396,6 +431,12 @@ class GameBoard {
         const isAICard = this.gameType === 'human_vs_ai' && player !== this.humanPlayerSide;
         if (isAICard) {
             console.log('AI card, ignoring selection');
+            return;
+        }
+        
+        // Check if card is disabled due to ball position
+        if (cardElement.dataset.disabled === 'true') {
+            console.log('Card disabled due to ball position, ignoring selection');
             return;
         }
         
