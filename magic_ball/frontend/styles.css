@@ -200,15 +200,47 @@ h1 {
 }
 
 .board {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(5, 1fr);
-    gap: 2px;
+    display: flex;
+    flex-direction: column;
     background-color: #8B4513;
     padding: 10px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: all 0.3s ease;
+}
+
+.board-labels.column-labels {
+    display: grid;
+    grid-template-columns: 30px repeat(5, 1fr);
+    gap: 2px;
+    margin-bottom: 2px;
+}
+
+.board-row {
+    display: grid;
+    grid-template-columns: 30px repeat(5, 1fr);
+    gap: 2px;
+    margin-bottom: 2px;
+}
+
+.board-label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #333;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    font-size: 14px;
+    min-height: 40px;
+}
+
+.column-label {
+    background-color: #e0e0e0;
+}
+
+.row-label {
+    background-color: #e0e0e0;
 }
 
 /* Magic Ball Effects */

@@ -192,13 +192,6 @@ class GameBoard {
         this.renderMoveHistory();
     }
 
-    getCardNameByIndex(cardIndex) {
-        const currentPlayer = this.gameState.current_player;
-        const cards = currentPlayer === 'white' ? this.gameState.white_cards : this.gameState.black_cards;
-        const card = cards.find(c => c.index === cardIndex);
-        return card ? card.name : 'Unknown Card';
-    }
-
     renderMoveHistory() {
         const movesList = document.getElementById('movesList');
         movesList.innerHTML = '';
@@ -254,16 +247,45 @@ class GameBoard {
 
         console.log('Rendering board with data:', this.gameState.board);
 
-        // Flip the board so white pawns are on bottom and black on top
+        // Add row labels and tiles
         for (let row = 0; row < 5; row++) {
+            const rowContainer = document.createElement('div');
+            rowContainer.className = 'board-row';
+            
+            // Add row label (5, 4, 3, 2, 1)
+            const rowLabel = document.createElement('div');
+            rowLabel.className = 'board-label row-label';
+            rowLabel.textContent = 5 - row; // 5, 4, 3, 2, 1
+            rowContainer.appendChild(rowLabel);
+            
+            // Add tiles for this row
             for (let col = 0; col < 5; col++) {
                 // Flip the row index: row 0 becomes row 4, row 4 becomes row 0
                 const flippedRow = 4 - row;
                 const tile = this.gameState.board[flippedRow][col];
                 const tileElement = this.createTileElement(tile, row, col);
-                boardElement.appendChild(tileElement);
+                rowContainer.appendChild(tileElement);
             }
+            boardElement.appendChild(rowContainer);
         }
+
+        // Add column labels (A-E) at the bottom
+        const columnLabels = document.createElement('div');
+        columnLabels.className = 'board-labels column-labels';
+
+        // Empty label under the row index
+        const label = document.createElement('div');
+        label.className = 'board-label column-label';
+        label.textContent = "";
+        columnLabels.appendChild(label);
+
+        for (let col = 0; col < 5; col++) {
+            const label = document.createElement('div');
+            label.className = 'board-label column-label';
+            label.textContent = String.fromCharCode(65 + col); // A, B, C, D, E
+            columnLabels.appendChild(label);
+        }
+        boardElement.appendChild(columnLabels);
     }
 
     createTileElement(tile, row, col) {
