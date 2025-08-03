@@ -20,3 +20,21 @@ class TestCharge(unittest.TestCase):
             card_index=0,
         )
         self.assertEqual(10, len(available_moves))
+
+    @parameterized.expand(PlayerSign.__members__.keys())
+    def test_num_available_card_moves(self, player_sign: PlayerSign):
+        available_moves = self.charge.get_available_card_moves(
+            player_sign=player_sign,
+            board=Board(
+                board=[
+                    [".", ".", ".", ".", "."],
+                    [".", ".", "B", "B", "W"],
+                    ["#", "B", "W", "#", "."],
+                    ["W", "W", ".", ".", "B"],
+                    [".", ".", ".", ".", "."],
+                ],
+                ball_position=BallPosition.middle,
+            ),
+            card_index=0,
+        )
+        self.assertEqual(0, len(available_moves))
