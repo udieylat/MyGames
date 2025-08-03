@@ -387,7 +387,8 @@ def get_valid_moves():
             'success': False,
             'error': 'No active game'
         }), 404
-    
+
+    assert isinstance(game_manager, GameManager)
     try:
         # Get current player
         current_player = game_manager._get_player()
@@ -417,7 +418,7 @@ def get_valid_moves():
         # Check for card moves
         for i, card in enumerate(current_player.cards):
             if not card.already_used:
-                card_moves = game_manager._get_available_card_moves(i)
+                card_moves = game_manager.get_available_card_moves(i)
                 for j, move in enumerate(card_moves):
                     available_moves.append({
                         'type': 'card',
@@ -479,7 +480,8 @@ def get_card_moves(card_index):
             'success': False,
             'error': 'No active game'
         }), 404
-    
+
+    assert isinstance(game_manager, GameManager)
     try:
         current_player = game_manager._get_player()
         card = current_player.cards[card_index]
@@ -490,7 +492,7 @@ def get_card_moves(card_index):
                 'error': 'Card already used'
             }), 400
         
-        card_moves = game_manager._get_available_card_moves(card_index)
+        card_moves = game_manager.get_available_card_moves(card_index)
         moves = []
         
         for i, move in enumerate(card_moves):
