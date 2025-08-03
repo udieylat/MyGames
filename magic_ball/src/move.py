@@ -10,3 +10,8 @@ class Move:
     result_ball_position: BallPosition
     description: str
     used_card_index: int | None = None
+
+
+@dataclass
+class CardMove(Move):
+    pass

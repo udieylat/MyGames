@@ -11,7 +11,7 @@ from cards.compendium import Compendium
 from game_config import GameConfig
 from game_summary import GameSummary
 from helper import Helper
-from move import Move
+from move import Move, CardMove
 from players.player import Player, NoAvailableMoves
 from models import PlayerSign, GameStatus
 from players.player_factory import PlayerFactory
@@ -392,7 +392,7 @@ class GameManager:
     def get_available_card_moves(
         self,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         assert 0 <= card_index <= self._num_allowed_playable_cards() - 1, f"invalid card index: {card_index}"
         player = self._get_player()
         return player.cards[card_index].get_available_card_moves(

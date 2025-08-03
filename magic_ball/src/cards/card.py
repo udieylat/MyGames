@@ -3,7 +3,7 @@ from abc import abstractmethod
 from board import Board
 from board_utils import BoardUtils
 from models import PlayerSign, BallPosition
-from move import Move
+from move import Move, CardMove
 
 
 class Card:
@@ -36,7 +36,7 @@ class Card:
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         if self._already_used or not self._ball_position_allowed(
             player_sign=player_sign,
             ball_position=board.ball_position,
@@ -65,14 +65,14 @@ class Card:
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         pass
 
     @classmethod
     def _filter_duplicate_description_moves(
         cls,
-        moves: list[Move],
-    ) -> list[Move]:
+        moves: list[CardMove],
+    ) -> list[CardMove]:
         move_descriptions = set()
         non_duplicate_description_moves = []
         for move in moves:
