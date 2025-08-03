@@ -129,15 +129,16 @@ def get_game_state():
             'success': False,
             'error': 'No active game'
         }
-    
+
+    assert isinstance(game_manager, GameManager)
     try:
         # Get board state
-        board = game_manager._board._board
-        ball_position = game_manager._board.ball_position
-        
-        print(f"Board data: {board}")
-        print(f"Ball position: {ball_position}")
-        
+        board = game_manager.board._board
+        ball_position = game_manager.board.ball_position
+
+        # Log to screen
+        game_manager._display()
+
         # Convert board to frontend format
         board_state = []
         for row in board:
@@ -152,9 +153,7 @@ def get_game_state():
                 else:
                     board_row.append(None)
             board_state.append(board_row)
-        
-        print(f"Converted board state: {board_state}")
-        
+
         # Get current player
         current_player = game_manager._player_turn.value
         
@@ -370,66 +369,6 @@ def make_ai_move():
             'message': 'AI move made successfully',
             'move_description': move_description,
             'game_state': get_game_state()
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 500
-
-@app.route('/api/game/valid-moves', methods=['GET'])
-def get_valid_moves():
-    """Get valid moves for the current player"""
-    global game_manager
-    
-    if not game_manager:
-        return jsonify({
-            'success': False,
-            'error': 'No active game'
-        }), 404
-
-    assert isinstance(game_manager, GameManager)
-    try:
-        # Get current player
-        current_player = game_manager._get_player()
-        
-        # Get available moves
-        available_moves = []
-        
-        # Check for push moves
-        for row in range(5):
-            for col in range(5):
-                tile = BoardUtils.coordinates_to_tile(row, col)
-                try:
-                    # Try to generate a push move
-                    move = BoardUtils.generate_push_move(
-                        player_sign=game_manager._player_turn,
-                        target_tile=tile,
-                        board=game_manager._board
-                    )
-                    available_moves.append({
-                        'type': 'push',
-                        'target_tile': tile,
-                        'description': f'Push to {tile}'
-                    })
-                except:
-                    pass
-        
-        # Check for card moves
-        for i, card in enumerate(current_player.cards):
-            if not card.already_used:
-                card_moves = game_manager.get_available_card_moves(i)
-                for j, move in enumerate(card_moves):
-                    available_moves.append({
-                        'type': 'card',
-                        'card_index': i,
-                        'move_index': j,
-                        'description': f'{card.name}: {move.description}'
-                    })
-        
-        return jsonify({
-            'success': True,
-            'valid_moves': available_moves
         })
     except Exception as e:
         return jsonify({

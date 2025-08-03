@@ -235,20 +235,6 @@ class GameBoard {
         }
     }
 
-    async getValidMoves() {
-        try {
-            const response = await fetch('/api/game/valid-moves');
-            const data = await response.json();
-            if (data.success) {
-                this.validMoves = data.valid_moves;
-                return data.valid_moves;
-            }
-        } catch (error) {
-            console.error('Error getting valid moves:', error);
-        }
-        return [];
-    }
-
     renderGame() {
         console.log('Rendering game with state:', this.gameState);
         this.renderBoard();
