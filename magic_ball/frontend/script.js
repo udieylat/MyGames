@@ -357,7 +357,10 @@ class GameBoard {
         // Get valid moves for this card
         await this.getCardMoves(index);
 
-        // TODO: Highlight the selected card
+        // Highlight the selected card with enhanced visual feedback
+        cardElement.style.transform = 'scale(1.1)';
+        cardElement.style.boxShadow = '0 0 10px rgba(255, 255, 0, 0.8)';
+        cardElement.style.border = '2px solid #ffd700';
     }
 
     async getCardMoves(cardIndex) {
@@ -559,6 +562,12 @@ class GameBoard {
     clearHighlights() {
         document.querySelectorAll('.tile.selected, .tile.valid-move, .card.selected, .pawn.selected').forEach(el => {
             el.classList.remove('selected', 'valid-move');
+            // Reset card visual effects
+            if (el.classList.contains('card')) {
+                el.style.transform = '';
+                el.style.boxShadow = '';
+                el.style.border = '';
+            }
         });
     }
 
