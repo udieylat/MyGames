@@ -445,8 +445,15 @@ h1 {
 
 /* Move History Styles */
 .history-section {
-    flex: 0 0 300px;
+    flex: 0 0 400px;
     margin-left: 1rem;
+}
+
+.history-title {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    text-align: center;
 }
 
 .move-history {
@@ -454,15 +461,8 @@ h1 {
     border-radius: 8px;
     padding: 1rem;
     border: 2px solid #e9ecef;
-    height: 600px;
+    height: 582px;
     overflow-y: auto;
-}
-
-.move-history h3 {
-    color: #333;
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-    text-align: center;
 }
 
 .moves-list {
@@ -474,23 +474,25 @@ h1 {
 .move-entry {
     display: flex;
     align-items: center;
-    padding: 0.5rem;
+    padding: 0.8rem;
     background: white;
-    border-radius: 4px;
+    border-radius: 6px;
     border: 1px solid #e9ecef;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
 }
 
 .move-number {
     font-weight: bold;
     color: #666;
-    min-width: 30px;
-    margin-right: 0.5rem;
+    min-width: 10px;
+    margin-right: 0rem;
 }
 
 .move-description {
     flex: 1;
     color: #333;
+    line-height: 1.4;
 }
 
 .game-info {
