@@ -680,6 +680,7 @@ class GameBoard {
             // Try to move to this tile
             await this.movePawnToTile(row, col);
         }
+        // TODO something buggy in here... catapult is glitchy
     }
 
     selectPawn(tileElement, row, col) {
@@ -751,17 +752,6 @@ class GameBoard {
             this.selectedCard = null;
             this.cardMoves = [];
         }
-    }
-
-    async makePushMove(row, col) {
-        const tile = this.coordinatesToTile(row, col);
-        
-        const moveData = {
-            type: 'push',
-            target_tile: tile
-        };
-
-        await this.makeMove(moveData);
     }
 
     coordinatesToTile(row, col) {
@@ -887,7 +877,7 @@ class GameBoard {
                  (gameStatusString === 'black_win' && this.humanPlayerSide === 'black')) 
                 ? 'turn-indicator victory' : 'turn-indicator draw';
             gameStatus.textContent = statusText;
-            // moveInfo.textContent = 'Game Over';
+            moveInfo.textContent = '';
             menuButtonContainer.style.display = 'block';
         }
     }
