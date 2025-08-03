@@ -806,11 +806,27 @@ class GameBoard {
             let statusText = '';
             
             if (gameStatusString === 'white_win') {
-                resultText = 'White Wins!';
-                statusText = 'White has won the game!';
+                if (this.gameType === 'human_vs_ai' && this.humanPlayerSide === 'white') {
+                    resultText = '🎉 You Win! 🎉';
+                    statusText = 'Congratulations! You have defeated the AI! 🏆';
+                } else if (this.gameType === 'human_vs_ai' && this.humanPlayerSide === 'black') {
+                    resultText = 'AI Wins!';
+                    statusText = 'The AI has won the game!';
+                } else {
+                    resultText = 'White Wins!';
+                    statusText = 'White has won the game!';
+                }
             } else if (gameStatusString === 'black_win') {
-                resultText = 'Black Wins!';
-                statusText = 'Black has won the game!';
+                if (this.gameType === 'human_vs_ai' && this.humanPlayerSide === 'black') {
+                    resultText = '🎉 You Win! 🎉';
+                    statusText = 'Congratulations! You have defeated the AI! 🏆';
+                } else if (this.gameType === 'human_vs_ai' && this.humanPlayerSide === 'white') {
+                    resultText = 'AI Wins!';
+                    statusText = 'The AI has won the game!';
+                } else {
+                    resultText = 'Black Wins!';
+                    statusText = 'Black has won the game!';
+                }
             } else if (gameStatusString === 'draw') {
                 resultText = 'Game is a Draw!';
                 statusText = 'The game ended in a draw!';
@@ -818,7 +834,10 @@ class GameBoard {
             
             turnIndicator.style.display = 'block';
             turnIndicator.textContent = resultText;
-            turnIndicator.className = 'turn-indicator draw';
+            turnIndicator.className = this.gameType === 'human_vs_ai' && 
+                ((gameStatusString === 'white_win' && this.humanPlayerSide === 'white') || 
+                 (gameStatusString === 'black_win' && this.humanPlayerSide === 'black')) 
+                ? 'turn-indicator victory' : 'turn-indicator draw';
             gameStatus.textContent = statusText;
             moveInfo.textContent = 'Game Over';
             menuButtonContainer.style.display = 'block';

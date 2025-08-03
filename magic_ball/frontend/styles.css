@@ -521,4 +521,20 @@ h1 {
 
 .turn-indicator.draw {
     color: #666;
+}
+
+.turn-indicator.victory {
+    color: #28a745;
+    font-size: 1.4rem;
+    text-shadow: 0 0 10px rgba(40, 167, 69, 0.3);
+    animation: victory-pulse 2s ease-in-out infinite;
+}
+
+@keyframes victory-pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
 } 
