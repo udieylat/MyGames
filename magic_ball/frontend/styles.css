@@ -202,11 +202,9 @@ h1 {
 .board {
     display: flex;
     flex-direction: column;
-    background-color: #8B4513;
+    background-color: white;
     padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
+    /* transition: all 0.0s ease; */
 }
 
 .board-labels.column-labels {
@@ -229,18 +227,28 @@ h1 {
     align-items: center;
     font-weight: bold;
     color: #333;
-    background-color: #f0f0f0;
+    background-color: white;
     border-radius: 4px;
     font-size: 14px;
     min-height: 40px;
 }
 
 .column-label {
-    background-color: #e0e0e0;
+    background-color: white;
 }
 
 .row-label {
-    background-color: #e0e0e0;
+    background-color: white;
+}
+
+.tiles-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    background-color: #8B4513;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Magic Ball Effects */
