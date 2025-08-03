@@ -299,10 +299,19 @@ class GameBoard {
         tileElement.dataset.col = col;
 
         if (tile) {
-            const pawnElement = document.createElement('div');
-            pawnElement.className = `pawn ${tile}`;
-            pawnElement.textContent = '♟';
-            tileElement.appendChild(pawnElement);
+            if (tile === '#') {
+                // Wall tile
+                const wallElement = document.createElement('div');
+                wallElement.className = 'wall';
+                wallElement.textContent = '🧱';
+                tileElement.appendChild(wallElement);
+            } else {
+                // Pawn tile
+                const pawnElement = document.createElement('div');
+                pawnElement.className = `pawn ${tile}`;
+                pawnElement.textContent = '♟';
+                tileElement.appendChild(pawnElement);
+            }
         }
 
         return tileElement;

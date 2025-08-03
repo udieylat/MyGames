@@ -342,6 +342,22 @@ h1 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
+.wall {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(145deg, #8b8b8b, #6b6b6b);
+    color: #333;
+    border: 2px solid #555;
+    cursor: default;
+}
+
 /* Cards Styles */
 .cards-container {
     display: flex;
