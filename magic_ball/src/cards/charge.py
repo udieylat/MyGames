@@ -38,7 +38,7 @@ class Charge(Card):
             target_row_i = source_row_i + direction
             while True:
                 target_row_i += direction
-                if target_row_i == 0 or target_row_i == 4 or board[target_row_i][col_i] != TileType.vacant:
+                if target_row_i <= 0 or target_row_i >= 4 or board[target_row_i][col_i] != TileType.vacant:
                     break
                 move_indices.append((col_i, source_row_i, target_row_i))
 
