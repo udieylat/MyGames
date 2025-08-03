@@ -149,6 +149,8 @@ def get_game_state():
                     board_row.append('white')
                 elif tile_value == 'B':
                     board_row.append('black')
+                elif tile_value == '#':
+                    board_row.append('wall')
                 else:
                     board_row.append(None)
             board_state.append(board_row)
