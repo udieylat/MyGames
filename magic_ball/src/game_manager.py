@@ -147,12 +147,13 @@ class GameManager:
             return None
 
         if move_index is None:
+            # This is relevant only for local interpreter play, leaving it for now.
             self._show_card_available_moves(
                 card_index=card_index,
             )
             return None
 
-        available_moves = self._get_available_card_moves(
+        available_moves = self.get_available_card_moves(
             card_index=card_index,
         )
         if not 0 <= move_index < len(available_moves):
@@ -312,7 +313,7 @@ class GameManager:
         self,
         card_index: int,
     ):
-        available_moves = self._get_available_card_moves(
+        available_moves = self.get_available_card_moves(
             card_index=card_index,
         )
         if not available_moves:
@@ -388,7 +389,7 @@ class GameManager:
             else self._black_player
         )
 
-    def _get_available_card_moves(
+    def get_available_card_moves(
         self,
         card_index: int,
     ) -> list[Move]:
