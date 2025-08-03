@@ -107,7 +107,7 @@ class GameBoard {
                 if (this.gameType === 'human_vs_ai' && this.isAITurn()) {
                     setTimeout(async () => {
                         await this.makeAIMove();
-                    }, 1000); // 1 second delay
+                    }, 500); // 0.5 second delay
                 }
                 
                 console.log('=== END FRONTEND: PLAYER MOVE ===');
@@ -324,7 +324,7 @@ class GameBoard {
         const displayName = (isAICard && !isUsed) ? '???' : card.name;
         
         cardElement.textContent = displayName;
-        cardElement.title = card.description; // Keep existing hover tooltip
+        cardElement.title = (isAICard && !isUsed) ? '???' : card.description;
         cardElement.dataset.cardIndex = index;
         cardElement.dataset.player = player;
         
