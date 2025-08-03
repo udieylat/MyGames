@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from models import BoardType, PlayerSign, BallPosition
 
@@ -16,3 +16,4 @@ class Move:
 class CardMove(Move):
     tile_marker_1: str | None = None
     tile_marker_2: str | None = None
+    extra: dict = field(default_factory=dict)

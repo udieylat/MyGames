@@ -1,4 +1,5 @@
 from board import Board
+from board_utils import BoardUtils
 from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
@@ -10,7 +11,7 @@ class Tank(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Creates an indestructible pawn"
+        return "Move a friendly pawn to an adjacent tile and push another pawn in the same direction"
 
     @classmethod
     def _get_available_moves(
@@ -60,6 +61,8 @@ class Tank(Card):
                     target_row_i=target_row_i,
                 ),
                 used_card_index=card_index,
+                tile_marker_1=BoardUtils.indices_to_tile(col_i=source_col_i, row_i=source_row_i),
+                tile_marker_2=BoardUtils.indices_to_tile(col_i=target_col_i, row_i=target_row_i),
             )
             for source_col_i, source_row_i, target_col_i, target_row_i, neighbor_target_col_1, neighbor_target_row_1
             in tank_move_indices

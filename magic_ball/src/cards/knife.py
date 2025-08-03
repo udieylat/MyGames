@@ -4,14 +4,14 @@ from cards.card import Card
 from cards.card_utils import CardUtils
 from helper import Helper
 from models import PlayerSign
-from move import Move
+from move import CardMove
 
 
 class Knife(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Eliminates a single pawn"
+        return "Eliminate an adjacent opponent pawn"
 
     @classmethod
     def _get_available_moves(
@@ -19,7 +19,7 @@ class Knife(Card):
         player_sign: PlayerSign,
         board: Board,
         card_index: int,
-    ) -> list[Move]:
+    ) -> list[CardMove]:
         pawn_indices = Helper.get_pawn_indices(
             player_sign=player_sign,
             board=board,
@@ -37,7 +37,7 @@ class Knife(Card):
             )
         ]
         return [
-            Move(
+            CardMove(
                 player_sign=player_sign,
                 result_board=Helper.eliminate_pawn(
                     col_i=col_i,
@@ -50,6 +50,7 @@ class Knife(Card):
                 ),
                 description=f"{cls.name}: {BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i)}",
                 used_card_index=card_index,
+                tile_marker_1=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i),
             )
             for col_i, row_i in neighbor_opponent_indices
         ]

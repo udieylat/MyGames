@@ -11,7 +11,7 @@ class Jump(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Moves a pawn to any empty tile"
+        return "Move a friendly pawn two tiles forward, ignore the next front tile"
 
     @classmethod
     def _get_available_moves(

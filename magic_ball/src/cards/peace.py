@@ -11,7 +11,7 @@ class Peace(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Prevents opponent from moving"
+        return "Eliminate the most front friendly and opponent pawns"
 
     @classmethod
     def _get_available_moves(
@@ -87,6 +87,8 @@ class Peace(Card):
                     opponent_pawn_row_i=opponent_pawn_row_i,
                 ),
                 used_card_index=card_index,
+                tile_marker_1=BoardUtils.indices_to_tile(col_i=player_pawn_col_i, row_i=player_pawn_row_i),
+                tile_marker_2=BoardUtils.indices_to_tile(col_i=opponent_pawn_col_i, row_i=opponent_pawn_row_i),
             )
             for player_pawn_col_i, player_pawn_row_i, opponent_pawn_col_i, opponent_pawn_row_i in indices_pairs_to_eliminate
         ]

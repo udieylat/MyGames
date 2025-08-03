@@ -10,7 +10,7 @@ class Fire(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Eliminates all pawns in a row"
+        return "Eliminate ALL pawns in a row (can't be the last two rows)"
 
     @classmethod
     def _get_available_moves(
@@ -63,6 +63,7 @@ class Fire(Card):
             ),
             description=f"{cls.name} in row: {row_i + 1}",
             used_card_index=card_index,
+            # TODO!
         )
 
     @classmethod

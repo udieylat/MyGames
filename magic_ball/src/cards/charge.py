@@ -11,7 +11,7 @@ class Charge(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Moves a pawn forward by 2 tiles"
+        return "Move a friendly pawn as many as 3 tiles forward"
 
     # @property
     # def is_defensive(self) -> bool:

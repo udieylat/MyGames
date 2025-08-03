@@ -10,7 +10,7 @@ class Bishop(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Moves a pawn diagonally"
+        return "Move a friendly pawn diagonally"
 
     @classmethod
     def _get_available_moves(

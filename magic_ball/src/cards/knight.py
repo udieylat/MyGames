@@ -10,7 +10,7 @@ class Knight(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Moves a pawn in L-shape pattern"
+        return "Move a friendly pawn in an L-shape pattern (chess knight)"
 
     @classmethod
     def _get_available_moves(

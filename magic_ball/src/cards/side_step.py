@@ -11,7 +11,7 @@ class SideStep(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Moves a pawn sideways"
+        return "Move a friendly pawn sideways"
 
     @classmethod
     def _get_available_moves(

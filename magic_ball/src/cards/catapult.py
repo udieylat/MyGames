@@ -11,11 +11,7 @@ class Catapult(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Launches a pawn to the opposite side"
-
-    # @property
-    # def is_defensive(self) -> bool:`
-    #     return True
+        return "Move an opponent pawn to its starting tile"
 
     @classmethod
     def _get_available_moves(
@@ -65,6 +61,8 @@ class Catapult(Card):
                     target_row_i=target_row_i,
                 ),
                 used_card_index=card_index,
+                tile_marker_1=BoardUtils.indices_to_tile(col_i=col_i, row_i=source_row_i),
+                tile_marker_2=BoardUtils.indices_to_tile(col_i=col_i, row_i=target_row_i),
             )
             for col_i, source_row_i, target_row_i in move_indices
         ]

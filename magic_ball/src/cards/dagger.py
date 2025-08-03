@@ -11,7 +11,7 @@ class Dagger(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Eliminates pawns in a line"
+        return "Eliminate a diagonal opponent pawn"
 
     @classmethod
     def _get_available_moves(
@@ -50,6 +50,7 @@ class Dagger(Card):
                 ),
                 description=f"{cls.name} pawn: {BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i)}",
                 used_card_index=card_index,
+                tile_marker_1=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i),
             )
             for col_i, row_i in diagonal_neighbor_opponent_indices
         ]

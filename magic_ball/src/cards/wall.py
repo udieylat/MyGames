@@ -11,11 +11,7 @@ class Wall(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Creates a barrier"
-
-    # @property
-    # def is_defensive(self) -> bool:
-    #     return True
+        return "Spawn an unmovable wall tile in a vacant tile adjacent to a friendly pawn"
 
     @classmethod
     def _get_available_moves(
@@ -52,6 +48,7 @@ class Wall(Card):
                 ),
                 description=f"{cls.name}: {BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i)}",
                 used_card_index=card_index,
+                tile_marker_1=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i),
             )
             for col_i, row_i in neighbor_vacant_indices
         ]

@@ -11,7 +11,7 @@ class Spawn(Card):
 
     @classmethod
     def description(cls) -> str:
-        return "Creates a new pawn"
+        return "Spawn a new friendly pawn in a vacant tile (can't be the last two rows)"
 
     @classmethod
     def _get_available_moves(
@@ -46,6 +46,7 @@ class Spawn(Card):
                 ),
                 description=f"{cls.name}: {BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i)}",
                 used_card_index=card_index,
+                tile_marker_1=BoardUtils.indices_to_tile(col_i=col_i, row_i=row_i),
             )
             for col_i, row_i in vacant_indices
         ]
