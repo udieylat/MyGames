@@ -320,7 +320,7 @@ class GameBoard {
         const isAICard = this.gameType === 'human_vs_ai' && player !== this.humanPlayerSide;
         const isUsed = card.already_used;
         
-        // Show card name or "???" for AI cards
+        // Show card name or "???" for AI cards (reveal if used)
         const displayName = (isAICard && !isUsed) ? '???' : card.name;
         
         cardElement.textContent = displayName;
@@ -339,9 +339,21 @@ class GameBoard {
     }
 
     async selectCard(cardElement, card, index, player) {
+        // Check if game is over
+        if (this.gameState.game_status !== 1) {
+            console.log('Game is over, ignoring card selection');
+            return;
+        }
+        
         // If it's an AI game and not human's turn, ignore card selection
         if (this.gameType === 'human_vs_ai' && !this.isHumanTurn()) {
             console.log('Not human turn, ignoring card selection');
+            return;
+        }
+        
+        // Check if card is already used
+        if (card.already_used) {
+            console.log('Card is already used, ignoring selection');
             return;
         }
         
@@ -357,10 +369,12 @@ class GameBoard {
         // Get valid moves for this card
         await this.getCardMoves(index);
 
-        // Highlight the selected card with enhanced visual feedback
-        cardElement.style.transform = 'scale(1.1)';
-        cardElement.style.boxShadow = '0 0 10px rgba(255, 255, 0, 0.8)';
-        cardElement.style.border = '2px solid #ffd700';
+        // Highlight the selected card with enhanced visual feedback (only for unused cards)
+        if (!card.already_used) {
+            cardElement.style.transform = 'scale(1.1)';
+            cardElement.style.boxShadow = '0 0 10px rgba(255, 255, 0, 0.8)';
+            cardElement.style.border = '2px solid #ffd700';
+        }
     }
 
     async getCardMoves(cardIndex) {
@@ -543,6 +557,12 @@ class GameBoard {
     }
 
     async handleTileClick(tileElement) {
+        // Check if game is over
+        if (this.gameState.game_status !== 1) {
+            console.log('Game is over, ignoring tile click');
+            return;
+        }
+        
         // If it's an AI game and not human's turn, ignore clicks
         if (this.gameType === 'human_vs_ai' && !this.isHumanTurn()) {
             console.log('Not human turn, ignoring click');
@@ -667,8 +687,8 @@ class GameBoard {
     clearHighlights() {
         document.querySelectorAll('.tile.selected, .tile.valid-move, .tile.tile-marker-1, .tile.tile-marker-2, .card.selected, .pawn.selected').forEach(el => {
             el.classList.remove('selected', 'valid-move', 'tile-marker-1', 'tile-marker-2');
-            // Reset card visual effects
-            if (el.classList.contains('card')) {
+            // Reset card visual effects (but not for used cards)
+            if (el.classList.contains('card') && !el.classList.contains('used')) {
                 el.style.transform = '';
                 el.style.boxShadow = '';
                 el.style.border = '';
@@ -779,6 +799,12 @@ function startNewGame() {
     if (window.currentGameBoard && window.currentGameBoard.gameState) {
         sessionStorage.setItem('gameType', window.currentGameBoard.gameType);
         sessionStorage.setItem('playerSide', window.currentGameBoard.humanPlayerSide);
+    }
+    
+    // Clear moves history
+    const movesList = document.getElementById('movesList');
+    if (movesList) {
+        movesList.innerHTML = '';
     }
     
     // Create a new game board instance with the same configuration
