@@ -392,6 +392,13 @@ class GameBoard {
             return;
         }
         
+        // Check if this is an AI card in human vs AI mode
+        const isAICard = this.gameType === 'human_vs_ai' && player !== this.humanPlayerSide;
+        if (isAICard) {
+            console.log('AI card, ignoring selection');
+            return;
+        }
+        
         // Clear previous card selection
         document.querySelectorAll('.card.selected').forEach(el => {
             el.classList.remove('selected');
@@ -839,7 +846,7 @@ class GameBoard {
                  (gameStatusString === 'black_win' && this.humanPlayerSide === 'black')) 
                 ? 'turn-indicator victory' : 'turn-indicator draw';
             gameStatus.textContent = statusText;
-            moveInfo.textContent = 'Game Over';
+            // moveInfo.textContent = 'Game Over';
             menuButtonContainer.style.display = 'block';
         }
     }
