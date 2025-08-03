@@ -366,6 +366,8 @@ class GameBoard {
         cardElement.classList.add('selected');
         this.selectedCard = { name: card.name, index: index, player: player };
 
+        console.log(`Get card ${card.name} available moves, index ${index}, player ${player}`);
+
         // Get valid moves for this card
         await this.getCardMoves(index);
 
@@ -383,7 +385,7 @@ class GameBoard {
             const data = await response.json();
             if (data.success) {
                 this.cardMoves = data.moves;
-                console.log(`Selected card ${data.card_name}: ${data.card_description}`);
+                console.log(`Selected card ${data.card_name}, index ${cardIndex}: ${data.card_description}`);
                 console.log('Available moves:', this.cardMoves);
                 
                 // Highlight valid moves on the board

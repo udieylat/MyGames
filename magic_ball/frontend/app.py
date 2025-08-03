@@ -163,21 +163,21 @@ def get_game_state():
         # Get player cards with more details
         white_cards = []
         for i, card in enumerate(game_manager._white_player.cards):
-            if not card.already_used:
-                white_cards.append({
-                    'index': i,
-                    'name': card.name,
-                    'description': card.description(),
-                })
+            white_cards.append({
+                'index': i,
+                'name': card.name,
+                'description': card.description(),
+                'already_used': card.already_used,
+            })
         
         black_cards = []
         for i, card in enumerate(game_manager._black_player.cards):
-            if not card.already_used:
-                black_cards.append({
-                    'index': i,
-                    'name': card.name,
-                    'description': card.description(),
-                })
+            black_cards.append({
+                'index': i,
+                'name': card.name,
+                'description': card.description(),
+                'already_used': card.already_used,
+            })
         
         return {
             'success': True,
