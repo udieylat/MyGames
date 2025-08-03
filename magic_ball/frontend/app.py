@@ -105,7 +105,6 @@ def new_game():
         print(f"Game manager created: {game_manager}")
         print(f"Game type: {game_type}")
         print(f"Human player side: {human_player_side}")
-        print(f"Board: {game_manager._board._board}")
         print(f"Ball position: {game_manager._board.ball_position}")
         
         return jsonify({
