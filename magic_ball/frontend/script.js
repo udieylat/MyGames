@@ -599,8 +599,6 @@ class GameBoard {
                 turnIndicator.className = `turn-indicator ${currentPlayer}`;
             }
             
-            menuButtonContainer.style.display = 'none';
-            
             // Show magic ball position effect
             const ballPosition = this.gameState.ball_position;
             let statusText = '';
