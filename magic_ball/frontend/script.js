@@ -8,6 +8,10 @@ class GameBoard {
         this.cardMoves = [];
         this.gameType = null;
         this.humanPlayerSide = null;
+        
+        // Store this instance globally for access by startNewGame
+        window.currentGameBoard = this;
+        
         this.init();
     }
 
@@ -666,6 +670,18 @@ class GameBoard {
 // Global function to go back to menu
 function backToMenu() {
     window.location.href = 'index.html';
+}
+
+// Global function to start a new game
+function startNewGame() {
+    // Store current game configuration in session storage
+    if (window.currentGameBoard && window.currentGameBoard.gameState) {
+        sessionStorage.setItem('gameType', window.currentGameBoard.gameType);
+        sessionStorage.setItem('playerSide', window.currentGameBoard.humanPlayerSide);
+    }
+    
+    // Create a new game board instance with the same configuration
+    window.currentGameBoard = new GameBoard();
 }
 
 // Initialize the game when the page loads
