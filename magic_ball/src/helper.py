@@ -322,9 +322,9 @@ class Helper:
             return []
 
         return [
-            move
+            card_move
             for card_index, card in enumerate(cards)
-            for move in card.get_available_card_moves(
+            for card_move in card.get_available_card_moves(
                 player_sign=player_sign,
                 board=board,
                 card_index=card_index,

@@ -153,18 +153,18 @@ class GameManager:
             )
             return None
 
-        available_moves = self.get_available_card_moves(
+        available_card_moves = self.get_available_card_moves(
             card_index=card_index,
         )
-        if not 0 <= move_index < len(available_moves):
+        if not 0 <= move_index < len(available_card_moves):
             raise InvalidMove(
                 description=(
-                    f"card index {card_index} has {len(available_moves)} valid moves, invalid index: {move_index}"
+                    f"card index {card_index} has {len(available_card_moves)} valid moves, invalid index: {move_index}"
                 ),
             )
 
         try:
-            move = available_moves[move_index]
+            move = available_card_moves[move_index]
             self._play_move(
                 move=move,
             )
@@ -313,14 +313,14 @@ class GameManager:
         self,
         card_index: int,
     ):
-        available_moves = self.get_available_card_moves(
+        available_card_moves = self.get_available_card_moves(
             card_index=card_index,
         )
-        if not available_moves:
+        if not available_card_moves:
             self._print("No available moves.")
             return
         self._print("Available moves:")
-        for i, move in enumerate(available_moves):
+        for i, move in enumerate(available_card_moves):
             self._print(f" {i}. {move.description}")
 
     def _complete_turn(self):

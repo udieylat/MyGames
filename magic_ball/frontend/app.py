@@ -431,7 +431,9 @@ def get_card_moves(card_index):
                 'error': 'Card already used'
             }), 400
         
-        card_moves = game_manager.get_available_card_moves(card_index)
+        card_moves = game_manager.get_available_card_moves(
+            card_index=card_index,
+        )
         moves = []
         
         for i, move in enumerate(card_moves):
