@@ -438,16 +438,18 @@ def get_card_moves(card_index):
         
         for i, move in enumerate(card_moves):
             moves.append({
-                'index': i,
+                'index': i,  # Needed?
                 'description': move.description,
-                # TODO: give more input to frontend about the card moves
+                'tile_marker_1': move.tile_marker_1,
+                'tile_marker_2': move.tile_marker_2,
+                'extra': move.extra,
             })
         
         return jsonify({
             'success': True,
             'card_name': card.name,
             'card_description': card.description(),
-            'moves': moves
+            'moves': moves,
         })
     except Exception as e:
         return jsonify({

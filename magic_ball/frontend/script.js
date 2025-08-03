@@ -384,13 +384,111 @@ class GameBoard {
         // Clear previous highlights
         this.clearHighlights();
         
-        // Highlight tiles based on card moves
-        this.cardMoves.forEach(move => {
-            console.log('Highlighting move:', move.description);
-            // TODO!!!!
-            // This is a simplified version - in a full implementation,
-            // you'd parse the move description to determine which tiles to highlight
+        // Track state for two-click flow
+        this.currentHighlightState = 'tile_marker_1';
+        this.tempMovesList = [];
+        
+        // Check if we have moves with tile_marker_2 (option 1) or only tile_marker_1 (option 2)
+        const hasTileMarker2 = this.cardMoves.some(move => move.tile_marker_2 !== null);
+        
+        if (hasTileMarker2) {
+            // Option 1: Both tile_marker_1 and tile_marker_2 are not null
+            this.highlightTileMarkers1();
+        } else {
+            // Option 2: Only tile_marker_1 is not null
+            this.highlightTileMarkers1();
+        }
+        // TODO: fire case, where both tile_marker_1 and tile_marker_2 are null
+    }
+    
+    highlightTileMarkers1() {
+        // Get unique tile_marker_1 values
+        const tileMarkers1 = [...new Set(this.cardMoves.map(move => move.tile_marker_1).filter(tile => tile !== null))];
+        
+        tileMarkers1.forEach(tile => {
+            const tileElement = this.getTileElementByCoordinate(tile);
+            if (tileElement) {
+                tileElement.classList.add('valid-move', 'tile-marker-1');
+            }
         });
+    }
+    
+    highlightTileMarkers2(matchingMoves) {
+        // Get unique tile_marker_2 values from matching moves
+        const tileMarkers2 = [...new Set(matchingMoves.map(move => move.tile_marker_2).filter(tile => tile !== null))];
+        
+        tileMarkers2.forEach(tile => {
+            const tileElement = this.getTileElementByCoordinate(tile);
+            if (tileElement) {
+                tileElement.classList.add('valid-move', 'tile-marker-2');
+            }
+        });
+    }
+    
+    getTileElementByCoordinate(tileCoordinate) {
+        // Convert tile coordinate (e.g., 'A1') to row/col indices
+        const col = tileCoordinate.charCodeAt(0) - 65; // A=0, B=1, etc.
+        const row = 5 - parseInt(tileCoordinate.charAt(1)); // 1=4, 2=3, etc.
+        
+        return document.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+    }
+    
+    async handleCardMoveTileClick(tileElement) {
+        const row = parseInt(tileElement.dataset.row);
+        const col = parseInt(tileElement.dataset.col);
+        const tileCoordinate = this.coordinatesToTile(row, col);
+        
+        if (this.currentHighlightState === 'tile_marker_1') {
+            // First click - find moves with matching tile_marker_1
+            const matchingMoves = this.cardMoves.filter(move => move.tile_marker_1 === tileCoordinate);
+            
+            if (matchingMoves.length === 0) return;
+            
+            // Check if we have tile_marker_2 moves
+            const hasTileMarker2 = matchingMoves.some(move => move.tile_marker_2 !== null);
+            
+            if (hasTileMarker2) {
+                // Option 1: Show tile_marker_2 highlights
+                this.clearHighlights();
+                this.currentHighlightState = 'tile_marker_2';
+                this.tempMovesList = matchingMoves;
+                this.highlightTileMarkers2(matchingMoves);
+            } else {
+                // Option 2: Play the move directly
+                const moveIndex = this.cardMoves.indexOf(matchingMoves[0]);
+                await this.playCardMoveByIndex(moveIndex);
+            }
+        } else if (this.currentHighlightState === 'tile_marker_2') {
+            // Second click - find the specific move with matching tile_marker_2
+            const matchingMoves = this.tempMovesList.filter(move => move.tile_marker_2 === tileCoordinate);
+            
+            if (matchingMoves.length === 0) return;
+            
+            if (matchingMoves.length > 1) {
+                console.error('Multiple moves found with same tile_marker_2:', matchingMoves);
+                throw new Error('Multiple moves found with same tile_marker_2');
+            }
+            
+            // Play the specific move
+            const moveIndex = this.cardMoves.indexOf(matchingMoves[0]);
+            await this.playCardMoveByIndex(moveIndex); // TODO
+        }
+    }
+    
+    async playCardMoveByIndex(moveIndex) {
+        const moveData = {
+            type: 'card',
+            card_index: this.selectedCard.index,
+            move_index: moveIndex
+        };
+
+        const success = await this.makeMove(moveData);
+        if (success) {
+            this.selectedCard = null;
+            this.cardMoves = [];
+            this.currentHighlightState = null;
+            this.tempMovesList = [];
+        }
     }
 
     updateMagicBall() {
@@ -448,6 +546,13 @@ class GameBoard {
         // If it's an AI game and not human's turn, ignore clicks
         if (this.gameType === 'human_vs_ai' && !this.isHumanTurn()) {
             console.log('Not human turn, ignoring click');
+            return;
+        }
+        
+        // Check if we're in card move selection mode
+        if (this.selectedCard && this.cardMoves.length > 0 && 
+            (this.currentHighlightState === 'tile_marker_1' || this.currentHighlightState === 'tile_marker_2')) {
+            await this.handleCardMoveTileClick(tileElement);
             return;
         }
         
@@ -560,8 +665,8 @@ class GameBoard {
     }
 
     clearHighlights() {
-        document.querySelectorAll('.tile.selected, .tile.valid-move, .card.selected, .pawn.selected').forEach(el => {
-            el.classList.remove('selected', 'valid-move');
+        document.querySelectorAll('.tile.selected, .tile.valid-move, .tile.tile-marker-1, .tile.tile-marker-2, .card.selected, .pawn.selected').forEach(el => {
+            el.classList.remove('selected', 'valid-move', 'tile-marker-1', 'tile-marker-2');
             // Reset card visual effects
             if (el.classList.contains('card')) {
                 el.style.transform = '';
