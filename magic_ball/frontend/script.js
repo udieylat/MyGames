@@ -655,6 +655,8 @@ class GameBoard {
             console.log('Not human turn, ignoring click');
             return;
         }
+
+        console.log('Tile click. Highlight state:', this.currentHighlightState, 'Selected card:', this.selectedCard, 'Tile element:', tileElement);
         
         // Check if we're in card move selection mode
         if (this.selectedCard && this.cardMoves.length > 0 && 
@@ -733,25 +735,6 @@ class GameBoard {
         const success = await this.makeMove(moveData);
         if (success) {
             this.selectedTile = null;
-        }
-    }
-
-    async playCardMove(row, col) {
-        if (!this.selectedCard || this.cardMoves.length === 0) return;
-
-        // For now, use the first available move
-        const moveIndex = 0;
-        
-        const moveData = {
-            type: 'card',
-            card_index: this.selectedCard.index,
-            move_index: moveIndex
-        };
-
-        const success = await this.makeMove(moveData);
-        if (success) {
-            this.selectedCard = null;
-            this.cardMoves = [];
         }
     }
 
