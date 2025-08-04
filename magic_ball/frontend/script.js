@@ -412,6 +412,7 @@ class GameBoard {
         // Check if game is over
         if (this.gameState.game_status !== 1) {
             console.log('Game is over, ignoring card selection');
+            this.clearHighlights();
             return;
         }
         
