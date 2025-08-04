@@ -144,14 +144,17 @@ def get_game_state():
             board_row = []
             for tile in row:
                 # Convert TileType enum to string value
-                tile_value = tile.value if hasattr(tile, 'value') else str(tile)
+                tile_value = tile.value
                 if tile_value == 'W':
                     board_row.append('white')
                 elif tile_value == 'B':
                     board_row.append('black')
                 elif tile_value == '#':
                     board_row.append('wall')
+                elif tile_value == '.':
+                    board_row.append(None)
                 else:
+                    print(f'Unknown tile value: {tile_value}')
                     board_row.append(None)
             board_state.append(board_row)
 
