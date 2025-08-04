@@ -571,7 +571,7 @@ class GameBoard {
             
             // Play the specific move
             const moveIndex = this.cardMoves.indexOf(matchingMoves[0]);
-            await this.playCardMoveByIndex(moveIndex); // TODO
+            await this.playCardMoveByIndex(moveIndex);
         }
     }
     
@@ -832,7 +832,7 @@ class GameBoard {
                     resultText = '🎉 You Win! 🎉';
                     statusText = 'Congratulations! You have defeated the AI! 🏆';
                 } else if (this.gameType === 'human_vs_ai' && this.humanPlayerSide === 'black') {
-                    resultText = 'AI Wins!';
+                    resultText = '🤖 AI Wins! 🤖';
                     statusText = 'The AI has won the game!';
                 } else {
                     resultText = 'White Wins!';
@@ -843,7 +843,7 @@ class GameBoard {
                     resultText = '🎉 You Win! 🎉';
                     statusText = 'Congratulations! You have defeated the AI! 🏆';
                 } else if (this.gameType === 'human_vs_ai' && this.humanPlayerSide === 'white') {
-                    resultText = 'AI Wins!';
+                    resultText = '🤖 AI Wins! 🤖';
                     statusText = 'The AI has won the game!';
                 } else {
                     resultText = 'Black Wins!';
