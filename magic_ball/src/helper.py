@@ -1,6 +1,7 @@
 from board import Board, InvalidMove
 from board_utils import BoardUtils
 from cards.card import Card
+from cards.cards_config import RulesConfig
 from move import Move
 from models import PlayerSign, TileType, GameStatus, BoardType
 
@@ -14,6 +15,7 @@ class Helper:
         player_turn: PlayerSign,
         white_cards: list[Card],
         black_cards: list[Card],
+        rules_config: RulesConfig,
     ) -> GameStatus:
         if BoardUtils.is_player_win(
             player_sign=PlayerSign.white,
@@ -30,6 +32,7 @@ class Helper:
             player_turn=player_turn,
             white_cards=white_cards,
             black_cards=black_cards,
+            allow_pass_turn=rules_config.allow_pass_turn,
         ):
             if all(
                 card.is_defensive
@@ -259,21 +262,26 @@ class Helper:
         player_turn: PlayerSign,
         white_cards: list[Card],
         black_cards: list[Card],
+        allow_pass_turn: bool,
     ) -> bool:
         num_allowed_playable_cards = min(len(white_cards), len(black_cards))
-        if player_turn == PlayerSign.white:
-            return not Helper.get_available_moves(
-                player_sign=PlayerSign.white,
-                board=board,
-                cards=white_cards,
-                num_allowed_playable_cards=num_allowed_playable_cards,
-            )
-        return not Helper.get_available_moves(
+        white_available_moves = Helper.get_available_moves(
+            player_sign=PlayerSign.white,
+            board=board,
+            cards=white_cards,
+            num_allowed_playable_cards=num_allowed_playable_cards,
+        )
+        black_available_moves = Helper.get_available_moves(
             player_sign=PlayerSign.black,
             board=board,
             cards=black_cards,
             num_allowed_playable_cards=num_allowed_playable_cards,
         )
+        if allow_pass_turn:
+            return not white_available_moves and not black_available_moves
+        elif player_turn == PlayerSign.white:
+            return not white_available_moves
+        return not black_available_moves
 
     @classmethod
     def _get_available_push_moves(

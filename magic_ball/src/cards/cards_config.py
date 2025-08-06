@@ -10,3 +10,7 @@ class CardsConfig(BaseModel):
     num_white_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER
     num_black_cards: int = DEFAULT_NUM_CARDS_PER_PLAYER
     cards_pull: list[str] | None = None
+
+
+class RulesConfig(BaseModel):
+    allow_pass_turn: bool = False

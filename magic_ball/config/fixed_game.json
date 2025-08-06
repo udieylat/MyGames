@@ -34,5 +34,8 @@
       "knife",
       "sidestep"
     ]
+  },
+  "rules_config": {
+    "allow_pass_turn": true
   }
 }

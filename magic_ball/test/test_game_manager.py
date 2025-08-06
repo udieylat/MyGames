@@ -246,6 +246,7 @@ class TestGameManager(unittest.TestCase):
             player_turn=gm._player_turn,
             white_cards=gm._white_player.cards,
             black_cards=gm._black_player.cards,
+            rules_config=gm._config.rules_config,
         )
 
     @classmethod

@@ -332,6 +332,7 @@ class GameManager:
             player_turn=self._player_turn,
             white_cards=self._white_player.cards,
             black_cards=self._black_player.cards,
+            rules_config=self._config.rules_config,
         )
         self._print_game_over_if_necessary()
         self._play_ai_player_turn_if_necessary()

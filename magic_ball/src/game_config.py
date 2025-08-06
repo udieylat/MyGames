@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field, model_validator
 
-from cards.cards_config import CardsConfig
+from cards.cards_config import CardsConfig, RulesConfig
 from players.player_config import PlayerConfig
 
 
@@ -10,6 +10,7 @@ class GameConfig(BaseModel):
     white_player: PlayerConfig = Field(default_factory=PlayerConfig.human)
     black_player: PlayerConfig = Field(default_factory=PlayerConfig.human)
     cards_config: CardsConfig = Field(default_factory=CardsConfig)
+    rules_config: RulesConfig = Field(default_factory=RulesConfig)
 
     @model_validator(mode="after")
     def validate_cards(cls, config: GameConfig) -> GameConfig:
