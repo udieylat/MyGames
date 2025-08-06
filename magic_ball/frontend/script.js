@@ -851,7 +851,7 @@ class GameBoard {
                     statusText = 'Black has won the game!';
                 }
             } else if (gameStatusString === 'draw') {
-                resultText = 'Game is a Draw!';
+                resultText = '🤝 Game is a Draw! 🤝';
                 statusText = 'The game ended in a draw!';
             }
             
