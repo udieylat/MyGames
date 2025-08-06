@@ -370,12 +370,13 @@ class GameBoard {
         // Check if this is an AI card in an AI game
         const isAICard = this.gameType === 'human_vs_ai' && player !== this.humanPlayerSide;
         const isUsed = card.already_used;
+        const isGameOver = this.gameState && this.gameState.game_status !== 1;
         
-        // Show card name or "???" for AI cards (reveal if used)
-        const displayName = (isAICard && !isUsed) ? '???' : card.name;
+        // Show card name or "???" for AI cards (reveal if used or game is over)
+        const displayName = (isAICard && !isUsed && !isGameOver) ? '???' : card.name;
         
         cardElement.textContent = displayName;
-        cardElement.title = (isAICard && !isUsed) ? '???' : card.description;
+        cardElement.title = (isAICard && !isUsed && !isGameOver) ? '???' : card.description;
         cardElement.dataset.cardIndex = index;
         cardElement.dataset.player = player;
         
