@@ -104,7 +104,7 @@ class GameBoard {
                 this.renderGame();
                 
                 // If it's an AI game and human just moved, make AI move after delay
-                if (this.gameType === 'human_vs_ai' && this.isAITurn()) {
+                if (this.gameType === 'human_vs_ai' && this.isAITurn() && this.gameState.game_status === 1) {
                     setTimeout(async () => {
                         await this.makeAIMove();
                     }, 500); // 0.5 second delay
