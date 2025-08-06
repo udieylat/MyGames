@@ -11,6 +11,7 @@ class Helper:
     def get_game_status(
         cls,
         board: Board,
+        player_turn: PlayerSign,
         white_cards: list[Card],
         black_cards: list[Card],
     ) -> GameStatus:
@@ -26,6 +27,7 @@ class Helper:
             return GameStatus.black_win
         if cls._no_available_moves(
             board=board,
+            player_turn=player_turn,
             white_cards=white_cards,
             black_cards=black_cards,
         ):
@@ -254,23 +256,24 @@ class Helper:
     def _no_available_moves(
         cls,
         board: Board,
+        player_turn: PlayerSign,
         white_cards: list[Card],
         black_cards: list[Card],
     ) -> bool:
         num_allowed_playable_cards = min(len(white_cards), len(black_cards))
-        white_available_moves = Helper.get_available_moves(
-            player_sign=PlayerSign.white,
-            board=board,
-            cards=white_cards,
-            num_allowed_playable_cards=num_allowed_playable_cards,
-        )
-        black_available_moves = Helper.get_available_moves(
+        if player_turn == PlayerSign.white:
+            return not Helper.get_available_moves(
+                player_sign=PlayerSign.white,
+                board=board,
+                cards=white_cards,
+                num_allowed_playable_cards=num_allowed_playable_cards,
+            )
+        return not Helper.get_available_moves(
             player_sign=PlayerSign.black,
             board=board,
             cards=black_cards,
             num_allowed_playable_cards=num_allowed_playable_cards,
         )
-        return not white_available_moves and not black_available_moves
 
     @classmethod
     def _get_available_push_moves(

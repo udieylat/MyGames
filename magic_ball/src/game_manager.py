@@ -329,6 +329,7 @@ class GameManager:
         )
         self._game_status = Helper.get_game_status(
             board=self._board,
+            player_turn=self._player_turn,
             white_cards=self._white_player.cards,
             black_cards=self._black_player.cards,
         )

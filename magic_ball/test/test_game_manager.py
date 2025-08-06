@@ -117,8 +117,9 @@ class TestGameManager(unittest.TestCase):
               A B C D E
         """
         filename = os.path.dirname(os.path.abspath(__file__))
-        gm = GameManager.from_config_filename(f"{filename}/../config/fixed_game.json")
-        # gm.log()
+        gm = GameManager.from_config_filename(
+            config_filename=f"{filename}/../config/fixed_game.json",
+        )
         game_summary = gm.export_summary()
         self.assertEqual(game_summary.winner, "black")
         self.assertEqual(game_summary.num_white_moves, 13)
@@ -242,6 +243,7 @@ class TestGameManager(unittest.TestCase):
     def _get_game_status(cls, gm: GameManager) -> GameStatus:
         return Helper.get_game_status(
             board=gm._board,
+            player_turn=gm._player_turn,
             white_cards=gm._white_player.cards,
             black_cards=gm._black_player.cards,
         )
